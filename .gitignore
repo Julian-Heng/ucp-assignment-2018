@@ -1,0 +1,5 @@
+build/
+objects/
+*.html
+*.swp
+*.nfs*
