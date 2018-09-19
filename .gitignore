@@ -3,3 +3,6 @@ objects/
 *.html
 *.swp
 *.nfs*
+docs/*.aux
+docs/*.log
+docs/*.pdf
