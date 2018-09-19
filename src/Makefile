@@ -12,6 +12,4 @@ makedirs:
 	bash -c 'if [[ ! -e ./objects ]]; then mkdir -p objects; fi'
 
 clean:
-	rm -rfv ./build
-	rm -rfv ./objects
-	rm -rfv ../docs/AssignmentDoc.pdf
+	rm -rfv ./build ./objects ../docs/AssignmentDoc.pdf
