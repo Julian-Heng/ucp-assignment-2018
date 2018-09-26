@@ -1,6 +1,12 @@
 \documentclass[10pt]{article}
 
-\usepackage[a4paper, lmargin=25.4mm, rmargin=25.4mm, tmargin=20mm, bmargin=20mm]{geometry}
+\usepackage[
+    a4paper,
+    lmargin=25.4mm,
+    rmargin=25.4mm,
+    tmargin=20mm,
+    bmargin=20mm
+]{geometry}
 \usepackage{listings}
 \usepackage[simplified]{pgf-umlcd}
 \usepackage{color}
@@ -19,12 +25,12 @@
 \definecolor{codegray}{gray}{0.9}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
-\newcommand{\code}[1]{\small\texttt{#1}\normalsize}
+\newcommand{\code}[1]{\tiny\texttt{#1}\normalsize}
 
 \lstset
 {
     % -- Settings -- %
-    columns=flexible,
+    columns=space-flexible,
     xleftmargin=0.65cm,
     showstringspaces=false,
     breaklines=true,
@@ -32,7 +38,7 @@
     breakatwhitespace=true,
     language=c,
     % -- Looks -- %
-    basicstyle=\linespread{0.5}\ttfamily,
+    basicstyle=\linespread{1}\small\ttfamily,
     numberstyle=\ttfamily\color{gray},
     keywordstyle=\color{blue},
     commentstyle=\color{dkgreen},
@@ -57,10 +63,37 @@
 
 
 \section{Source Code}
+    \fancyhead[R]{\footnotesize{Makefile}}
+    \lstinputlisting[language=make]{../src/Makefile}\newpage
+
+    \fancyhead[R]{\footnotesize{turtle.c}}
+    \lstinputlisting{../src/turtle.c}\newpage
+
+    \fancyhead[R]{\footnotesize{turtle.h}}
+    \lstinputlisting{../src/turtle.h}\newpage
+
     \fancyhead[R]{\footnotesize{effects.c}}
     \lstinputlisting{../src/effects.c}\newpage
 
     \fancyhead[R]{\footnotesize{effects.h}}
     \lstinputlisting{../src/effects.h}\newpage
+
+    \fancyhead[R]{\footnotesize{tools.c}}
+    \lstinputlisting{../src/tools.c}\newpage
+
+    \fancyhead[R]{\footnotesize{tools.h}}
+    \lstinputlisting{../src/tools.h}\newpage
+
+    \fancyhead[R]{\footnotesize{fileIO.c}}
+    \lstinputlisting{../src/fileIO.c}\newpage
+
+    \fancyhead[R]{\footnotesize{fileIO.h}}
+    \lstinputlisting{../src/fileIO.h}\newpage
+
+    \fancyhead[R]{\footnotesize{test.c}}
+    \lstinputlisting{../src/test.c}\newpage
+
+    \fancyhead[R]{\footnotesize{test.h}}
+    \lstinputlisting{../src/test.h}\newpage
 
 \end{document}
