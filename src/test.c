@@ -32,23 +32,23 @@ void testTools(int* status)
     char** strArr;
 
     char* testMsg[] = {
-        "Testing initString() with size 1",
-        "Testing initStringWithContents() using \"abcde\"",
-        "Testing initStringArray() with 3 rows 5 columns",
-        "Testing initStringArray() with 3 rows 5 columns with contents",
-        "Testing freePtr()",
-        "Testing freeArray()",
-        "Testing initStringArray() with a large value",
-        "Testing freeArray() with a large value",
-        "Testing stringCompare() with matching strings",
-        "Testing stringCompare() with non-matching strings [left]",
-        "Testing stringCompare() with non-matching strings [right]",
-        "Testing upper() with lowercase",
-        "Testing upper() with uppercase",
-        "Testing upper() with mix case",
-        "Testing lower() with lowercase",
-        "Testing lower() with uppercase",
-        "Testing lower() with mix case"
+    /*  0 */ "Testing initString() with size 1",
+    /*  1 */ "Testing initStringWithContents() using \"abcde\"",
+    /*  2 */ "Testing initStringArray() with 3 rows 5 columns",
+    /*  3 */ "Testing initStringArray() with 3 rows 5 columns with strings",
+    /*  4 */ "Testing freePtr()",
+    /*  5 */ "Testing freeArray()",
+    /*  6 */ "Testing initStringArray() with a large value",
+    /*  7 */ "Testing freeArray() with a large value",
+    /*  8 */ "Testing stringCompare() with matching strings",
+    /*  9 */ "Testing stringCompare() with non-matching strings [left]",
+    /* 10 */ "Testing stringCompare() with non-matching strings [right]",
+    /* 11 */ "Testing upper() with lowercase",
+    /* 12 */ "Testing upper() with uppercase",
+    /* 13 */ "Testing upper() with mix case",
+    /* 14 */ "Testing lower() with lowercase",
+    /* 15 */ "Testing lower() with uppercase",
+    /* 16 */ "Testing lower() with mix case"
     };
 
     str = NULL;
@@ -256,16 +256,16 @@ void testFileIO(int* status)
 {
     char** fileContents;
     char* testMsg[] = {
-        "Testing readFileToArray() with known rows and columns",
-        "Testing readFileToArray() with verticle pyramid pattern",
-        "Testing readFileToArray() with verticle pyramid pattern [trail]",
-        "Testing readFileToArray() with horizontal pyramid pattern",
-        "Testing readFileToArray() with horizontal pyramid pattern [trail]",
-        "Testing readFileToArray() with interchanging line size",
-        "Testing readFileToArray() with interchanging line size [trail]",
-        "Testing readFileToArray() with a single newline character",
-        "Testing readFileToArray() with 12 whitespaces",
-        "Testing readFileToArray() with a non existant file"
+    /* 0 */ "Testing readFileToArray() with known rows and columns",
+    /* 1 */ "Testing readFileToArray() with vertical pyramid",
+    /* 2 */ "Testing readFileToArray() with vertical pyramid [trail]",
+    /* 3 */ "Testing readFileToArray() with horizontal pyramid",
+    /* 4 */ "Testing readFileToArray() with horizontal pyramid [trail]",
+    /* 5 */ "Testing readFileToArray() with interchanging line size",
+    /* 6 */ "Testing readFileToArray() with interchanging line size [trail]",
+    /* 7 */ "Testing readFileToArray() with a single newline character",
+    /* 8 */ "Testing readFileToArray() with 12 whitespaces",
+    /* 9 */ "Testing readFileToArray() with a non existant file"
     };
 
     int i;
