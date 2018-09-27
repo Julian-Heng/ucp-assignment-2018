@@ -40,18 +40,25 @@ void initStringArray(char*** arr, int rows, int cols)
 
 void freePtr(void** ptr)
 {
-    free(*ptr);
-    *ptr = NULL;
+    if (*ptr)
+    {
+        free(*ptr);
+        *ptr = NULL;
+    }
 }
 
 void freeArray(void*** ptr, int len)
 {
     int i;
-    for (i = 0; i < len; i++)
+
+    if (*ptr)
     {
-        freePtr((*ptr) + i);
+        for (i = 0; i < len; i++)
+        {
+            freePtr((*ptr) + i);
+        }
+        freePtr((void**)ptr);
     }
-    freePtr((void**)ptr);
 }
 
 /**
