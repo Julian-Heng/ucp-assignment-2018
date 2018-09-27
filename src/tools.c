@@ -46,7 +46,7 @@ void freeArray(void*** ptr, int len)
     int i;
     for (i = 0; i < len; i++)
     {
-        freePtr((void**)((*ptr) + i));
+        freePtr((*ptr) + i);
     }
     freePtr((void**)ptr);
 }
