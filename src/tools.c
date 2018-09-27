@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "tools.h"
 
@@ -99,6 +100,60 @@ void lower(char* str)
         }
         i++;
     }
+}
+
+int integerBoundaryCheck(int i, int lower, int upper)
+{
+    int isValid = FALSE;
+
+    if ((i >= lower) && (i <= upper))
+    {
+        isValid = TRUE;
+    }
+
+    return isValid;
+}
+
+int doubleCompare(double num1, double num2)
+{
+    int isEqual = FALSE;
+
+    if (fabs(num1 - num2) < 0.0000001)
+    {
+        isEqual = TRUE;
+    }
+
+    return isEqual;
+}
+
+int doubleBoundaryCheck(double i, double lower, double upper)
+{
+    int isValid = FALSE;
+
+    if (upper < lower)
+    {
+        if ((i > lower) || doubleCompare(i, lower))
+        {
+            isValid = TRUE;
+        }
+    }
+    else if (upper < lower)
+    {
+        if ((i < upper) || doubleCompare(i, upper))
+        {
+            isValid = TRUE;
+        }
+    }
+    else
+    {
+        if (((i > lower) || doubleCompare(i, lower)) &&
+            ((i < upper) || doubleCompare(i, upper)))
+        {
+            isValid = TRUE;
+        }
+    }
+
+    return isValid;
 }
 
 void removeTrailingNewline(char* str, int len)
