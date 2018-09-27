@@ -33,6 +33,8 @@ debug: makedirs
 test: makedirs debug
 	$(CC) $(DCFLAGS) -c test.c -o ./objects/test.o
 	$(CC) $(OBJ) ./objects/test.o -o ./build/test
+	./build/test
+	valgrind ./build/test
 
 docs:
 	@bash -c '{ cd ../docs || exit; } && pdflatex AssignmentDoc.tex'
