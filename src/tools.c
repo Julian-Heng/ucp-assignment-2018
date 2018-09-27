@@ -91,6 +91,7 @@ void removeTrailingNewline(char* str, int len)
         if (str[i] == '\n')
         {
             str[i] = '\0';
+            removed = TRUE;
         }
         i++;
     }
