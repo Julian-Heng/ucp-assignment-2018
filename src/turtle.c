@@ -35,7 +35,7 @@ void printUsage(void)
         "EOF"
     };
 
-    printStringArrayUntilEOF(usageMsg);
+    printStringArrayUntilEOF("%s", usageMsg);
 }
 
 void printVersion(void)
@@ -61,9 +61,7 @@ void printVersion(void)
     #define MOD_DATE "unknown"
     #endif
 
-    fprintf(stdout, "%s", versionMsg[0]);
-    fprintf(stdout, "%s", versionMsg[1]);
-    fprintf(stdout, "%s", versionMsg[2]);
+    printStringArray("%s", versionMsg, 3);
     fprintf(stdout, "%s %s\n", versionMsg[3], USERHOST);
     fprintf(stdout, "%s %s\n", versionMsg[4], COMPILE_DATE);
     fprintf(stdout, "%s %s\n", versionMsg[5], MOD_DATE);
