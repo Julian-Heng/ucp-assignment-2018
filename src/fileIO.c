@@ -12,7 +12,7 @@ int readFileToArray(char* filename, char*** arr, int* lines, int* length)
 {
     FILE* file = NULL;
 
-    char* tempStr;
+    char* tempStr = NULL;
 
     int isEOF = FALSE;
     int statusCode = TRUE;
