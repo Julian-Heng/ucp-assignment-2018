@@ -4,6 +4,7 @@
 
 #include "tools.h"
 #include "fileIO.h"
+#include "effects.h"
 #include "turtle.h"
 
 #define FALSE 0
@@ -28,7 +29,7 @@ int main(int argc, char** argv)
         if (processArgs(argc, argv, &filename) &&
             readFileToArray(filename, &fileContents, &rows, &cols))
         {
-            printStringArray("%s\n", fileContents, rows);
+            processCommands(fileContents, rows);
         }
         else
         {
@@ -78,6 +79,83 @@ int processArgs(int argc, char** argv, char** filename)
     }
 
     return returnCode;
+}
+
+void processCommands(char** commandArr, int numCommands)
+{
+    int errLine = 0;
+    if (prepareCommands(commandArr, numCommands, &errLine))
+    {
+        printStringArray("%s\n", commandArr, numCommands);
+    }
+    else
+    {
+        fprintf(stderr, "%s %d\n", "Invalid command on line", errLine);
+    }
+}
+
+int prepareCommands(char** commandArr, int numCommands, int* errLine)
+{
+    int commandValid = FALSE;
+    int i;
+
+    double angle;
+    double length;
+    int color;
+    char pat;
+    char buff[256];
+
+    i = 0;
+
+    do
+    {
+        commandValid = FALSE;
+        resetVariables(&angle, &length, &color, &pat);
+        upper(commandArr[i]);
+
+        if (strstr(commandArr[i], "ROTATE") &&
+            sscanf(commandArr[i], "%s %lf", buff, &angle) == 2 &&
+            doubleBoundaryCheck(angle, -360.0, 360.0))
+        {
+            commandValid = TRUE;
+        }
+        else if ((strstr(commandArr[i], "MOVE") ||
+                 (strstr(commandArr[i], "DRAW"))) &&
+                 sscanf(commandArr[i], "%s %lf", buff, &length) == 2 &&
+                 doubleBoundaryCheck(length, 0.0, -1.0))
+        {
+            commandValid = TRUE;
+        }
+        else if (strstr(commandArr[i], "FG") &&
+                 sscanf(commandArr[i], "%s %d", buff, &color) == 2 &&
+                 integerBoundaryCheck(color, 0, 15))
+        {
+            commandValid = TRUE;
+        }
+        else if (strstr(commandArr[i], "BG") &&
+                 sscanf(commandArr[i], "%s %d", buff, &color) == 2 &&
+                 integerBoundaryCheck(color, 0, 7))
+        {
+            commandValid = TRUE;
+        }
+        else if (strstr(commandArr[i], "PATTERN") &&
+                 sscanf(commandArr[i], "%s %c", buff, &pat) == 2 &&
+                 pat != ' ')
+        {
+            commandValid = TRUE;
+        }
+    } while (++i < numCommands && commandValid);
+
+    *errLine = i;
+    return commandValid;
+}
+
+void resetVariables(double* angle, double* length, int* color, char* pat)
+{
+    *angle = 0.0;
+    *length = 0.0;
+    *color = 0;
+    *pat = '\0';
 }
 
 void printUsage(void)
