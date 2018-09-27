@@ -48,6 +48,7 @@ int readFileToArray(char* filename, char*** arr, int* lines, int* length)
                 {
                     printFileError("Error reading", filename);
                     freeArray((void***)arr, *lines);
+                    statusCode = FALSE;
                     isEOF = TRUE;
                 }
                 freePtr((void**)&tempStr);
