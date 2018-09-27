@@ -30,6 +30,10 @@ int main(int argc, char** argv)
         {
             printStringArray("%s\n", fileContents, rows);
         }
+        else
+        {
+            returnCode = 2;
+        }
     }
     else
     {
