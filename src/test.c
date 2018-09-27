@@ -219,7 +219,8 @@ void testFileIO(int* status)
         "Testing readFileToArray() with interchanging line size",
         "Testing readFileToArray() with interchanging line size [trail]",
         "Testing readFileToArray() with a single newline character",
-        "Testing readFileToArray() with 12 whitespaces"
+        "Testing readFileToArray() with 12 whitespaces",
+        "Testing readFileToArray() with a non existant file"
     };
 
     int i;
@@ -498,6 +499,30 @@ void testFileIO(int* status)
             (columns == 13) &&
             (strcmp(fileContents[0], "            ") == 0)
         );
+
+        for (i = 0; i < rows; i++)
+        {
+            free(fileContents[i]);
+            fileContents[i] = NULL;
+        }
+        free(fileContents);
+        fileContents = NULL;
+
+        rows = 0;
+        columns = 0;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[9]);
+        readFileToArray(
+            "../test/a non existant file",
+            &fileContents,
+            &rows,
+            &columns
+        );
+
+        *status = printResult(! fileContents);
 
         for (i = 0; i < rows; i++)
         {
