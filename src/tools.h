@@ -7,5 +7,7 @@ void freePtr(void** ptr);
 void freeArray(void*** ptr, int len);
 int stringCompare(char* str1, char* str2);
 void upper(char* str);
-void printStringArrayUntilEOF(char** strArr);
+void removeTrailingNewline(char* str, int len);
+void printStringArray(char* format, char** strArr, int len);
+void printStringArrayUntilEOF(char* format, char** strArr);
 #endif

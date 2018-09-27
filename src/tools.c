@@ -4,6 +4,9 @@
 
 #include "tools.h"
 
+#define FALSE 0
+#define TRUE !FALSE
+
 /**
  *  Mallocing functions
  **/
@@ -78,11 +81,35 @@ void upper(char* str)
     }
 }
 
-void printStringArrayUntilEOF(char** strArr)
+void removeTrailingNewline(char* str, int len)
+{
+    int removed = FALSE;
+    int i = 0;
+
+    while (! removed && i < len)
+    {
+        if (str[i] == '\n')
+        {
+            str[i] = '\0';
+        }
+        i++;
+    }
+}
+
+void printStringArray(char* format, char** strArr, int len)
+{
+    int i = 0;
+    for (i = 0; i < len; i++)
+    {
+        fprintf(stdout, format, strArr[i]);
+    }
+}
+
+void printStringArrayUntilEOF(char* format, char** strArr)
 {
     int i = 0;
     while (! stringCompare(strArr[i], "EOF"))
     {
-        fprintf(stdout, "%s", strArr[i++]);
+        fprintf(stdout, format, strArr[i++]);
     }
 }
