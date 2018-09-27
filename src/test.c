@@ -48,7 +48,19 @@ void testTools(int* status)
     /* 13 */ "Testing upper() with mix case",
     /* 14 */ "Testing lower() with lowercase",
     /* 15 */ "Testing lower() with uppercase",
-    /* 16 */ "Testing lower() with mix case"
+    /* 16 */ "Testing lower() with mix case",
+    /* 17 */ "Testing doubleCompare() with 1.0 and 1.0",
+    /* 18 */ "Testing doubleCompare() with 1.0 and 1.1",
+    /* 19 */ "Testing doubleCompare() with 1.1 and 1.0",
+    /* 20 */ "Testing doubleCompare() with 1.100010 and 1.100010",
+    /* 21 */ "Testing doubleCompare() with 1.100010 and 1.100011",
+    /* 22 */ "Testing doubleBoundaryCheck() [in bounds]",
+    /* 23 */ "Testing doubleBoundaryCheck() [out of lower bounds]",
+    /* 24 */ "Testing doubleBoundaryCheck() [out of upper bounds]",
+    /* 25 */ "Testing doubleBoundaryCheck() [inclusive lower bounds]",
+    /* 26 */ "Testing doubleBoundaryCheck() [inclusive upper bounds]",
+    /* 27 */ "Testing doubleBoundaryCheck() [just out of lower bounds]",
+    /* 28 */ "Testing doubleBoundaryCheck() [just out of upper bounds]"
     };
 
     str = NULL;
@@ -247,6 +259,78 @@ void testTools(int* status)
         );
         free(str);
         str = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[17]);
+        *status = printResult(doubleCompare(1.0, 1.0));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[18]);
+        *status = printResult(! doubleCompare(1.0, 1.1));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[19]);
+        *status = printResult(! doubleCompare(1.1, 1.0));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[20]);
+        *status = printResult(doubleCompare(1.100010, 1.100010));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[21]);
+        *status = printResult(! doubleCompare(1.100010, 1.100011));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[22]);
+        *status = printResult(doubleBoundaryCheck(10.01, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[23]);
+        *status = printResult(! doubleBoundaryCheck(0.01, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[24]);
+        *status = printResult(! doubleBoundaryCheck(13.01, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[25]);
+        *status = printResult(doubleBoundaryCheck(1.01, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[26]);
+        *status = printResult(doubleBoundaryCheck(12.01, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[27]);
+        *status = printResult(! doubleBoundaryCheck(1.00, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[28]);
+        *status = printResult(! doubleBoundaryCheck(12.02, 1.01, 12.01));
     }
 
     header("Finish testing tools.c");
