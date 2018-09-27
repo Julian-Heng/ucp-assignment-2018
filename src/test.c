@@ -45,7 +45,10 @@ void testTools(int* status)
         "Testing stringCompare() with non-matching strings [right]",
         "Testing upper() with lowercase",
         "Testing upper() with uppercase",
-        "Testing upper() with mix case"
+        "Testing upper() with mix case",
+        "Testing lower() with lowercase",
+        "Testing lower() with uppercase",
+        "Testing lower() with mix case"
     };
 
     str = NULL;
@@ -95,7 +98,7 @@ void testTools(int* status)
         strncpy(strArr[1], "bbbb", 5);
         strncpy(strArr[2], "cccc", 5);
 
-        printResult(
+        *status = printResult(
             (strcmp(strArr[0], "aaaa") == 0) &&
             (strcmp(strArr[1], "bbbb") == 0) &&
             (strcmp(strArr[2], "cccc") == 0)
@@ -114,7 +117,7 @@ void testTools(int* status)
     {
         fprintf(stdout, "%s: ", testMsg[4]);
         freePtr((void**)&str);
-        printResult(! str);
+        *status = printResult(! str);
     }
 
     if (*status)
@@ -127,39 +130,39 @@ void testTools(int* status)
         strncpy(strArr[2], "cccc", 5);
 
         freeArray((void***)&strArr, 3);
-        printResult(! strArr);
+        *status = printResult(! strArr);
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[6]);
         initStringArray(&strArr, 50000, 75000);
-        printResult(!! strArr);
+        *status = printResult(!! strArr);
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[7]);
         freeArray((void***)&strArr, 50000);
-        printResult(! strArr);
+        *status = printResult(! strArr);
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[8]);
-        printResult(stringCompare("aaaa", "aaaa"));
+        *status = printResult(stringCompare("aaaa", "aaaa"));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[9]);
-        printResult(! stringCompare("aaaa", "bbbb"));
+        *status = printResult(! stringCompare("aaaa", "bbbb"));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[10]);
-        printResult(! stringCompare("bbbb", "aaaa"));
+        *status = printResult(! stringCompare("bbbb", "aaaa"));
     }
 
     if (*status)
@@ -169,7 +172,7 @@ void testTools(int* status)
             &str,
             "abcdefghijklmnopqrstuvwxyz");
         upper(str);
-        printResult(
+        *status = printResult(
             (strcmp(str, "ABCDEFGHIJKLMNOPQRSTUVWXYZ") == 0)
         );
         free(str);
@@ -183,7 +186,7 @@ void testTools(int* status)
             &str,
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         upper(str);
-        printResult(
+        *status = printResult(
             (strcmp(str, "ABCDEFGHIJKLMNOPQRSTUVWXYZ") == 0)
         );
         free(str);
@@ -197,8 +200,50 @@ void testTools(int* status)
             &str,
             "abCdeFgHIjklMnoPqrsTuvwxyZ");
         upper(str);
-        printResult(
+        *status = printResult(
             (strcmp(str, "ABCDEFGHIJKLMNOPQRSTUVWXYZ") == 0)
+        );
+        free(str);
+        str = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[14]);
+        initStringWithContents(
+            &str,
+            "abcdefghijklmnopqrstuvwxyz");
+        lower(str);
+        *status = printResult(
+            (strcmp(str, "abcdefghijklmnopqrstuvwxyz") == 0)
+        );
+        free(str);
+        str = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[15]);
+        initStringWithContents(
+            &str,
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        lower(str);
+        *status = printResult(
+            (strcmp(str, "abcdefghijklmnopqrstuvwxyz") == 0)
+        );
+        free(str);
+        str = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[16]);
+        initStringWithContents(
+            &str,
+            "abCdeFgHIjklMnoPqrsTuvwxyZ");
+        lower(str);
+        *status = printResult(
+            (strcmp(str, "abcdefghijklmnopqrstuvwxyz") == 0)
         );
         free(str);
         str = NULL;
