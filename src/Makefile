@@ -3,7 +3,8 @@ CFLAGS = -Wall -Werror -ansi -pedantic
 DCFLAGS = $(CFLAGS) -g
 DATE = $(shell date)
 MOD_DATE = $(shell date -r ./turtle.c)
-USERHOST = $(shell whoami)@$(shell hostname)
+USER = $(shell whoami)
+HOST = $(shell hostname)
 
 OBJ = ./objects/tools.o \
 	  ./objects/fileIO.o \
@@ -17,7 +18,8 @@ all: makedirs
 	$(CC) $(CFLAGS) -c turtle.c -o ./objects/turtle.o \
 					-DCOMPILE_DATE="\"$(DATE)\"" \
 					-DMOD_DATE="\"$(MOD_DATE)\"" \
-					-DUSERHOST="\"$(USERHOST)\""
+					-DUSER="\"$(USER)\"" \
+					-DHOST="\"$(HOST)\""
 	$(CC) $(OBJ) ./objects/turtle.o -o $(PROG)
 
 debug: makedirs
@@ -27,7 +29,8 @@ debug: makedirs
 	$(CC) $(DCFLAGS) -c turtle.c -o ./objects/turtle.o \
 					 -DCOMPILE_DATE="\"$(DATE)\"" \
 					 -DMOD_DATE="\"$(MOD_DATE)\"" \
-					 -DUSERHOST="\"$(USERHOST)\""
+					 -DUSER="\"$(USER)\"" \
+					 -DHOST="\"$(HOST)\""
 	$(CC) $(OBJ) ./objects/turtle.o -g -o $(PROG)
 
 test: makedirs debug
