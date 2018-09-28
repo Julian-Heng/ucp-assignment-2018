@@ -8,7 +8,9 @@
 
 int main(void)
 {
-    int status = 1;
+    int status;
+
+    status = 1;
 
     header("MAKE SURE THIS IS RUN WITH MAKE");
     testTools(&status);
@@ -49,18 +51,27 @@ void testTools(int* status)
     /* 14 */ "Testing lower() with lowercase",
     /* 15 */ "Testing lower() with uppercase",
     /* 16 */ "Testing lower() with mix case",
-    /* 17 */ "Testing doubleCompare() with 1.0 and 1.0",
-    /* 18 */ "Testing doubleCompare() with 1.0 and 1.1",
-    /* 19 */ "Testing doubleCompare() with 1.1 and 1.0",
-    /* 20 */ "Testing doubleCompare() with 1.100010 and 1.100010",
-    /* 21 */ "Testing doubleCompare() with 1.100010 and 1.100011",
-    /* 22 */ "Testing doubleBoundaryCheck() [in bounds]",
-    /* 23 */ "Testing doubleBoundaryCheck() [out of lower bounds]",
-    /* 24 */ "Testing doubleBoundaryCheck() [out of upper bounds]",
-    /* 25 */ "Testing doubleBoundaryCheck() [inclusive lower bounds]",
-    /* 26 */ "Testing doubleBoundaryCheck() [inclusive upper bounds]",
-    /* 27 */ "Testing doubleBoundaryCheck() [just out of lower bounds]",
-    /* 28 */ "Testing doubleBoundaryCheck() [just out of upper bounds]"
+    /* 17 */ "Testing integerBoundaryCheck() [in bounds]",
+    /* 18 */ "Testing integerBoundaryCheck() [out of lower bounds]",
+    /* 19 */ "Testing integerBoundaryCheck() [out of upper bounds]",
+    /* 20 */ "Testing integerBoundaryCheck() [inclusive lower bounds]",
+    /* 21 */ "Testing integerBoundaryCheck() [inclusive upper bounds]",
+    /* 22 */ "Testing doubleCompare() with 1.0 and 1.0",
+    /* 23 */ "Testing doubleCompare() with 1.0 and 1.1",
+    /* 24 */ "Testing doubleCompare() with 1.1 and 1.0",
+    /* 25 */ "Testing doubleCompare() with 1.100010 and 1.100010",
+    /* 26 */ "Testing doubleCompare() with 1.100010 and 1.100011",
+    /* 27 */ "Testing doubleBoundaryCheck() [in bounds]",
+    /* 28 */ "Testing doubleBoundaryCheck() [out of lower bounds]",
+    /* 29 */ "Testing doubleBoundaryCheck() [out of upper bounds]",
+    /* 30 */ "Testing doubleBoundaryCheck() [inclusive lower bounds]",
+    /* 31 */ "Testing doubleBoundaryCheck() [inclusive upper bounds]",
+    /* 32 */ "Testing doubleBoundaryCheck() [just out of lower bounds]",
+    /* 33 */ "Testing doubleBoundaryCheck() [just out of upper bounds]",
+    /* 34 */ "Testing removeTrailingNewline() with a newline string",
+    /* 35 */ "Testing removeTrailingNewline() without a newline string",
+    /* 36 */ "Testing countWhiteSpace() with empty string",
+    /* 37 */ "Testing countWhiteSpace() with 12 whitespace"
     };
 
     str = NULL;
@@ -90,7 +101,11 @@ void testTools(int* status)
     {
         fprintf(stdout, "%s: ", testMsg[2]);
         initStringArray(&strArr, 3, 5);
-        *status = printResult((strArr[0]) && (strArr[1]) && (strArr[2]));
+        *status = printResult(
+            (strArr[0]) &&
+            (strArr[1]) &&
+            (strArr[2])
+        );
         free(strArr[0]);
         free(strArr[1]);
         free(strArr[2]);
@@ -264,73 +279,143 @@ void testTools(int* status)
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[17]);
-        *status = printResult(doubleCompare(1.0, 1.0));
+        *status = printResult(integerBoundaryCheck(1, 0, 2));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[18]);
-        *status = printResult(! doubleCompare(1.0, 1.1));
+        *status = printResult(! integerBoundaryCheck(-1, 0, 1));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[19]);
-        *status = printResult(! doubleCompare(1.1, 1.0));
+        *status = printResult(! integerBoundaryCheck(10, 0, 8));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[20]);
-        *status = printResult(doubleCompare(1.100010, 1.100010));
+        *status = printResult(integerBoundaryCheck(0, 0, 1));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[21]);
-        *status = printResult(! doubleCompare(1.100010, 1.100011));
+        *status = printResult(integerBoundaryCheck(1, 0, 1));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[22]);
-        *status = printResult(doubleBoundaryCheck(10.01, 1.01, 12.01));
+        *status = printResult(doubleCompare(1.0, 1.0));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[23]);
-        *status = printResult(! doubleBoundaryCheck(0.01, 1.01, 12.01));
+        *status = printResult(! doubleCompare(1.0, 1.1));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[24]);
-        *status = printResult(! doubleBoundaryCheck(13.01, 1.01, 12.01));
+        *status = printResult(! doubleCompare(1.1, 1.0));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[25]);
-        *status = printResult(doubleBoundaryCheck(1.01, 1.01, 12.01));
+        *status = printResult(doubleCompare(1.100010, 1.100010));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[26]);
-        *status = printResult(doubleBoundaryCheck(12.01, 1.01, 12.01));
+        *status = printResult(! doubleCompare(1.100010, 1.100011));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[27]);
-        *status = printResult(! doubleBoundaryCheck(1.00, 1.01, 12.01));
+        *status = printResult(doubleBoundaryCheck(10.01, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[28]);
+        *status = printResult(! doubleBoundaryCheck(0.01, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[29]);
+        *status = printResult(! doubleBoundaryCheck(13.01, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[30]);
+        *status = printResult(doubleBoundaryCheck(1.01, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[31]);
+        *status = printResult(doubleBoundaryCheck(12.01, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[32]);
+        *status = printResult(! doubleBoundaryCheck(1.00, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[33]);
         *status = printResult(! doubleBoundaryCheck(12.02, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[34]);
+        initStringWithContents(&str, "This has a newline\n");
+        removeTrailingNewline(str, strlen(str));
+        *status = printResult(strcmp(str, "This has a newline") == 0);
+        free(str);
+        str = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[35]);
+        initStringWithContents(&str, "This does not have a newline");
+        removeTrailingNewline(str, strlen(str));
+        *status = printResult(
+            strcmp(str, "This does not have a newline") == 0
+        );
+        free(str);
+        str = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[36]);
+        *status = printResult(countWhiteSpace("") == 0);
+        free(str);
+        str = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[34]);
+        *status = printResult(
+            countWhiteSpace("            ") == 12
+        );
+        free(str);
+        str = NULL;
     }
 
     header("Finish testing tools.c");
@@ -352,9 +437,11 @@ void testFileIO(int* status)
     /* 9 */ "Testing readFileToArray() with a non existant file"
     };
 
-    int i;
-    int rows = 0;
-    int columns = 0;
+    int i, rows, columns;
+
+    i = 0;
+    rows = 0;
+    columns = 0;
 
     fileContents = NULL;
 
@@ -670,9 +757,13 @@ void testFileIO(int* status)
 
 int printResult(int testCondition)
 {
-    char* green = "\033[22;32m";
-    char* red = "\033[22;31m";
-    char* reset = "\033[22;0m";
+    char* green;
+    char* red;
+    char* reset;
+
+    green = "\033[22;32m";
+    red = "\033[22;31m";
+    reset = "\033[22;0m";
 
     if (testCondition)
     {
@@ -688,10 +779,14 @@ int printResult(int testCondition)
 
 void header(char* msg)
 {
-    int msgLen = strlen(msg) + 1;
-    char* line = (char*)malloc(msgLen * sizeof(char));
+    int msgLen;
+    char* line;
+
+    msgLen = strlen(msg) + 1;
+    line = (char*)malloc(msgLen * sizeof(char));
     memset(line, '\0', msgLen);
     memset(line, '=', msgLen - 1);
+
     fprintf(stdout, "%s\n%s\n%s\n", line, msg, line);
     free(line);
 }
