@@ -2,11 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <ctype.h>
 
 #include "tools.h"
 
 #define FALSE 0
 #define TRUE !FALSE
+
+#define TOLERANCE 0.000001
 
 /**
  *  Mallocing functions
@@ -20,7 +23,9 @@ void initString(char** str, int len)
 
 void initStringWithContents(char** str, char* contents)
 {
-    int strLen = strlen(contents) + 1;
+    int strLen;
+
+    strLen = strlen(contents) + sizeof('\0');
     initString(str, strLen);
     strncpy(*str, contents, strLen);
 }
@@ -28,6 +33,7 @@ void initStringWithContents(char** str, char* contents)
 void initStringArray(char*** arr, int rows, int cols)
 {
     int i;
+
     *arr = (char**)malloc(rows * sizeof(char*));
     for (i = 0; i < rows; i++)
     {
@@ -56,7 +62,7 @@ void freeArray(void*** ptr, int len)
     {
         for (i = 0; i < len; i++)
         {
-            freePtr((*ptr) + i);
+            freePtr(&(*ptr)[i]);
         }
         freePtr((void**)ptr);
     }
@@ -68,20 +74,27 @@ void freeArray(void*** ptr, int len)
 
 int stringCompare(char* str1, char* str2)
 {
-    int returnCode = 0;
-    if (strcmp(str1, str2) == 0)
+    int returnCode;
+
+    returnCode = FALSE;
+
+    if (! strcmp(str1, str2))
     {
-        returnCode = 1;
+        returnCode = TRUE;
     }
+
     return returnCode;
 }
 
 void upper(char* str)
 {
-    int i = 0;
+    int i;
+
+    i = 0;
+
     while (str[i] != '\0')
     {
-        if ((str[i] >= 'a') && (str[i] <= 'z'))
+        if (islower(str[i]))
         {
             str[i] -= 32;
         }
@@ -91,10 +104,13 @@ void upper(char* str)
 
 void lower(char* str)
 {
-    int i = 0;
+    int i;
+
+    i = 0;
+
     while (str[i] != '\0')
     {
-        if ((str[i] >= 'A') && (str[i] <= 'Z'))
+        if (isupper(str[i]))
         {
             str[i] += 32;
         }
@@ -104,9 +120,11 @@ void lower(char* str)
 
 int integerBoundaryCheck(int i, int lower, int upper)
 {
-    int isValid = FALSE;
+    int isValid;
 
-    if ((i >= lower) && (i <= upper))
+    isValid = FALSE;
+
+    if (INT_BOUND(i, lower, upper))
     {
         isValid = TRUE;
     }
@@ -116,7 +134,9 @@ int integerBoundaryCheck(int i, int lower, int upper)
 
 int doubleCompare(double num1, double num2)
 {
-    int isEqual = FALSE;
+    int isEqual;
+
+    isEqual = FALSE;
 
     if (fabs(num1 - num2) < 0.0000001)
     {
@@ -128,26 +148,27 @@ int doubleCompare(double num1, double num2)
 
 int doubleBoundaryCheck(double i, double lower, double upper)
 {
-    int isValid = FALSE;
+    int isValid;
+
+    isValid = FALSE;
 
     if (upper < lower)
     {
-        if ((i > lower) || doubleCompare(i, lower))
+        if (DOUBLE_CHECK(i, lower))
         {
             isValid = TRUE;
         }
     }
     else if (upper < lower)
     {
-        if ((i < upper) || doubleCompare(i, upper))
+        if (DOUBLE_CHECK(upper, i))
         {
             isValid = TRUE;
         }
     }
     else
     {
-        if (((i > lower) || doubleCompare(i, lower)) &&
-            ((i < upper) || doubleCompare(i, upper)))
+        if (DOUBLE_BOUND(i, lower, upper))
         {
             isValid = TRUE;
         }
@@ -158,8 +179,10 @@ int doubleBoundaryCheck(double i, double lower, double upper)
 
 void removeTrailingNewline(char* str, int len)
 {
-    int removed = FALSE;
-    int i = 0;
+    int removed, i;
+
+    removed = FALSE;
+    i = 0;
 
     while (! removed && i < len)
     {
@@ -172,9 +195,31 @@ void removeTrailingNewline(char* str, int len)
     }
 }
 
+int countWhiteSpace(char* str)
+{
+    int spaceCount, i;
+
+    spaceCount = 0;
+    i = 0;
+
+    while (str[i] != '\0')
+    {
+        if (isspace(str[i]))
+        {
+            spaceCount++;
+        }
+        i++;
+    }
+
+    return spaceCount;
+}
+
 void printStringArray(char* format, char** strArr, int len)
 {
-    int i = 0;
+    int i;
+
+    i = 0;
+
     for (i = 0; i < len; i++)
     {
         fprintf(stdout, format, strArr[i]);
@@ -183,7 +228,10 @@ void printStringArray(char* format, char** strArr, int len)
 
 void printStringArrayUntilEOF(char* format, char** strArr)
 {
-    int i = 0;
+    int i;
+
+    i = 0;
+
     while (! stringCompare(strArr[i], "EOF"))
     {
         fprintf(stdout, format, strArr[i++]);
