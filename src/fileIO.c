@@ -8,15 +8,20 @@
 #define FALSE 0
 #define TRUE !FALSE
 
+#define EXTRA_PAD 4
+
 int readFileToArray(char* filename, char*** arr, int* lines, int* length)
 {
-    FILE* file = NULL;
+    FILE* file;
+    char* tempStr;
+    int isEOF, statusCode, count;
 
-    char* tempStr = NULL;
+    file = NULL;
+    tempStr = NULL;
 
-    int isEOF = FALSE;
-    int statusCode = TRUE;
-    int count = 0;
+    isEOF = FALSE;
+    statusCode = TRUE;
+    count = 0;
 
     file = fopen(filename, "r");
 
@@ -67,21 +72,14 @@ int readFileToArray(char* filename, char*** arr, int* lines, int* length)
 
 int getFileStats(char* filename, FILE* file, int* lines, int* length)
 {
-    int statusCode = TRUE;
-    int currentLength = 0;
-    int ch;
+    int statusCode, currentLength, ch;
+
+    statusCode = TRUE;
+    currentLength = 0;
 
     do
     {
-        ch = fgetc(file);
-
-        if (ferror(file))
-        {
-            printFileError("Error reading", filename);
-            statusCode = FALSE;
-        }
-
-        if (ch == '\n')
+        if ((ch = fgetc(file)) == '\n')
         {
             (*lines)++;
             if (currentLength > *length)
@@ -95,17 +93,27 @@ int getFileStats(char* filename, FILE* file, int* lines, int* length)
             currentLength++;
         }
 
+        if (ferror(file))
+        {
+            printFileError("Error reading", filename);
+            statusCode = FALSE;
+        }
+
     } while (ch != EOF && statusCode);
 
     (*length)++;
     fseek(file, 0, SEEK_SET);
+
     return statusCode;
 }
 
 void printFileError(char* msg, char* filename)
 {
-    char* errMsg = NULL;
-    int errMsgLen = strlen(msg) + strlen(filename) + 4;
+    char* errMsg;
+    int errMsgLen;
+
+    errMsg = NULL;
+    errMsgLen = strlen(msg) + strlen(filename) + EXTRA_PAD;
 
     initString(&errMsg, errMsgLen);
     sprintf(errMsg, "%s '%s'", msg, filename);
