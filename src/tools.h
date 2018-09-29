@@ -10,6 +10,8 @@
 #define DOUBLE_BOUND(a, low, up) \
     ((DOUBLE_CHECK((a), (low))) && (DOUBLE_CHECK((up), (a))))
 
+#define PI 3.14159265358979323846
+#define DEG_TO_RAD(i) ((i) * (PI / 180.0))
 #define UPPER(i) if (islower(i)) { i -= 32; }
 #define LOWER(i) if (isupper(i)) { i += 32; }
 
@@ -19,10 +21,7 @@ void initStringArray(char***, int rows, int cols);
 void freePtr(void** ptr);
 void freeArray(void*** ptr, int len);
 int stringCompare(char* str1, char* str2);
-void upper(char* str);
-void lower(char* str);
 void upperRange(char* str, int range);
-void lowerRange(char* str, int range);
 int integerBoundaryCheck(int i, int lower, int upper);
 int doubleCompare(double num1, double num2);
 int doubleBoundaryCheck(double i, double lower, double upper);

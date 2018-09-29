@@ -86,32 +86,6 @@ int stringCompare(char* str1, char* str2)
     return returnCode;
 }
 
-void upper(char* str)
-{
-    int i;
-
-    i = 0;
-
-    while (str[i] != '\0')
-    {
-        UPPER(str[i]);
-        i++;
-    }
-}
-
-void lower(char* str)
-{
-    int i;
-
-    i = 0;
-
-    while (str[i] != '\0')
-    {
-        LOWER(str[i]);
-        i++;
-    }
-}
-
 void upperRange(char* str, int range)
 {
     int i;
@@ -121,19 +95,6 @@ void upperRange(char* str, int range)
     while (str[i] != '\0' && i < range)
     {
         UPPER(str[i]);
-        i++;
-    }
-}
-
-void lowerRange(char* str, int range)
-{
-    int i;
-
-    i = 0;
-
-    while (str[i] != '\0' && i < range)
-    {
-        LOWER(str[i]);
         i++;
     }
 }

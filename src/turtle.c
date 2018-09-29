@@ -18,10 +18,6 @@
 
 #define MIN_ARGS 1
 
-#define PI 3.14159265358979323846
-
-#define DEG_TO_RAD(i) ((i) * (PI / 180.0))
-
 int main(int argc, char** argv)
 {
     int returnCode, rows, cols;
@@ -29,10 +25,11 @@ int main(int argc, char** argv)
     char** fileContents;
 
     returnCode = 0;
-    filename = NULL;
-    fileContents = NULL;
     rows = 0;
     cols = 0;
+
+    filename = NULL;
+    fileContents = NULL;
 
     if (checkArgs(argc, argv))
     {
@@ -102,9 +99,8 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
     void* plotData;
     int i;
     int errLine;
-    int callFunc;
 
-    char tempStr[256];
+    char tempStr[8];
 
     double x1, y1, x2, y2;
 
@@ -123,9 +119,8 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
     funcCommand = NULL;
     plotData = NULL;
     errLine= 0;
-    callFunc = FALSE;
 
-    memset(tempStr, '\0', 256);
+    memset(tempStr, '\0', 8);
 
     x1 = 0.0;
     y1 = 0.0;
@@ -152,8 +147,7 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
 #endif
             tempChar = '\0';
 
-            callFunc = FALSE;
-            funcCommand = &doNothing;
+            funcCommand = NULL;
             plotData = NULL;
 
             sscanf(commandArr[i], "%s", tempStr);
@@ -169,7 +163,6 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
 
                 calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
 
-                callFunc = TRUE;
                 funcCommand = &doNothing;
                 plotData = NULL;
             }
@@ -179,7 +172,6 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
 
                 calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
 
-                callFunc = TRUE;
                 funcCommand = &putChar;
                 plotData = &pat;
             }
@@ -203,7 +195,7 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
                 pat = tempChar;
             }
 
-            if (callFunc)
+            if (funcCommand)
             {
                 line(
                     (int)x1, (int)y1, (int)x2 - 1, (int)y2,
@@ -294,7 +286,7 @@ int prepareCommands(
     int color;
     char pat;
 
-    char tempStr[256];
+    char tempStr[8];
     char* origStr;
 
     commandValid = FALSE;
@@ -326,7 +318,7 @@ int prepareCommands(
              * to accept mixed case commands
              *
              * Range is so that we do not change the pattern, which can
-             * be a alpha character, to upper case
+             * be a alpha character, to uppercase
              **/
             sscanf(commandArr[i], "%s", tempStr);
             tempStrLen = strlen(tempStr);
