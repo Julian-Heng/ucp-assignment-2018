@@ -22,6 +22,18 @@ all: makedirs
 					-DHOST="\"$(HOST)\""
 	$(CC) $(OBJ) ./objects/turtle.o -lm -o $(PROG)
 
+simple: makedirs
+	$(CC) $(CFLAGS) -c tools.c -o ./objects/tools.o
+	$(CC) $(CFLAGS) -c fileIO.c -o ./objects/fileIO.o
+	$(CC) $(CFLAGS) -c effects.c -o ./objects/effects.o
+	$(CC) $(CFLAGS) -c turtle.c -o ./objects/turtle.o \
+					-DSIMPLE=1 \
+					-DCOMPILE_DATE="\"$(DATE)\"" \
+					-DMOD_DATE="\"$(MOD_DATE)\"" \
+					-DUSER="\"$(USER)\"" \
+					-DHOST="\"$(HOST)\""
+	$(CC) $(OBJ) ./objects/turtle.o -lm -o $(PROG)
+
 debug: makedirs
 	$(CC) $(DCFLAGS) -c tools.c -o ./objects/tools.o
 	$(CC) $(DCFLAGS) -c fileIO.c -o ./objects/fileIO.o

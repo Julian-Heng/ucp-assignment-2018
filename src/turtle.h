@@ -14,17 +14,6 @@ void calcNewPosition(
 void doNothing(void* voidPtr);
 void putChar(void* voidPtr);
 int prepareCommands(char** commandArr, int numCommands, int* errLine);
-void resetVariables(double* angle, double* length, int* color, char* pat);
-void initVariables(
-    double* x,
-    double* y,
-    double* angle,
-    double* move,
-    double* draw,
-    int* fb,
-    int* bg,
-    char* pat);
-void resetTempVariables(double* tempDouble, int* tempInt, char* tempChar);
 void printUsage(void);
 void printVersion(void);
 

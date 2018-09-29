@@ -109,8 +109,6 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
     double x1, y1, x2, y2;
 
     double angle;
-    double move;
-    double draw;
     int fg, bg;
     char pat;
 
@@ -125,8 +123,16 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
 
     memset(tempStr, '\0', 256);
 
-    initVariables(&x1, &y1, &angle, &move, &draw, &fg, &bg, &pat);
-    initVariables(&x2, &y2, &angle, &move, &draw, &fg, &bg, &pat);
+    x1 = 0.0;
+    y1 = 0.0;
+
+    x2 = 0.0;
+    y2 = 0.0;
+
+    angle = 0.0;
+    fg = 7;
+    bg = 0;
+    pat = '+';
 
     if (prepareCommands(commandArr, numCommands, &errLine))
     {
@@ -134,11 +140,15 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
 
         for (i = 0; i < numCommands; i++)
         {
-            resetTempVariables(&tempDouble, &tempInt, &tempChar);
+            tempDouble = 0.0;
+            tempInt = 0;
+            tempChar = '\0';
+
             callFunc = FALSE;
-            sscanf(commandArr[i], "%s", tempStr);
             funcCommand = &doNothing;
             plotData = NULL;
+
+            sscanf(commandArr[i], "%s", tempStr);
 
             if (stringCompare(tempStr, "ROTATE"))
             {
@@ -165,6 +175,7 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
                 funcCommand = &putChar;
                 plotData = &pat;
             }
+#ifndef SIMPLE
             else if (stringCompare(tempStr, "FG"))
             {
                 sscanf(commandArr[i], "%s %d", tempStr, &tempInt);
@@ -177,6 +188,7 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
                 bg = tempInt;
                 setBgColour(bg);
             }
+#endif
             else if (stringCompare(tempStr, "PATTERN"))
             {
                 sscanf(commandArr[i], "%s %c", tempStr, &tempChar);
@@ -285,7 +297,10 @@ int prepareCommands(
     do
     {
         commandValid = FALSE;
-        resetVariables(&angle, &length, &color, &pat);
+        angle = 0.0;
+        length = 0.0;
+        color = 0;
+        pat = '\0';
 
         initStringWithContents(&origStr, commandArr[i]);
 
@@ -358,41 +373,6 @@ int prepareCommands(
 
     *errLine = i;
     return commandValid;
-}
-
-void resetVariables(double* angle, double* length, int* color, char* pat)
-{
-    *angle = 0.0;
-    *length = 0.0;
-    *color = 0;
-    *pat = '\0';
-}
-
-void initVariables(
-    double* x,
-    double* y,
-    double* angle,
-    double* move,
-    double* draw,
-    int* fg,
-    int* bg,
-    char* pat)
-{
-    *x = 0.0;
-    *y = 0.0;
-    *angle = 0.0;
-    *move = 0.0;
-    *draw = 0.0;
-    *fg = 7;
-    *bg = 0;
-    *pat = '+';
-}
-
-void resetTempVariables(double* tempDouble, int* tempInt, char* tempChar)
-{
-    *tempDouble = 0.0;
-    *tempInt = 0;
-    *tempChar = '\0';
 }
 
 void printUsage(void)
