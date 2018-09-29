@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "tools.h"
 #include "fileIO.h"
@@ -10,10 +11,16 @@
 #define FALSE 0
 #define TRUE !FALSE
 
-#define INVALID_ARGS 1
-#define FILE_NOT_FOUND 2
+#define RETURN_OK 0
+#define RETURN_INVALID_ARGS 1
+#define RETURN_INVALID_FILE 2
+#define RETURN_INVALID_CMD 3
 
 #define MIN_ARGS 1
+
+#define PI 3.14159265358979323846
+
+#define DEG_TO_RAD(i) ((i) * (PI / 180.0))
 
 int main(int argc, char** argv)
 {
@@ -29,27 +36,22 @@ int main(int argc, char** argv)
 
     if (checkArgs(argc, argv))
     {
-        if (processArgs(argc, argv, &filename, &returnCode) &&
-            readFileToArray(filename, &fileContents, &rows, &cols))
+        if (processArgs(argc, argv, &filename, &returnCode))
         {
-            processCommands(fileContents, rows);
-        }
-        else
-        {
-            if (returnCode)
+            if (readFileToArray(filename, &fileContents, &rows, &cols))
             {
-                returnCode = FILE_NOT_FOUND;
+                processCommands(fileContents, rows, &returnCode);
             }
             else
             {
-                returnCode = FALSE;
+                returnCode = RETURN_INVALID_FILE;
             }
         }
     }
     else
     {
         printUsage();
-        returnCode = INVALID_ARGS;
+        returnCode = RETURN_INVALID_ARGS;
     }
 
     freeArray((void***)&fileContents, rows);
@@ -78,12 +80,12 @@ int processArgs(int argc, char** argv, char** filename, int* returnCode)
         stringCompare(argv[1], "--help"))
     {
         printUsage();
-        *returnCode = FALSE;
+        *returnCode = RETURN_OK;
     }
     else if (stringCompare(argv[1], "--version"))
     {
         printVersion();
-        *returnCode = FALSE;
+        *returnCode = RETURN_OK;
     }
     else
     {
@@ -94,21 +96,170 @@ int processArgs(int argc, char** argv, char** filename, int* returnCode)
     return *returnCode;
 }
 
-void processCommands(char** commandArr, int numCommands)
+void processCommands(char** commandArr, int numCommands, int* returnCode)
 {
+    PlotFunc funcCommand;
+    void* plotData;
+    int i;
     int errLine;
+    int callFunc;
 
+    char tempStr[256];
+
+    double x1, y1, x2, y2;
+
+    double angle;
+    double move;
+    double draw;
+    int fg, bg;
+    char pat;
+
+    double tempDouble;
+    int tempInt;
+    char tempChar;
+
+    funcCommand = NULL;
+    plotData = NULL;
     errLine= 0;
+    callFunc = FALSE;
+
+    memset(tempStr, '\0', 256);
+
+    initVariables(&x1, &y1, &angle, &move, &draw, &fg, &bg, &pat);
+    initVariables(&x2, &y2, &angle, &move, &draw, &fg, &bg, &pat);
 
     if (prepareCommands(commandArr, numCommands, &errLine))
     {
-        /* Actual Drawing */
+        clearScreen();
+
+        for (i = 0; i < numCommands; i++)
+        {
+            resetTempVariables(&tempDouble, &tempInt, &tempChar);
+            callFunc = FALSE;
+            sscanf(commandArr[i], "%s", tempStr);
+            funcCommand = &doNothing;
+            plotData = NULL;
+
+            if (stringCompare(tempStr, "ROTATE"))
+            {
+                sscanf(commandArr[i], "%s %lf", tempStr, &tempDouble);
+                angle += tempDouble;
+            }
+            else if (stringCompare(tempStr, "MOVE"))
+            {
+                sscanf(commandArr[i], "%s %lf", tempStr, &tempDouble);
+
+                calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
+
+                callFunc = TRUE;
+                funcCommand = &doNothing;
+                plotData = NULL;
+            }
+            else if (stringCompare(tempStr, "DRAW"))
+            {
+                sscanf(commandArr[i], "%s %lf", tempStr, &tempDouble);
+
+                calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
+
+                callFunc = TRUE;
+                funcCommand = &putChar;
+                plotData = &pat;
+            }
+            else if (stringCompare(tempStr, "FG"))
+            {
+                sscanf(commandArr[i], "%s %d", tempStr, &tempInt);
+                fg = tempInt;
+                setFgColour(fg);
+            }
+            else if (stringCompare(tempStr, "BG"))
+            {
+                sscanf(commandArr[i], "%s %d", tempStr, &tempInt);
+                bg = tempInt;
+                setBgColour(bg);
+            }
+            else if (stringCompare(tempStr, "PATTERN"))
+            {
+                sscanf(commandArr[i], "%s %c", tempStr, &tempChar);
+                pat = tempChar;
+            }
+
+            if (callFunc)
+            {
+                line(
+                    (int)x1, (int)y1, (int)x2 - 1, (int)y2,
+                    funcCommand, plotData
+                );
+            }
+        }
+
+        penDown();
+        *returnCode = RETURN_OK;
     }
     else
     {
         fprintf(stderr, "%s %d: ", "Invalid command on line", errLine);
         fprintf(stderr, "%s\n", commandArr[errLine - 1]);
+        *returnCode = RETURN_INVALID_CMD;
     }
+}
+
+void calcNewPosition(
+    double* x1,
+    double* y1,
+    double* x2,
+    double* y2,
+    double angle,
+    double length)
+{
+    double xDelta, yDelta;
+
+    if (doubleCompare(angle, 0.0) || doubleCompare(angle, 360.0))
+    {
+        xDelta = length;
+        yDelta = 0.0;
+    }
+    else if (doubleCompare(angle, 90.0))
+    {
+        xDelta = 0.0;
+        yDelta = length;
+    }
+    else if (doubleCompare(angle, 180.0))
+    {
+        xDelta = -length;
+        yDelta = 0.0;
+    }
+    else if (doubleCompare(angle, 270.0))
+    {
+        xDelta = 0.0;
+        yDelta= -length;
+    }
+    else
+    {
+        xDelta = (length * cos(DEG_TO_RAD(angle)));
+        yDelta = (length * sin(DEG_TO_RAD(angle)));
+    }
+
+    *x1 = *x2;
+    *x2 += xDelta;
+
+    *y1 = *y2;
+    *y2 += yDelta;
+
+    /*
+    fprintf(stderr, "Length = %f\n", length);
+    fprintf(stderr, "Cos(%f) = %f\n", angle, xDelta);
+    fprintf(stderr, "Sin(%f) = %f\n", angle, yDelta);
+    fprintf(stderr, "Delta x: %0.2f\nDelta y: %0.2f\n", xDelta, yDelta);
+    fprintf(stderr, "(%d, %d) -> (%d, %d)\n\n",
+        (int)*x1, (int)*y1, (int)*x2, (int)*y2);
+        */
+}
+
+void doNothing(void* a) {}
+
+void putChar(void* voidPtr)
+{
+    fputc(*(char*)voidPtr, stdout);
 }
 
 int prepareCommands(
@@ -116,7 +267,7 @@ int prepareCommands(
     int numCommands,
     int* errLine)
 {
-    int commandValid, i;
+    int commandValid, tempStrLen, i;
 
     double angle;
     double length;
@@ -128,6 +279,7 @@ int prepareCommands(
 
     commandValid = FALSE;
     origStr = NULL;
+    tempStrLen = 0;
     i = 0;
 
     do
@@ -139,8 +291,25 @@ int prepareCommands(
 
         if (countWhiteSpace(commandArr[i]) == 1)
         {
-            upper(commandArr[i]);
+            /**
+             * --[ACTIONS]-
+             * 1. Get the command string and length
+             * 2. Uppercase only the command string portion of the commands
+             *   array
+             * 3. Copy back from commands array to tempstr for comparison
+             *
+             * --[RATIONALE]--
+             * Required for converting the command to uppercase in order
+             * to accept mixed case commands
+             *
+             * Range is so that we do not change the pattern, which can
+             * be a alpha character, to upper case
+             **/
             sscanf(commandArr[i], "%s", tempStr);
+            tempStrLen = strlen(tempStr);
+            upperRange(commandArr[i], tempStrLen);
+            strncpy(tempStr, commandArr[i], tempStrLen);
+
             if ((stringCompare(tempStr, "ROTATE")) &&
                 sscanf(commandArr[i], "%s %lf", tempStr, &angle) == 2 &&
                 doubleBoundaryCheck(angle, -360.0, 360.0))
@@ -197,6 +366,33 @@ void resetVariables(double* angle, double* length, int* color, char* pat)
     *length = 0.0;
     *color = 0;
     *pat = '\0';
+}
+
+void initVariables(
+    double* x,
+    double* y,
+    double* angle,
+    double* move,
+    double* draw,
+    int* fg,
+    int* bg,
+    char* pat)
+{
+    *x = 0.0;
+    *y = 0.0;
+    *angle = 0.0;
+    *move = 0.0;
+    *draw = 0.0;
+    *fg = 7;
+    *bg = 0;
+    *pat = '+';
+}
+
+void resetTempVariables(double* tempDouble, int* tempInt, char* tempChar)
+{
+    *tempDouble = 0.0;
+    *tempInt = 0;
+    *tempChar = '\0';
 }
 
 void printUsage(void)
