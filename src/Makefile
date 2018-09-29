@@ -11,7 +11,8 @@ OBJ = ./objects/tools.o \
 	  ./objects/effects.o
 PROG = ./build/turtle
 
-all: makedirs
+all: makedirs info
+	@echo -----[TurtleGraphics]-----
 	$(CC) $(CFLAGS) -c tools.c -o ./objects/tools.o
 	$(CC) $(CFLAGS) -c fileIO.c -o ./objects/fileIO.o
 	$(CC) $(CFLAGS) -c effects.c -o ./objects/effects.o
@@ -22,7 +23,8 @@ all: makedirs
 					-DHOST="\"$(HOST)\""
 	$(CC) $(OBJ) ./objects/turtle.o -lm -o $(PROG)
 
-simple: makedirs
+simple: makedirs info
+	@echo -----[TurtleGraphics Simple]-----
 	$(CC) $(CFLAGS) -c tools.c -o ./objects/tools.o
 	$(CC) $(CFLAGS) -c fileIO.c -o ./objects/fileIO.o
 	$(CC) $(CFLAGS) -c effects.c -o ./objects/effects.o
@@ -33,8 +35,10 @@ simple: makedirs
 					-DUSER="\"$(USER)\"" \
 					-DHOST="\"$(HOST)\""
 	$(CC) $(OBJ) ./objects/turtle.o -lm -o $(PROG)
+	@echo
 
-debug: makedirs
+debug: makedirs info
+	@echo -----[Debug]-----
 	$(CC) $(DCFLAGS) -c tools.c -o ./objects/tools.o
 	$(CC) $(DCFLAGS) -c fileIO.c -o ./objects/fileIO.o
 	$(CC) $(DCFLAGS) -c effects.c -o ./objects/effects.o
@@ -44,15 +48,31 @@ debug: makedirs
 					 -DUSER="\"$(USER)\"" \
 					 -DHOST="\"$(HOST)\""
 	$(CC) $(OBJ) ./objects/turtle.o -lm -g -o $(PROG)
+	@echo
 
-test: makedirs debug
+test: makedirs info debug
+	@echo -----[Test]-----
 	$(CC) $(DCFLAGS) -c test.c -o ./objects/test.o
 	$(CC) $(OBJ) ./objects/test.o -o ./build/test
 	./build/test
 	valgrind ./build/test
+	@echo
 
 docs:
 	@bash -c '{ cd ../docs || exit; } && pdflatex AssignmentDoc.tex'
+
+info:
+	@echo -----[Makefile Variables]-----
+	@echo "CC       = $(CC)"
+	@echo "CFLAGS   = $(CFLAGS)"
+	@echo "DCFLAGS  = $(DCFLAGS)"
+	@echo "DATE     = $(DATE)"
+	@echo "MOD_DATE = $(MOD_DATE)"
+	@echo "USER     = $(USER)"
+	@echo "HOST     = $(HOST)"
+	@echo "OBJ      = $(OBJ)"
+	@echo "PROG     = $(PROG)"
+	@echo
 
 makedirs:
 	@if [ ! -e ./build ]; then \
