@@ -20,7 +20,7 @@ all: makedirs
 					-DMOD_DATE="\"$(MOD_DATE)\"" \
 					-DUSER="\"$(USER)\"" \
 					-DHOST="\"$(HOST)\""
-	$(CC) $(OBJ) ./objects/turtle.o -o $(PROG)
+	$(CC) $(OBJ) ./objects/turtle.o -lm -o $(PROG)
 
 debug: makedirs
 	$(CC) $(DCFLAGS) -c tools.c -o ./objects/tools.o
@@ -31,7 +31,7 @@ debug: makedirs
 					 -DMOD_DATE="\"$(MOD_DATE)\"" \
 					 -DUSER="\"$(USER)\"" \
 					 -DHOST="\"$(HOST)\""
-	$(CC) $(OBJ) ./objects/turtle.o -g -o $(PROG)
+	$(CC) $(OBJ) ./objects/turtle.o -lm -g -o $(PROG)
 
 test: makedirs debug
 	$(CC) $(DCFLAGS) -c test.c -o ./objects/test.o
