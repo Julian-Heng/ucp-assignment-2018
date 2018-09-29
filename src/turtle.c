@@ -109,11 +109,15 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
     double x1, y1, x2, y2;
 
     double angle;
+#ifndef SIMPLE
     int fg, bg;
+#endif
     char pat;
 
     double tempDouble;
+#ifndef SIMPLE
     int tempInt;
+#endif
     char tempChar;
 
     funcCommand = NULL;
@@ -130,8 +134,10 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
     y2 = 0.0;
 
     angle = 0.0;
+#ifndef SIMPLE
     fg = 7;
     bg = 0;
+#endif
     pat = '+';
 
     if (prepareCommands(commandArr, numCommands, &errLine))
@@ -141,7 +147,9 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
         for (i = 0; i < numCommands; i++)
         {
             tempDouble = 0.0;
+#ifndef SIMPLE
             tempInt = 0;
+#endif
             tempChar = '\0';
 
             callFunc = FALSE;
