@@ -94,10 +94,7 @@ void upper(char* str)
 
     while (str[i] != '\0')
     {
-        if (islower(str[i]))
-        {
-            str[i] -= 32;
-        }
+        UPPER(str[i]);
         i++;
     }
 }
@@ -110,10 +107,33 @@ void lower(char* str)
 
     while (str[i] != '\0')
     {
-        if (isupper(str[i]))
-        {
-            str[i] += 32;
-        }
+        LOWER(str[i]);
+        i++;
+    }
+}
+
+void upperRange(char* str, int range)
+{
+    int i;
+
+    i = 0;
+
+    while (str[i] != '\0' && i < range)
+    {
+        UPPER(str[i]);
+        i++;
+    }
+}
+
+void lowerRange(char* str, int range)
+{
+    int i;
+
+    i = 0;
+
+    while (str[i] != '\0' && i < range)
+    {
+        LOWER(str[i]);
         i++;
     }
 }

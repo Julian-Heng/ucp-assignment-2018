@@ -10,6 +10,9 @@
 #define DOUBLE_BOUND(a, low, up) \
     ((DOUBLE_CHECK((a), (low))) && (DOUBLE_CHECK((up), (a))))
 
+#define UPPER(i) if (islower(i)) { i -= 32; }
+#define LOWER(i) if (isupper(i)) { i += 32; }
+
 void initString(char** str, int len);
 void initStringWithContents(char** str, char* contents);
 void initStringArray(char***, int rows, int cols);
@@ -18,6 +21,8 @@ void freeArray(void*** ptr, int len);
 int stringCompare(char* str1, char* str2);
 void upper(char* str);
 void lower(char* str);
+void upperRange(char* str, int range);
+void lowerRange(char* str, int range);
 int integerBoundaryCheck(int i, int lower, int upper);
 int doubleCompare(double num1, double num2);
 int doubleBoundaryCheck(double i, double lower, double upper);
