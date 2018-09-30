@@ -16,7 +16,7 @@ int main(void)
     testTools(&status);
     testFileIO(&status);
 
-    if (status == 1)
+    if (status)
     {
         status = 0;
     }
@@ -435,16 +435,17 @@ void testFileIO(int* status)
 {
     char** fileContents;
     char* testMsg[] = {
-    /* 0 */ "Testing readFileToArray() with known rows and columns",
-    /* 1 */ "Testing readFileToArray() with vertical pyramid",
-    /* 2 */ "Testing readFileToArray() with vertical pyramid [trail]",
-    /* 3 */ "Testing readFileToArray() with horizontal pyramid",
-    /* 4 */ "Testing readFileToArray() with horizontal pyramid [trail]",
-    /* 5 */ "Testing readFileToArray() with interchanging line size",
-    /* 6 */ "Testing readFileToArray() with interchanging line size [trail]",
-    /* 7 */ "Testing readFileToArray() with a single newline character",
-    /* 8 */ "Testing readFileToArray() with 12 whitespaces",
-    /* 9 */ "Testing readFileToArray() with a non existant file"
+    /*  0 */ "Testing readFileToArray() with known rows and columns",
+    /*  1 */ "Testing readFileToArray() with vertical pyramid",
+    /*  2 */ "Testing readFileToArray() with vertical pyramid [trail]",
+    /*  3 */ "Testing readFileToArray() with horizontal pyramid",
+    /*  4 */ "Testing readFileToArray() with horizontal pyramid [trail]",
+    /*  5 */ "Testing readFileToArray() with interchanging line size",
+    /*  6 */ "Testing readFileToArray() with interchanging line size [trail]",
+    /*  7 */ "Testing readFileToArray() with a single newline character",
+    /*  8 */ "Testing readFileToArray() with 12 whitespaces",
+    /*  9 */ "Testing readFileToArray() with an empty file",
+    /* 10 */ "Testing readFileToArray() with a non existant file"
     };
 
     int i, rows, columns;
@@ -741,6 +742,30 @@ void testFileIO(int* status)
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[9]);
+        readFileToArray(
+            "../test/empty_file",
+            &fileContents,
+            &rows,
+            &columns
+        );
+
+        *status = printResult(! fileContents);
+
+        for (i = 0; i < rows; i++)
+        {
+            free(fileContents[i]);
+            fileContents[i] = NULL;
+        }
+        free(fileContents);
+        fileContents = NULL;
+
+        rows = 0;
+        columns = 0;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[10]);
         readFileToArray(
             "../test/a non existant file",
             &fileContents,
