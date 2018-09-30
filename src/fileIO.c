@@ -33,7 +33,8 @@ int readFileToArray(char* filename, char*** arr, int* lines, int* length)
     else
     {
         statusCode = TRUE;
-        if (getFileStats(filename, file, lines, length))
+        if (getFileStats(filename, file, lines, length) &&
+            *lines != 0)
         {
             initStringArray(arr, *lines, *length);
             do
@@ -65,6 +66,24 @@ int readFileToArray(char* filename, char*** arr, int* lines, int* length)
         }
 
         fclose(file);
+    }
+
+    return statusCode;
+}
+
+int printToFile(FILE* file, char* format, char* line, char* errMsg)
+{
+    int statusCode;
+
+    if (! file)
+    {
+        printFileError(errMsg, "");
+        statusCode = FALSE;
+    }
+    else
+    {
+        statusCode = TRUE;
+        fprintf(file, format, line);
     }
 
     return statusCode;
@@ -112,12 +131,19 @@ void printFileError(char* msg, char* filename)
     char* errMsg;
     int errMsgLen;
 
-    errMsg = NULL;
-    errMsgLen = strlen(msg) + strlen(filename) + EXTRA_PAD;
+    if (stringCompare(filename, ""))
+    {
+        perror(msg);
+    }
+    else
+    {
+        errMsg = NULL;
+        errMsgLen = strlen(msg) + strlen(filename) + EXTRA_PAD;
 
-    initString(&errMsg, errMsgLen);
-    sprintf(errMsg, "%s '%s'", msg, filename);
-    perror(errMsg);
+        initString(&errMsg, errMsgLen);
+        sprintf(errMsg, "%s '%s'", msg, filename);
+        perror(errMsg);
 
-    freePtr((void**)&errMsg);
+        freePtr((void**)&errMsg);
+    }
 }
