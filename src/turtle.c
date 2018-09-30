@@ -17,6 +17,7 @@
 #define RETURN_INVALID_CMD 3
 
 #define MIN_ARGS 1
+#define LOG_ERR "Error writing to log"
 
 int main(int argc, char** argv)
 {
@@ -95,12 +96,14 @@ int processArgs(char* arg, char** filename, int* returnCode)
 
 void processCommands(char** commandArr, int numCommands, int* returnCode)
 {
+    FILE* logFile;
+
     PlotFunc funcCommand;
     void* plotData;
-    int i;
-    int errLine;
+    int i, errLine;
 
     char tempStr[8];
+    char* logLine;
 
     double x1, y1, x2, y2;
 
@@ -116,11 +119,14 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
 #endif
     char tempChar;
 
+    logFile = NULL;
     funcCommand = NULL;
     plotData = NULL;
+    i = 0;
     errLine= 0;
 
     memset(tempStr, '\0', 8);
+    logLine = NULL;
 
     x1 = 0.0;
     y1 = 0.0;
@@ -137,9 +143,11 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
 
     if (prepareCommands(commandArr, numCommands, &errLine))
     {
+        logFile = fopen("graphics.log", "a");
+        printToFile(logFile, "%s\n", "---", LOG_ERR);
         clearScreen();
 
-        for (i = 0; i < numCommands; i++)
+        do
         {
             tempDouble = 0.0;
 #ifndef SIMPLE
@@ -150,17 +158,33 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
             funcCommand = NULL;
             plotData = NULL;
 
+            freePtr((void**)&logLine);
+
             if (sscanf(commandArr[i], "%s", tempStr) == 1)
             {
                 if (stringCompare(tempStr, "ROTATE"))
                 {
                     sscanf(commandArr[i], "%s %lf", tempStr, &tempDouble);
                     angle += tempDouble;
+
+                    if (DOUBLE_CHECK(0.0, angle))
+                    {
+                        angle += 360.0;
+                    }
+                    else if (DOUBLE_CHECK(angle, 360.0))
+                    {
+                        angle -= 360.0;
+                    }
                 }
                 else if (stringCompare(tempStr, "MOVE"))
                 {
                     sscanf(commandArr[i], "%s %lf", tempStr, &tempDouble);
                     calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
+
+                    initString(&logLine, 47);
+                    sprintf(logLine, "MOVE (%8.3f, %8.3f)-(%8.3f, %8.3f)",
+                                            x1, y1, x2, y2);
+
                     funcCommand = &doNothing;
                     plotData = NULL;
                 }
@@ -168,6 +192,11 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
                 {
                     sscanf(commandArr[i], "%s %lf", tempStr, &tempDouble);
                     calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
+
+                    initString(&logLine, 47);
+                    sprintf(logLine, "DRAW (%8.3f, %8.3f)-(%8.3f, %8.3f)",
+                                            x1, y1, x2, y2);
+
                     funcCommand = &putChar;
                     plotData = &pat;
                 }
@@ -193,16 +222,19 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
 
                 if (funcCommand)
                 {
+                    printToFile(logFile, "%s\n", logLine, LOG_ERR);
                     line(
                         (int)x1, (int)y1, (int)x2 - 1, (int)y2,
                         funcCommand, plotData
                     );
+                    freePtr((void**)&logLine);
                 }
             }
-        }
+        } while (++i < numCommands);
 
         fprintf(stdout, "%s", "\033[0m");
         penDown();
+        fclose(logFile);
         *returnCode = RETURN_OK;
     }
     else
@@ -254,23 +286,10 @@ void calcNewPosition(
 
     *y1 = *y2;
     *y2 += yDelta;
-
-    /*
-    fprintf(stderr, "Length = %f\n", length);
-    fprintf(stderr, "Cos(%f) = %f\n", angle, xDelta);
-    fprintf(stderr, "Sin(%f) = %f\n", angle, yDelta);
-    fprintf(stderr, "Delta x: %0.2f\nDelta y: %0.2f\n", xDelta, yDelta);
-    fprintf(stderr, "(%d, %d) -> (%d, %d)\n\n",
-        (int)*x1, (int)*y1, (int)*x2, (int)*y2);
-        */
 }
 
 void doNothing(void* a) {}
-
-void putChar(void* voidPtr)
-{
-    fputc(*(char*)voidPtr, stdout);
-}
+void putChar(void* voidPtr) { fputc(*(char*)voidPtr, stdout); }
 
 int prepareCommands(
     char** commandArr,
@@ -379,35 +398,41 @@ int prepareCommands(
 void printUsage(void)
 {
     char* usageMsg[] = {
-        "Usage: turtle [FILE]\n",
-        "Draw a graphic from commands in FILE\n",
-        "Example: turtle ./picture.txt\n",
-        "\n",
-        "Valid commands:\n",
-        "\n",
-        "    +---------+-------+-----------------------+\n",
-        "    | Command | Type  | Range                 |\n",
-        "    +---------+-------+-----------------------+\n",
-        "    | ROTATE  | float | -360 to 360 inclusive |\n",
-        "    | MOVE    | float | Positive              |\n",
-        "    | DRAW    | float | Positive              |\n",
-        "    | FG      | int   | 0 to 15 inclusive     |\n",
-        "    | BG      | int   | 0 to 7 inclusive      |\n",
-        "    | PATTERN | char  | Any character         |\n",
-        "    +---------+-------+-----------------------+\n",
-        "\n",
-        "EOF"
+        "Usage: turtle [FILE]",
+        "Draw a graphic from commands in FILE",
+        "Example: turtle ./picture.txt",
+        "",
+        "Valid commands:",
+        "",
+        "    +---------+-------+-----------------------+",
+        "    | Command | Type  | Range                 |",
+        "    +---------+-------+-----------------------+",
+        "    | ROTATE  | float | -360 to 360 inclusive |",
+        "    | MOVE    | float | Positive              |",
+        "    | DRAW    | float | Positive              |",
+        "    | FG      | int   | 0 to 15 inclusive     |",
+        "    | BG      | int   | 0 to 7 inclusive      |",
+        "    | PATTERN | char  | Any character         |",
+        "    +---------+-------+-----------------------+",
+        "",
+        "Exit values:",
+        "",
+        "    0 - No errors",
+        "    1 - Invalid arguments",
+        "    2 - Invalid file",
+        "    3 - Invalid command in file",
+        ""
     };
 
-    printStringArrayUntilEOF("%s", usageMsg);
+    printStringArray("%s\n", usageMsg, 24);
 }
 
 void printVersion(void)
 {
     char* versionMsg[] = {
-        "turtle: A terminal drawing program\n",
-        "Written by Julian Heng (19473701)\n",
-        "\n",
+        "turtle: A terminal drawing program",
+        "Written by Julian Heng (19473701)",
+        "",
         "Compile by    :",
         "Compile time  :",
         "Last Modified :"
@@ -429,7 +454,7 @@ void printVersion(void)
     #define MOD_DATE "unknown"
     #endif
 
-    printStringArray("%s", versionMsg, 3);
+    printStringArray("%s\n", versionMsg, 3);
     fprintf(stdout, "%s %s@%s\n", versionMsg[3], USER, HOST);
     fprintf(stdout, "%s %s\n", versionMsg[4], COMPILE_DATE);
     fprintf(stdout, "%s %s\n", versionMsg[5], MOD_DATE);
