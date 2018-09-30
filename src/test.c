@@ -68,7 +68,12 @@ void testTools(int* status)
     /* 31 */ "Testing removeTrailingNewline() with a newline string",
     /* 32 */ "Testing removeTrailingNewline() without a newline string",
     /* 33 */ "Testing countWhiteSpace() with empty string",
-    /* 34 */ "Testing countWhiteSpace() with 12 whitespace"
+    /* 34 */ "Testing countWhiteSpace() with 12 whitespace",
+    /* 35 */ "Testing trim() with leading whitespace",
+    /* 36 */ "Testing trim() with trailing whitespace",
+    /* 37 */ "Testing trim() with all whitespace",
+    /* 38 */ "Testing trim() with a normal string",
+    /* 39 */ "Testing trim() with a large gap"
     };
 
     str = NULL;
@@ -369,6 +374,56 @@ void testTools(int* status)
         *status = printResult(
             countWhiteSpace("            ") == 12
         );
+        free(str);
+        str = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[35]);
+        initStringWithContents(&str, "    leading whitespace");
+        trim(&str);
+        *status = printResult(strcmp(str, "leading whitespace") == 0);
+        free(str);
+        str = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[36]);
+        initStringWithContents(&str, "trailing whitespace    ");
+        trim(&str);
+        *status = printResult(strcmp(str, "trailing whitespace") == 0);
+        free(str);
+        str = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[37]);
+        initStringWithContents(&str, "        ");
+        trim(&str);
+        *status = printResult(strcmp(str, "") == 0);
+        free(str);
+        str = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[38]);
+        initStringWithContents(&str, "a normal string");
+        trim(&str);
+        *status = printResult(strcmp(str, "a normal string") == 0);
+        free(str);
+        str = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[39]);
+        initStringWithContents(&str, "a        b");
+        trim(&str);
+        *status = printResult(strcmp(str, "a        b") == 0);
         free(str);
         str = NULL;
     }
@@ -716,9 +771,9 @@ int printResult(int testCondition)
     char* red;
     char* reset;
 
-    green = "\033[22;32m";
-    red = "\033[22;31m";
-    reset = "\033[22;0m";
+    green = "\033[32m";
+    red = "\033[31m";
+    reset = "\033[0m";
 
     if (testCondition)
     {
