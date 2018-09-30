@@ -222,6 +222,9 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
 
                 if (funcCommand)
                 {
+#ifdef DEBUG
+                    fprintf(stderr, "%s\n", logLine);
+#endif
                     printToFile(logFile, "%s\n", logLine, LOG_ERR);
                     line(
                         (int)x1, (int)y1, (int)x2 - 1, (int)y2,

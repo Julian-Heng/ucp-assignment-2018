@@ -43,6 +43,7 @@ debug: makedirs info
 	$(CC) $(DCFLAGS) -c fileIO.c -o ./objects/fileIO.o
 	$(CC) $(DCFLAGS) -c effects.c -o ./objects/effects.o
 	$(CC) $(DCFLAGS) -c turtle.c -o ./objects/turtle.o \
+					 -DDEBUG=1 \
 					 -DCOMPILE_DATE="\"$(DATE)\"" \
 					 -DMOD_DATE="\"$(MOD_DATE)\"" \
 					 -DUSER="\"$(USER)\"" \
