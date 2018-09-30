@@ -10,6 +10,7 @@
 #define DOUBLE_BOUND(a, low, up) \
     ((DOUBLE_CHECK((a), (low))) && (DOUBLE_CHECK((up), (a))))
 
+#define TOLERANCE 0.0000001
 #define PI 3.14159265358979323846
 #define DEG_TO_RAD(i) ((i) * (PI / 180.0))
 #define UPPER(i) if (islower(i)) { i -= 32; }
@@ -29,6 +30,5 @@ void removeTrailingNewline(char* str, int len);
 int countWhiteSpace(char* str);
 void trim(char** str);
 void printStringArray(char* format, char** strArr, int len);
-void printStringArrayUntilEOF(char* format, char** strArr);
 
 #endif

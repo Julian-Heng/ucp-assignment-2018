@@ -9,8 +9,6 @@
 #define FALSE 0
 #define TRUE !FALSE
 
-#define TOLERANCE 0.000001
-
 /**
  *  Mallocing functions
  **/
@@ -25,7 +23,7 @@ void initStringWithContents(char** str, char* contents)
 {
     int strLen;
 
-    strLen = strlen(contents) + sizeof('\0');
+    strLen = strlen(contents) + 1;
     initString(str, strLen);
     strncpy(*str, contents, strLen);
 }
@@ -37,7 +35,7 @@ void initStringArray(char*** arr, int rows, int cols)
     *arr = (char**)malloc(rows * sizeof(char*));
     for (i = 0; i < rows; i++)
     {
-        initString(((*arr) + i), cols);
+        initString((*arr) + i, cols);
     }
 }
 
@@ -119,7 +117,7 @@ int doubleCompare(double num1, double num2)
 
     isEqual = FALSE;
 
-    if (fabs(num1 - num2) < 0.0000001)
+    if (fabs(num1 - num2) < TOLERANCE)
     {
         isEqual = TRUE;
     }
@@ -163,36 +161,35 @@ void removeTrailingNewline(char* str, int len)
     int removed, i;
 
     removed = FALSE;
-    i = 0;
+    i = len;
 
-    while (! removed && i < len)
+    while (! removed && --i >= 0)
     {
         if (str[i] == '\n')
         {
             str[i] = '\0';
             removed = TRUE;
         }
-        i++;
     }
 }
 
 int countWhiteSpace(char* str)
 {
-    int spaceCount, i;
+    int count, i;
 
-    spaceCount = 0;
+    count = 0;
     i = 0;
 
     while (str[i] != '\0')
     {
         if (isspace(str[i]))
         {
-            spaceCount++;
+            count++;
         }
         i++;
     }
 
-    return spaceCount;
+    return count;
 }
 
 void trim(char** str)
@@ -212,7 +209,7 @@ void trim(char** str)
         start++;
     }
 
-    if (start == len - 1)
+    if (start == (len - 1))
     {
         freePtr((void**)str);
         initStringWithContents(str, "");
@@ -240,22 +237,8 @@ void printStringArray(char* format, char** strArr, int len)
 {
     int i;
 
-    i = 0;
-
     for (i = 0; i < len; i++)
     {
         fprintf(stdout, format, strArr[i]);
-    }
-}
-
-void printStringArrayUntilEOF(char* format, char** strArr)
-{
-    int i;
-
-    i = 0;
-
-    while (! stringCompare(strArr[i], "EOF"))
-    {
-        fprintf(stdout, format, strArr[i++]);
     }
 }
