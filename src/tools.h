@@ -27,6 +27,7 @@ int doubleCompare(double num1, double num2);
 int doubleBoundaryCheck(double i, double lower, double upper);
 void removeTrailingNewline(char* str, int len);
 int countWhiteSpace(char* str);
+void trim(char** str);
 void printStringArray(char* format, char** strArr, int len);
 void printStringArrayUntilEOF(char* format, char** strArr);
 

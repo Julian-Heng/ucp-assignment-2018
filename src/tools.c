@@ -195,6 +195,47 @@ int countWhiteSpace(char* str)
     return spaceCount;
 }
 
+void trim(char** str)
+{
+    int start, end, len, newLen, i;
+    char* tempStr;
+
+    start = 0;
+    end = 0;
+    len = strlen(*str) + 1;
+    newLen = 0;
+    i = 0;
+    tempStr = NULL;
+
+    while (isspace((*str)[i]) && ++i < len)
+    {
+        start++;
+    }
+
+    if (start == len - 1)
+    {
+        freePtr((void**)str);
+        initStringWithContents(str, "");
+    }
+    else
+    {
+        i = len - 2;
+
+        while (isspace((*str)[i]) && --i >= 0)
+        {
+            end++;
+        }
+
+        newLen = len - (start + end);
+        initString(&tempStr, newLen);
+        strncpy(tempStr, &((*str)[start]), newLen - 1);
+
+        freePtr((void**)str);
+        initStringWithContents(str, tempStr);
+        freePtr((void**)&tempStr);
+    }
+}
+
 void printStringArray(char* format, char** strArr, int len)
 {
     int i;
