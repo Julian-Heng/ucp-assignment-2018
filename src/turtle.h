@@ -2,7 +2,7 @@
 #define TURTLE_H
 
 int checkArgs(int argc, char** argv);
-int processArgs(int argc, char** argv, char** filename, int* returnCode);
+int processArgs(char* arg, char** filename, int* returnCode);
 void processCommands(char** commandArr, int numCommands, int* returnCode);
 void calcNewPosition(
     double* x1,

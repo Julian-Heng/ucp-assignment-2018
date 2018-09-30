@@ -33,7 +33,7 @@ int main(int argc, char** argv)
 
     if (checkArgs(argc, argv))
     {
-        if (processArgs(argc, argv, &filename, &returnCode))
+        if (processArgs(argv[1], &filename, &returnCode))
         {
             if (readFileToArray(filename, &fileContents, &rows, &cols))
             {
@@ -71,22 +71,22 @@ int checkArgs(int argc, char** argv)
     return isValid;
 }
 
-int processArgs(int argc, char** argv, char** filename, int* returnCode)
+int processArgs(char* arg, char** filename, int* returnCode)
 {
-    if (stringCompare(argv[1], "-h") ||
-        stringCompare(argv[1], "--help"))
+    if (stringCompare(arg, "-h") ||
+        stringCompare(arg, "--help"))
     {
         printUsage();
         *returnCode = RETURN_OK;
     }
-    else if (stringCompare(argv[1], "--version"))
+    else if (stringCompare(arg, "--version"))
     {
         printVersion();
         *returnCode = RETURN_OK;
     }
     else
     {
-        initStringWithContents(filename, argv[1]);
+        initStringWithContents(filename, arg);
         *returnCode = TRUE;
     }
 
@@ -150,60 +150,58 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
             funcCommand = NULL;
             plotData = NULL;
 
-            sscanf(commandArr[i], "%s", tempStr);
-
-            if (stringCompare(tempStr, "ROTATE"))
+            if (sscanf(commandArr[i], "%s", tempStr) == 1)
             {
-                sscanf(commandArr[i], "%s %lf", tempStr, &tempDouble);
-                angle += tempDouble;
-            }
-            else if (stringCompare(tempStr, "MOVE"))
-            {
-                sscanf(commandArr[i], "%s %lf", tempStr, &tempDouble);
-
-                calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
-
-                funcCommand = &doNothing;
-                plotData = NULL;
-            }
-            else if (stringCompare(tempStr, "DRAW"))
-            {
-                sscanf(commandArr[i], "%s %lf", tempStr, &tempDouble);
-
-                calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
-
-                funcCommand = &putChar;
-                plotData = &pat;
-            }
-#ifndef SIMPLE
-            else if (stringCompare(tempStr, "FG"))
-            {
-                sscanf(commandArr[i], "%s %d", tempStr, &tempInt);
-                fg = tempInt;
-                setFgColour(fg);
-            }
-            else if (stringCompare(tempStr, "BG"))
-            {
-                sscanf(commandArr[i], "%s %d", tempStr, &tempInt);
-                bg = tempInt;
-                setBgColour(bg);
-            }
+                if (stringCompare(tempStr, "ROTATE"))
+                {
+                    sscanf(commandArr[i], "%s %lf", tempStr, &tempDouble);
+                    angle += tempDouble;
+                }
+                else if (stringCompare(tempStr, "MOVE"))
+                {
+                    sscanf(commandArr[i], "%s %lf", tempStr, &tempDouble);
+                    calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
+                    funcCommand = &doNothing;
+                    plotData = NULL;
+                }
+                else if (stringCompare(tempStr, "DRAW"))
+                {
+                    sscanf(commandArr[i], "%s %lf", tempStr, &tempDouble);
+                    calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
+                    funcCommand = &putChar;
+                    plotData = &pat;
+                }
+#ifndef SIMPSIMPLE
+                else if (stringCompare(tempStr, "FG"))
+                {
+                    sscanf(commandArr[i], "%s %d", tempStr, &tempInt);
+                    fg = tempInt;
+                    setFgColour(fg);
+                }
+                else if (stringCompare(tempStr, "BG"))
+                {
+                    sscanf(commandArr[i], "%s %d", tempStr, &tempInt);
+                    bg = tempInt;
+                    setBgColour(bg);
+                }
 #endif
-            else if (stringCompare(tempStr, "PATTERN"))
-            {
-                sscanf(commandArr[i], "%s %c", tempStr, &tempChar);
-                pat = tempChar;
-            }
+                else if (stringCompare(tempStr, "PATTERN"))
+                {
+                    sscanf(commandArr[i], "%s %c", tempStr, &tempChar);
+                    pat = tempChar;
+                }
 
-            if (funcCommand)
-            {
-                line(
-                    (int)x1, (int)y1, (int)x2 - 1, (int)y2,
-                    funcCommand, plotData
-                );
+                if (funcCommand)
+                {
+                    line(
+                        (int)x1, (int)y1, (int)x2 - 1, (int)y2,
+                        funcCommand, plotData
+                    );
+                }
             }
         }
 
+        fprintf(stdout, "%s", "\033[0m");
         penDown();
         *returnCode = RETURN_OK;
     }
@@ -281,9 +279,8 @@ int prepareCommands(
 {
     int commandValid, tempStrLen, i;
 
-    double angle;
-    double length;
-    int color;
+    double real;
+    int integer;
     char pat;
 
     char tempStr[8];
@@ -297,12 +294,12 @@ int prepareCommands(
     do
     {
         commandValid = FALSE;
-        angle = 0.0;
-        length = 0.0;
-        color = 0;
+        real = 0.0;
+        integer = 0;
         pat = '\0';
 
         initStringWithContents(&origStr, commandArr[i]);
+        trim(&(commandArr[i]));
 
         if (countWhiteSpace(commandArr[i]) == 1)
         {
@@ -325,28 +322,28 @@ int prepareCommands(
             upperRange(commandArr[i], tempStrLen);
             strncpy(tempStr, commandArr[i], tempStrLen);
 
-            if ((stringCompare(tempStr, "ROTATE")) &&
-                sscanf(commandArr[i], "%s %lf", tempStr, &angle) == 2 &&
-                doubleBoundaryCheck(angle, -360.0, 360.0))
+            if (stringCompare(tempStr, "ROTATE") &&
+                sscanf(commandArr[i], "%s %lf", tempStr, &real) == 2 &&
+                doubleBoundaryCheck(real, -360.0, 360.0))
             {
                 commandValid = TRUE;
             }
             else if ((stringCompare(tempStr, "MOVE") ||
-                     (stringCompare(tempStr, "DRAW"))) &&
-                     sscanf(commandArr[i], "%s %lf", tempStr, &length) == 2 &&
-                     doubleBoundaryCheck(length, 0.0, -1.0))
+                      stringCompare(tempStr, "DRAW")) &&
+                      sscanf(commandArr[i], "%s %lf", tempStr, &real) == 2 &&
+                      doubleBoundaryCheck(real, 0.0, -1.0))
             {
                 commandValid = TRUE;
             }
             else if (stringCompare(tempStr, "FG") &&
-                     sscanf(commandArr[i], "%s %d", tempStr, &color) == 2 &&
-                     integerBoundaryCheck(color, 0, 15))
+                     sscanf(commandArr[i], "%s %d", tempStr, &integer) == 2 &&
+                     integerBoundaryCheck(integer, 0, 15))
             {
                 commandValid = TRUE;
             }
             else if (stringCompare(tempStr, "BG") &&
-                     sscanf(commandArr[i], "%s %d", tempStr, &color) == 2 &&
-                     integerBoundaryCheck(color, 0, 7))
+                     sscanf(commandArr[i], "%s %d", tempStr, &integer) == 2 &&
+                     integerBoundaryCheck(integer, 0, 7))
             {
                 commandValid = TRUE;
             }
@@ -361,6 +358,10 @@ int prepareCommands(
                 freePtr((void**)&commandArr[i]);
                 initStringWithContents(&commandArr[i], origStr);
             }
+        }
+        else if (stringCompare(commandArr[i], ""))
+        {
+            commandValid = TRUE;
         }
         else
         {
