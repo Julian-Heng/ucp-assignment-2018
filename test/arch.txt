@@ -1,4 +1,4 @@
-FG 6
+FG 14
 
 
 move 19
@@ -1240,7 +1240,7 @@ move 1
 rotate -90
 
 
-FG 7
+FG 15
 
 
 move 2
