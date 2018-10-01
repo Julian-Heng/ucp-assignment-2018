@@ -173,20 +173,44 @@ void removeTrailingNewline(char* str, int len)
     }
 }
 
-int countWhiteSpace(char* str)
+int countWords(char* str)
 {
-    int count, i;
+    int len, count, spaceCount, i;
 
+    len = strlen(str);
     count = 0;
+    spaceCount = 0;
     i = 0;
 
-    while (str[i] != '\0')
+    if (len != 0)
     {
-        if (isspace(str[i]))
+        while (str[i] != '\0' && i < len)
         {
+            if (isspace(str[i]))
+            {
+                spaceCount++;
+            }
+            i++;
+        }
+
+        if (spaceCount != len)
+        {
+            i = 0;
+            while (str[i] != '\0' && i < len)
+            {
+                if (isspace(str[i]))
+                {
+                    count++;
+                    while (isspace(str[i]) && i++ < len);
+                }
+                i++;
+            }
             count++;
         }
-        i++;
+        else
+        {
+            count = 0;
+        }
     }
 
     return count;

@@ -69,13 +69,14 @@ void testTools(int* status)
     /* 30 */ "Testing doubleBoundaryCheck() [just out of upper bounds]",
     /* 31 */ "Testing removeTrailingNewline() with a newline string",
     /* 32 */ "Testing removeTrailingNewline() without a newline string",
-    /* 33 */ "Testing countWhiteSpace() with empty string",
-    /* 34 */ "Testing countWhiteSpace() with 12 whitespace",
-    /* 35 */ "Testing trim() with leading whitespace",
-    /* 36 */ "Testing trim() with trailing whitespace",
-    /* 37 */ "Testing trim() with all whitespace",
-    /* 38 */ "Testing trim() with a normal string",
-    /* 39 */ "Testing trim() with a large gap"
+    /* 33 */ "Testing countWords() with empty string",
+    /* 34 */ "Testing countWords() with 2 words",
+    /* 35 */ "Testing countWords() with whitespace",
+    /* 36 */ "Testing trim() with leading whitespace",
+    /* 37 */ "Testing trim() with trailing whitespace",
+    /* 38 */ "Testing trim() with all whitespace",
+    /* 39 */ "Testing trim() with a normal string",
+    /* 40 */ "Testing trim() with a large gap"
     };
 
     str = NULL;
@@ -365,7 +366,7 @@ void testTools(int* status)
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[33]);
-        *status = printResult(countWhiteSpace("") == 0);
+        *status = printResult(countWords("") == 0);
         free(str);
         str = NULL;
     }
@@ -374,7 +375,7 @@ void testTools(int* status)
     {
         fprintf(stdout, "%s: ", testMsg[34]);
         *status = printResult(
-            countWhiteSpace("            ") == 12
+            countWords("two words") == 2
         );
         free(str);
         str = NULL;
@@ -383,6 +384,16 @@ void testTools(int* status)
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[35]);
+        *status = printResult(
+            countWords("      ") == 0
+        );
+        free(str);
+        str = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[36]);
         initStringWithContents(&str, "    leading whitespace");
         trim(&str);
         *status = printResult(strcmp(str, "leading whitespace") == 0);
@@ -392,7 +403,7 @@ void testTools(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[36]);
+        fprintf(stdout, "%s: ", testMsg[37]);
         initStringWithContents(&str, "trailing whitespace    ");
         trim(&str);
         *status = printResult(strcmp(str, "trailing whitespace") == 0);
@@ -402,7 +413,7 @@ void testTools(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[37]);
+        fprintf(stdout, "%s: ", testMsg[38]);
         initStringWithContents(&str, "        ");
         trim(&str);
         *status = printResult(strcmp(str, "") == 0);
@@ -412,7 +423,7 @@ void testTools(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[38]);
+        fprintf(stdout, "%s: ", testMsg[39]);
         initStringWithContents(&str, "a normal string");
         trim(&str);
         *status = printResult(strcmp(str, "a normal string") == 0);
@@ -422,7 +433,7 @@ void testTools(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[39]);
+        fprintf(stdout, "%s: ", testMsg[40]);
         initStringWithContents(&str, "a        b");
         trim(&str);
         *status = printResult(strcmp(str, "a        b") == 0);
