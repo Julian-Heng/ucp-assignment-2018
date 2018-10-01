@@ -7,6 +7,7 @@ USER = $(shell whoami)
 HOST = $(shell hostname)
 
 OBJ = ./objects/tools.o \
+	  ./objects/linkedList.o \
 	  ./objects/fileIO.o \
 	  ./objects/effects.o
 PROG = ./build/turtle
@@ -14,6 +15,7 @@ PROG = ./build/turtle
 all: makedirs info
 	@echo -----[TurtleGraphics]-----
 	$(CC) $(CFLAGS) -c tools.c -o ./objects/tools.o
+	$(CC) $(CFLAGS) -c linkedList.c -o ./objects/linkedList.o
 	$(CC) $(CFLAGS) -c fileIO.c -o ./objects/fileIO.o
 	$(CC) $(CFLAGS) -c effects.c -o ./objects/effects.o
 	$(CC) $(CFLAGS) -c turtle.c -o ./objects/turtle.o \
@@ -26,6 +28,7 @@ all: makedirs info
 simple: makedirs info
 	@echo -----[TurtleGraphics Simple]-----
 	$(CC) $(CFLAGS) -c tools.c -o ./objects/tools.o
+	$(CC) $(CFLAGS) -c linkedList.c -o ./objects/linkedList.o
 	$(CC) $(CFLAGS) -c fileIO.c -o ./objects/fileIO.o
 	$(CC) $(CFLAGS) -c effects.c -o ./objects/effects.o
 	$(CC) $(CFLAGS) -c turtle.c -o ./objects/turtle.o \
@@ -40,6 +43,7 @@ simple: makedirs info
 debug: makedirs info
 	@echo -----[Debug]-----
 	$(CC) $(DCFLAGS) -c tools.c -o ./objects/tools.o
+	$(CC) $(DCFLAGS) -c linkedList.c -o ./objects/linkedList.o
 	$(CC) $(DCFLAGS) -c fileIO.c -o ./objects/fileIO.o
 	$(CC) $(DCFLAGS) -c effects.c -o ./objects/effects.o
 	$(CC) $(DCFLAGS) -c turtle.c -o ./objects/turtle.o \
