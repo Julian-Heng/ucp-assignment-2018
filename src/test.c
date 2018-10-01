@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "tools.h"
+#include "linkedList.h"
 #include "fileIO.h"
 #include "test.h"
 
@@ -15,6 +16,7 @@ int main(void)
     header("MAKE SURE THIS IS RUN WITH MAKE");
     testTools(&status);
     testFileIO(&status);
+    testLinkedList(&status);
 
     if (status)
     {
@@ -56,8 +58,8 @@ void testTools(int* status)
     /* 19 */ "Testing doubleCompare() with 1.0 and 1.0",
     /* 20 */ "Testing doubleCompare() with 1.0 and 1.1",
     /* 21 */ "Testing doubleCompare() with 1.1 and 1.0",
-    /* 22 */ "Testing doubleCompare() with 1.100010 and 1.100010",
-    /* 23 */ "Testing doubleCompare() with 1.100010 and 1.100011",
+    /* 22 */ "Testing doubleCompare() with 1.1000010 and 1.1000010",
+    /* 23 */ "Testing doubleCompare() with 1.1000010 and 1.1000011",
     /* 24 */ "Testing doubleBoundaryCheck() [in bounds]",
     /* 25 */ "Testing doubleBoundaryCheck() [out of lower bounds]",
     /* 26 */ "Testing doubleBoundaryCheck() [out of upper bounds]",
@@ -287,13 +289,13 @@ void testTools(int* status)
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[22]);
-        *status = printResult(doubleCompare(1.100010, 1.100010));
+        *status = printResult(doubleCompare(1.1000010, 1.1000010));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[23]);
-        *status = printResult(! doubleCompare(1.100010, 1.100011));
+        *status = printResult(! doubleCompare(1.1000010, 1.1000011));
     }
 
     if (*status)
@@ -788,6 +790,642 @@ void testFileIO(int* status)
     }
 
     header("Finish testing fileIO.c");
+}
+
+void testLinkedList(int* status)
+{
+    LinkedList* list;
+    LinkedListNode* listNode;
+
+    void* voidPtr;
+    char* str;
+    int i;
+
+    char* testMsg[] = {
+    /*  0 */ "Testing initNode() without value",
+    /*  1 */ "Testing initNode() with value",
+    /*  2 */ "Testing initList() with no nodes",
+    /*  3 */ "Testing insertFirst() without value",
+    /*  4 */ "Testing insertFirst() with 5 strings",
+    /*  5 */ "Testing insertFirst() with 10000 malloced strings",
+    /*  6 */ "Testing insertLast() without value",
+    /*  7 */ "Testing insertLast() with 5 strings",
+    /*  8 */ "Testing insertFirst() with 10000 malloced strings",
+    /*  9 */ "Testing removeFirst() on an empty list",
+    /* 10 */ "Testing removeFirst() on a single node list",
+    /* 11 */ "Testing removeFirst() on 10000 malloced string list",
+    /* 12 */ "Testing removeLast() on an empty list",
+    /* 13 */ "Testing removeLast() on a single node list",
+    /* 14 */ "Testing removeLast() on 10000 malloced string list",
+    /* 15 */ "Testing peekFirst() on an empty list",
+    /* 16 */ "Testing peekFirst() on a single node list",
+    /* 17 */ "Testing peekFirst() on 10000 malloced string list",
+    /* 18 */ "Testing peekLast() on an empty list",
+    /* 19 */ "Testing peekLast() on a single node list",
+    /* 20 */ "Testing peekLast() on 10000 malloced string list",
+    /* 21 */ "Testing clearListStack() on an empty list",
+    /* 22 */ "Testing clearListStack() on a single node list",
+    /* 23 */ "Testing clearListStack() on 10 stack strings",
+    /* 24 */ "Testing clearListMalloc() on an empty list",
+    /* 25 */ "Testing clearListMalloc() on a single node list",
+    /* 26 */ "Testing clearListMalloc() on 10000 malloced string list"
+    };
+
+    voidPtr = NULL;
+    str = NULL;
+    list = NULL;
+    listNode = NULL;
+    i = 0;
+
+    header("Testing functions in linkedList.c");
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[0]);
+        listNode = initNode(NULL);
+        *status = printResult(!! listNode);
+        free(listNode);
+        listNode = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[1]);
+        listNode = initNode(testMsg[1]);
+        *status = printResult(
+            !! listNode &&
+            strcmp(listNode -> value, testMsg[1]) == 0
+        );
+        free(listNode);
+        listNode = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[2]);
+        list = initList();
+        *status = printResult(!! list);
+        free(list -> head);
+        list -> head = NULL;
+        free(list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[3]);
+        list = initList();
+        insertFirst(list, testMsg[3]);
+        *status = printResult(
+            !! list &&
+            strcmp(list -> head -> value, testMsg[3]) == 0
+        );
+        free(list -> head);
+        list -> head = NULL;
+        free(list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[4]);
+        list = initList();
+
+        for (i = 0; i < 5; i++)
+        {
+            insertFirst(list, testMsg[i]);
+        }
+
+        i = 0;
+
+        listNode = list -> head;
+
+        while (listNode != NULL && i < 5 && *status)
+        {
+            if (strcmp(listNode -> value, testMsg[4 - i]) == 0)
+            {
+                *status = 1;
+                listNode = listNode -> next;
+            }
+            else
+            {
+                *status = 0;
+            }
+            i++;
+        }
+
+        *status = printResult(*status);
+
+        while (list -> head != NULL)
+        {
+            listNode = list -> head;
+            list -> head = list -> head -> next;
+            free(listNode);
+        }
+
+        free(list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[5]);
+        list = initList();
+
+        for (i = 0; i < 10000; i++)
+        {
+            initStringWithContents(&str, "abcdefghijklmnopqrstuvwxyz");
+            insertFirst(list, str);
+        }
+
+        i = 0;
+
+        listNode = list -> head;
+
+        while (listNode != NULL && *status)
+        {
+            if (strcmp(listNode -> value, "abcdefghijklmnopqrstuvwxyz") == 0)
+            {
+                *status = 1;
+                listNode = listNode -> next;
+            }
+            else
+            {
+                *status = 0;
+            }
+            i++;
+        }
+
+        *status = printResult(i == 10000);
+
+        while (list -> head != NULL)
+        {
+            listNode = list -> head;
+            list -> head = list -> head -> next;
+            free(listNode -> value);
+            listNode -> value = NULL;
+            free(listNode);
+            listNode = NULL;
+        }
+
+        free(list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[6]);
+        list = initList();
+        insertLast(list, testMsg[6]);
+        *status = printResult(
+            !! list &&
+            strcmp(list -> head -> value, testMsg[6]) == 0
+        );
+        free(list -> head);
+        list -> head = NULL;
+        free(list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[7]);
+        list = initList();
+
+        for (i = 0; i < 5; i++)
+        {
+            insertLast(list, testMsg[i]);
+        }
+
+        i = 0;
+
+        listNode = list -> head;
+
+        while (listNode != NULL && i < 5 && *status)
+        {
+            if (strcmp(listNode -> value, testMsg[i]) == 0)
+            {
+                *status = 1;
+                listNode = listNode -> next;
+            }
+            else
+            {
+                *status = 0;
+            }
+            i++;
+        }
+
+        *status = printResult(*status);
+
+        while (list -> head != NULL)
+        {
+            listNode = list -> head;
+            list -> head = list -> head -> next;
+            free(listNode);
+            listNode = NULL;
+        }
+
+        free(list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[8]);
+        list = initList();
+
+        for (i = 0; i < 10000; i++)
+        {
+            initStringWithContents(&str, "abcdefghijklmnopqrstuvwxyz");
+            insertLast(list, str);
+        }
+
+        i = 0;
+
+        listNode = list -> head;
+
+        while (listNode != NULL && *status)
+        {
+            if (strcmp(listNode -> value, "abcdefghijklmnopqrstuvwxyz") == 0)
+            {
+                *status = 1;
+                listNode = listNode -> next;
+            }
+            else
+            {
+                *status = 0;
+            }
+            i++;
+        }
+
+        *status = printResult(i == 10000);
+
+        while (list -> head != NULL)
+        {
+            listNode = list -> head;
+            list -> head = list -> head -> next;
+            free(listNode -> value);
+            listNode -> value = NULL;
+            free(listNode);
+            listNode = NULL;
+        }
+
+        free(list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[9]);
+        list = initList();
+        listNode = removeFirst(list);
+
+        *status = printResult(! listNode);
+
+        free(list);
+        list = NULL;
+        listNode = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[10]);
+        list = initList();
+        insertFirst(list, testMsg[10]);
+        listNode = removeFirst(list);
+        *status = printResult(
+            !! listNode &&
+            strcmp(listNode -> value, testMsg[10]) == 0 &&
+            isEmpty(list)
+        );
+
+        free(listNode);
+        listNode = NULL;
+        free(list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[11]);
+        list = initList();
+
+        initStringWithContents(&str, "This is the first string");
+        insertFirst(list, str);
+
+        for (i = 1; i < 10000; i++)
+        {
+            initStringWithContents(&str, "abcdefghijklmnopqrstuvwxyz");
+            insertLast(list, str);
+        }
+
+        listNode = removeFirst(list);
+
+        *status = printResult(
+            listNode != NULL &&
+            strcmp(listNode -> value, "This is the first string") == 0
+        );
+
+        while (list -> head != NULL)
+        {
+            listNode = list -> head;
+            list -> head = list -> head -> next;
+            free(listNode -> value);
+            listNode -> value = NULL;
+            free(listNode);
+            listNode = NULL;
+        }
+
+        free(list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[12]);
+        list = initList();
+        listNode = removeLast(list);
+
+        *status = printResult(! listNode);
+
+        free(list);
+        list = NULL;
+        listNode = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[13]);
+        list = initList();
+        insertFirst(list, testMsg[13]);
+        listNode = removeLast(list);
+        *status = printResult(
+            !! listNode &&
+            strcmp(listNode -> value, testMsg[13]) == 0 &&
+            isEmpty(list)
+        );
+
+        free(listNode);
+        listNode = NULL;
+        free(list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[14]);
+        list = initList();
+
+        initStringWithContents(&str, "This is the last string");
+        insertLast(list, str);
+
+        for (i = 1; i < 10000; i++)
+        {
+            initStringWithContents(&str, "abcdefghijklmnopqrstuvwxyz");
+            insertFirst(list, str);
+        }
+
+        listNode = removeLast(list);
+
+        *status = printResult(
+            !! listNode &&
+            strcmp(listNode -> value, "This is the last string") == 0
+        );
+
+        while (list -> head != NULL)
+        {
+            listNode = list -> head;
+            list -> head = list -> head -> next;
+            free(listNode -> value);
+            listNode -> value = NULL;
+            free(listNode);
+            listNode = NULL;
+        }
+
+        free(list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[15]);
+        list = initList();
+        voidPtr = peekFirst(list);
+
+        *status = printResult(! voidPtr);
+
+        free(list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[16]);
+        list = initList();
+        insertFirst(list, testMsg[16]);
+        voidPtr = peekFirst(list);
+        *status = printResult(
+            !! voidPtr &&
+            strcmp(voidPtr, testMsg[16]) == 0
+        );
+
+        voidPtr = NULL;
+        free(list -> head);
+        list -> head = NULL;
+        free(list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[17]);
+        list = initList();
+
+        initStringWithContents(&str, "This is the first string");
+        insertFirst(list, str);
+
+        for (i = 1; i < 10000; i++)
+        {
+            initStringWithContents(&str, "abcdefghijklmnopqrstuvwxyz");
+            insertLast(list, str);
+        }
+
+        voidPtr = peekFirst(list);
+
+        *status = printResult(
+            !! voidPtr &&
+            strcmp(voidPtr, "This is the first string") == 0
+        );
+
+        while (list -> head != NULL)
+        {
+            listNode = list -> head;
+            list -> head = list -> head -> next;
+            free(listNode -> value);
+            listNode -> value = NULL;
+            free(listNode);
+            listNode = NULL;
+        }
+
+        voidPtr = NULL;
+        free(list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[18]);
+        list = initList();
+        voidPtr = removeLast(list);
+
+        *status = printResult(! voidPtr);
+
+        free(list);
+        list = NULL;
+        voidPtr = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[19]);
+        list = initList();
+        insertFirst(list, testMsg[19]);
+        voidPtr = peekLast(list);
+        *status = printResult(
+            !! voidPtr &&
+            strcmp(voidPtr, testMsg[19]) == 0
+        );
+
+        free(list -> head);
+        listNode = NULL;
+        free(list);
+        list = NULL;
+        voidPtr = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[20]);
+        list = initList();
+
+        initStringWithContents(&str, "This is the last string");
+        insertLast(list, str);
+
+        for (i = 1; i < 10000; i++)
+        {
+            initStringWithContents(&str, "abcdefghijklmnopqrstuvwxyz");
+            insertFirst(list, str);
+        }
+
+        voidPtr = peekLast(list);
+
+        *status = printResult(
+            !! voidPtr &&
+            strcmp(voidPtr, "This is the last string") == 0
+        );
+
+        while (list -> head != NULL)
+        {
+            listNode = list -> head;
+            list -> head = list -> head -> next;
+            free(listNode -> value);
+            listNode -> value = NULL;
+            free(listNode);
+            listNode = NULL;
+        }
+
+        free(list);
+        list = NULL;
+        voidPtr = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[21]);
+        list = initList();
+
+        clearListStack(&list);
+
+        *status = printResult(! list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[22]);
+        list = initList();
+
+        insertFirst(list, testMsg[22]);
+
+        clearListStack(&list);
+
+        *status = printResult(! list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[23]);
+        list = initList();
+
+        for (i = 0; i < 10; i++)
+        {
+            insertFirst(list, testMsg[i]);
+        }
+
+        clearListStack(&list);
+
+        *status = printResult(! list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[24]);
+        list = initList();
+
+        clearListMalloc(&list);
+
+        *status = printResult(! list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[25]);
+        list = initList();
+
+        initStringWithContents(&str, "a malloc string");
+        insertFirst(list, str);
+
+        clearListMalloc(&list);
+
+        *status = printResult(! list);
+
+        list = NULL;
+        str = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[26]);
+        list = initList();
+
+        for (i = 0; i < 10000; i++)
+        {
+            initStringWithContents(&str, "10000 malloced strings");
+            insertLast(list, str);
+        }
+
+        clearListMalloc(&list);
+
+        *status = printResult(! list);
+
+        list = NULL;
+        str = NULL;
+    }
+
+    header("Finish testing linkedList.c");
 }
 
 int printResult(int testCondition)
