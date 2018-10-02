@@ -1,0 +1,364 @@
+FG  10
+MOVE  20
+PATTERN .
+DRAW 1
+ROTATE 180
+MOVE                                  21        
+ROTATE -90
+MOVE 1
+ROTATE -90
+move 4
+FG 15
+pattERN #
+draw 14
+                                  FG 10
+                    patTERN .
+                    draw 5
+                    move 1
+                    FG 15
+                    patterN #
+         draw 14
+      RotAte 180
+      move 38
+    Rotate -90
+    move 1
+rotate -90
+
+
+
+
+move 4
+FG 15
+pattERN #
+draw 14
+                                  FG 10
+                    patTERN .
+                    draw 6
+                    FG 15
+                    patterN #
+         draw 14
+      RotAte 180
+      move 38
+    Rotate -90
+    move 1
+rotate -90
+
+
+
+
+move 6
+draw 10
+fg 10
+
+pattern .
+draw 10
+fg 15
+pattern #
+draw 10
+
+
+rotate 180
+move 36
+rotate -90
+move 1
+rotate -90
+
+
+
+move 6
+draw 10
+fg 10
+
+pattern .
+draw 8
+fg 15
+pattern #
+draw 10
+
+
+rotate 180
+move 34
+rotate -90
+move 1
+rotate -90
+
+
+
+
+move 6
+draw 10
+fg 10
+pattern .
+draw 7
+
+fg 15
+pattern #
+draw 10
+
+rotate 180
+move 33
+rotate -90
+move 1
+rotate -90
+
+
+
+
+move 6
+draw 10
+
+fg 10
+pattern .
+draw 5
+fg 15
+pattern #
+draw 10
+
+fg 10
+pattern .
+draw 2
+
+rotate 180
+move 33
+
+rotate -90
+move 1
+rotate -90
+
+
+
+
+move 6
+fg 15
+pattern #
+draw 10
+fg 10
+pattern .
+draw 4
+fg 15
+pattern #
+draw 10
+fg 10
+pattern .
+draw 5
+rotate 180
+move 35
+
+rotate -90
+move 1
+rotate -90
+
+move 4
+draw 2
+fg 15
+pattern #
+draw 10
+pattern .
+fg 10
+draw 2
+pattern #
+fg 15
+draw 10
+pattern .
+fg 10
+draw 9
+
+rotate 180
+move 37
+rotate -90
+move 1
+rotate -90
+
+move 2
+draw 4
+pattern #
+fg 15
+draw 10
+pattern .
+fg 10
+draw 1
+pattern #
+fg 15
+draw 10
+pattern .
+fg 10
+draw 12
+
+rotate 180
+move 39
+
+
+rotate -90
+move 1
+rotate -90
+
+
+move 4
+draw 2
+fg 15
+pattern #
+draw 17
+pattern J
+draw 3
+fg 10
+pattern .
+draw 11
+rotate 180
+move 37
+
+rotate -90
+move 1
+rotate -90
+
+move 6
+pattern #
+fg 15
+draw 17
+pattern .
+fg 10
+draw 12
+rotate 180
+move 35
+
+rotate -90
+move 1
+rotate -90
+
+move 6
+pattern #
+fg 15
+draw 15
+fg 10
+pattern .
+draw 1
+fg 15
+pattern J
+draw 3
+pattern .
+fg 10
+draw 1
+pattern J
+fg 15
+draw 10
+
+rotate 180
+move 36
+rotate -90
+move 1
+rotate -90
+
+move 6
+pattern #
+draw 13
+pattern .
+fg 10
+draw 3
+pattern J
+fg 15
+draw 2
+pattern .
+fg 10
+draw 3
+pattern J
+fg 15
+draw 2
+pattern .
+fg 10
+draw 2
+pattern J
+fg 15
+draw 2
+move 2
+draw 2
+rotate 180
+move 37
+rotate -90
+move 1
+rotate -90
+
+move 6
+pattern #
+draw 11
+pattern .
+fg 10
+draw 5
+pattern J
+fg 15
+draw 2
+pattern .
+fg 10
+draw 3
+pattern J
+fg 15
+draw 2
+pattern .
+fg 10
+draw 2
+pattern J
+fg 15
+draw 2
+move 2
+draw 2
+rotate 180
+move 37
+
+rotate -90
+move 1
+rotate -90
+
+move 6
+pattern #
+draw 9
+fg 10
+
+pattern .
+draw 6
+fg 15
+pattern J
+draw 3
+fg 10
+
+pattern .
+draw 2
+fg 15
+pattern J
+draw 3
+move 1
+fg 15
+pattern J
+draw 3
+move 1
+draw 3
+rotate 180
+move 36
+rotate -90
+move 1
+rotate -90
+
+
+
+move 5
+pattern #
+draw 7
+move 4
+pattern .
+fg 10
+draw 9
+rotate 180
+move 20
+
+rotate -90
+move 1
+rotate -90
+
+
+
+move 13
+draw 5
+rotate 180
+move 18
+rotate -90
+move 1
+rotate -90
+move 15
+draw 1
