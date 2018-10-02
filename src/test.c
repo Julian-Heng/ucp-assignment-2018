@@ -1436,7 +1436,7 @@ void testLinkedList(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[2]);
+        fprintf(stdout, "%s: ", testMsg[26]);
         list = initList();
 
         for (i = 0; i < 10; i++)
