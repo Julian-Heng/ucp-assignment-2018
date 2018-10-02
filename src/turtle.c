@@ -226,7 +226,7 @@ void processCommands(
                     funcCommand = &putChar;
                     plotData = &pat;
                 }
-#ifndef SIMPSIMPLE
+#ifndef SIMPLE
                 else if (stringCompare(tempStr, "FG"))
                 {
                     sscanf(commandFromList, "%s %d", tempStr, &tempInt);
