@@ -220,8 +220,11 @@ void clearListMallocRecurse(LinkedListNode** node)
     if (*node)
     {
         clearListMallocRecurse(&((*node) -> next));
-        free((*node) -> value);
-        (*node) -> value = NULL;
+        if ((*node) -> value)
+        {
+            free((*node) -> value);
+            (*node) -> value = NULL;
+        }
         free(*node);
         *node = NULL;
     }
