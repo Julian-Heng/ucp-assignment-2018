@@ -834,12 +834,15 @@ void testLinkedList(int* status)
     /* 18 */ "Testing peekLast() on an empty list",
     /* 19 */ "Testing peekLast() on a single node list",
     /* 20 */ "Testing peekLast() on 10000 malloced string list",
-    /* 21 */ "Testing clearListStack() on an empty list",
-    /* 22 */ "Testing clearListStack() on a single node list",
-    /* 23 */ "Testing clearListStack() on 10 stack strings",
-    /* 24 */ "Testing clearListMalloc() on an empty list",
-    /* 25 */ "Testing clearListMalloc() on a single node list",
-    /* 26 */ "Testing clearListMalloc() on 10000 malloced string list"
+    /* 21 */ "Testing getLength() on an empty list",
+    /* 22 */ "Testing getLength() on a single node list",
+    /* 23 */ "Testing getLength() on 10000 malloced string list",
+    /* 24 */ "Testing clearListStack() on an empty list",
+    /* 25 */ "Testing clearListStack() on a single node list",
+    /* 26 */ "Testing clearListStack() on 10 stack strings",
+    /* 27 */ "Testing clearListMalloc() on an empty list",
+    /* 28 */ "Testing clearListMalloc() on a single node list",
+    /* 29 */ "Testing clearListMalloc() on 10000 malloced string list"
     };
 
     voidPtr = NULL;
@@ -1355,9 +1358,9 @@ void testLinkedList(int* status)
         fprintf(stdout, "%s: ", testMsg[21]);
         list = initList();
 
-        clearListStack(&list);
+        *status = printResult(getListLength(list) == 0);
 
-        *status = printResult(! list);
+        free(list);
         list = NULL;
     }
 
@@ -1365,8 +1368,52 @@ void testLinkedList(int* status)
     {
         fprintf(stdout, "%s: ", testMsg[22]);
         list = initList();
-
         insertFirst(list, testMsg[22]);
+
+        *status = printResult(getListLength(list) == 1);
+
+        free(list -> head);
+        listNode = NULL;
+        free(list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[23]);
+        list = initList();
+
+        initStringWithContents(&str, "This is the last string");
+        insertLast(list, str);
+
+        for (i = 1; i < 10000; i++)
+        {
+            initStringWithContents(&str, "abcdefghijklmnopqrstuvwxyz");
+            insertFirst(list, str);
+        }
+
+
+        *status = printResult(getListLength(list) == 10000);
+
+        while (list -> head != NULL)
+        {
+            listNode = list -> head;
+            list -> head = list -> head -> next;
+            free(listNode -> value);
+            listNode -> value = NULL;
+            free(listNode);
+            listNode = NULL;
+        }
+
+        free(list);
+        list = NULL;
+        voidPtr = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[24]);
+        list = initList();
 
         clearListStack(&list);
 
@@ -1376,7 +1423,20 @@ void testLinkedList(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[23]);
+        fprintf(stdout, "%s: ", testMsg[25]);
+        list = initList();
+
+        insertFirst(list, testMsg[25]);
+
+        clearListStack(&list);
+
+        *status = printResult(! list);
+        list = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[2]);
         list = initList();
 
         for (i = 0; i < 10; i++)
@@ -1392,7 +1452,7 @@ void testLinkedList(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[24]);
+        fprintf(stdout, "%s: ", testMsg[27]);
         list = initList();
 
         clearListMalloc(&list);
@@ -1403,7 +1463,7 @@ void testLinkedList(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[25]);
+        fprintf(stdout, "%s: ", testMsg[28]);
         list = initList();
 
         initStringWithContents(&str, "a malloc string");
@@ -1419,7 +1479,7 @@ void testLinkedList(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[26]);
+        fprintf(stdout, "%s: ", testMsg[29]);
         list = initList();
 
         for (i = 0; i < 10000; i++)
