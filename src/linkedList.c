@@ -149,19 +149,19 @@ void clearListStack(LinkedList** list)
 
     inList = NULL;
 
-    if (! isEmpty(*list))
-    {
-        while ((*list) -> head != NULL)
-        {
-            inList = (*list) -> head;
-            (*list) -> head = (*list) -> head -> next;
-            free(inList);
-            inList = NULL;
-        }
-    }
-
     if (*list)
     {
+        if (! isEmpty(*list))
+        {
+            while ((*list) -> head)
+            {
+                inList = (*list) -> head;
+                (*list) -> head = (*list) -> head -> next;
+                free(inList);
+                inList = NULL;
+            }
+        }
+
         free(*list);
         *list = NULL;
     }
@@ -173,21 +173,21 @@ void clearListMalloc(LinkedList** list)
 
     inList = NULL;
 
-    if (! isEmpty(*list))
-    {
-        while ((*list) -> head)
-        {
-            inList = (*list) -> head;
-            (*list) -> head = (*list) -> head -> next;
-            free(inList -> value);
-            inList -> value = NULL;
-            free(inList);
-            inList = NULL;
-        }
-    }
-
     if (*list)
     {
+        if (! isEmpty(*list))
+        {
+            while ((*list) -> head)
+            {
+                inList = (*list) -> head;
+                (*list) -> head = (*list) -> head -> next;
+                free(inList -> value);
+                inList -> value = NULL;
+                free(inList);
+                inList = NULL;
+            }
+        }
+
         free(*list);
         *list = NULL;
     }
