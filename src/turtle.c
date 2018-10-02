@@ -9,6 +9,26 @@
 #include "effects.h"
 #include "turtle.h"
 
+#ifndef COMPILER_INFO
+#define COMPILER_INFO "unknown"
+#endif
+
+#ifndef USER
+#define USER "unknown"
+#endif
+
+#ifndef HOST
+#define HOST "unknown"
+#endif
+
+#ifndef COMPILE_DATE
+#define COMPILE_DATE "unknown"
+#endif
+
+#ifndef MOD_DATE
+#define MOD_DATE "unknown"
+#endif
+
 #define FALSE 0
 #define TRUE !FALSE
 
@@ -18,6 +38,13 @@
 #define RETURN_INVALID_CMD 3
 
 #define MIN_ARGS 1
+#define MAX_CMD_LENGTH 8
+#define LOG_LENGTH 47
+
+#define LOG_FILENAME "graphics.log"
+#define SPLIT "---"
+#define MOVE_LOG "MOVE (%8.3f, %8.3f)-(%8.3f, %8.3f)"
+#define DRAW_LOG "DRAW (%8.3f, %8.3f)-(%8.3f, %8.3f)"
 #define LOG_ERR "Error writing to log"
 
 int main(int argc, char** argv)
@@ -37,29 +64,23 @@ int main(int argc, char** argv)
     filename = NULL;
     fileContents = NULL;
 
-    if (checkArgs(argc, argv))
-    {
-        if (processArgs(argv[1], &filename, &returnCode))
-        {
-            if (readFileToArray(filename, &fileContents, &rows, &cols))
-            {
-                processCommands(
-                    fileContents,
-                    rows,
-                    &commandList,
-                    &returnCode
-                );
-            }
-            else
-            {
-                returnCode = RETURN_INVALID_FILE;
-            }
-        }
-    }
-    else
+    if (! checkArgs(argc, argv))
     {
         printUsage();
         returnCode = RETURN_INVALID_ARGS;
+    }
+    else if (! processArgs(argv[1], &filename, &returnCode))
+    {
+        fprintf(stderr, "%s\n", "Unable to allocate memory for filename");
+        fprintf(stderr, "%s\n", "Exitting...");
+    }
+    else if (! readFileToArray(filename, &fileContents, &rows, &cols))
+    {
+        returnCode = RETURN_INVALID_FILE;
+    }
+    else
+    {
+        processCommands(fileContents, rows, &commandList, &returnCode);
     }
 
     freeArray((void***)&fileContents, rows);
@@ -99,7 +120,14 @@ int processArgs(char* arg, char** filename, int* returnCode)
     else
     {
         initStringWithContents(filename, arg);
-        *returnCode = TRUE;
+        if (*filename)
+        {
+            *returnCode = TRUE;
+        }
+        else
+        {
+            *returnCode = FALSE;
+        }
     }
 
     return *returnCode;
@@ -120,7 +148,7 @@ void processCommands(
     LinkedListNode* nodeFromList;
     char* commandFromList;
 
-    char tempStr[8];
+    char tempStr[MAX_CMD_LENGTH];
     char* logLine;
 
     double x1, y1, x2, y2;
@@ -145,7 +173,7 @@ void processCommands(
     nodeFromList = NULL;
     commandFromList = NULL;
 
-    memset(tempStr, '\0', 8);
+    memset(tempStr, '\0', MAX_CMD_LENGTH);
     logLine = NULL;
 
     x1 = 0.0;
@@ -165,12 +193,12 @@ void processCommands(
 
     if (*commandList)
     {
-        logFile = fopen("graphics.log", "a");
-        printToFile(logFile, "%s\n", "---", LOG_ERR);
+        logFile = fopen(LOG_FILENAME, "a");
+        printToFile(logFile, "%s\n", SPLIT, LOG_ERR);
         clearScreen();
 
         nodeFromList = (*commandList) -> head;
-        while (nodeFromList != NULL)
+        while (nodeFromList)
         {
             commandFromList = nodeFromList -> value;
             nodeFromList = nodeFromList -> next;
@@ -186,78 +214,75 @@ void processCommands(
 
             freePtr((void**)&logLine);
 
-            if (sscanf(commandFromList, "%s", tempStr) == 1)
+            sscanf(commandFromList, "%s", tempStr);
+
+            if (stringCompare(tempStr, "ROTATE"))
             {
-                if (stringCompare(tempStr, "ROTATE"))
+                sscanf(commandFromList, "%s %lf", tempStr, &tempDouble);
+                angle += tempDouble;
+
+                if (DOUBLE_CHECK(0.0, angle))
                 {
-                    sscanf(commandFromList, "%s %lf", tempStr, &tempDouble);
-                    angle += tempDouble;
-
-                    if (DOUBLE_CHECK(0.0, angle))
-                    {
-                        angle += 360.0;
-                    }
-                    else if (DOUBLE_CHECK(angle, 360.0))
-                    {
-                        angle -= 360.0;
-                    }
+                    angle += 360.0;
                 }
-                else if (stringCompare(tempStr, "MOVE"))
+                else if (DOUBLE_CHECK(angle, 360.0))
                 {
-                    sscanf(commandFromList, "%s %lf", tempStr, &tempDouble);
-                    calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
-
-                    initString(&logLine, 47);
-                    sprintf(logLine, "MOVE (%8.3f, %8.3f)-(%8.3f, %8.3f)",
-                                            x1, y1, x2, y2);
-
-                    funcCommand = &doNothing;
-                    plotData = NULL;
+                    angle -= 360.0;
                 }
-                else if (stringCompare(tempStr, "DRAW"))
-                {
-                    sscanf(commandFromList, "%s %lf", tempStr, &tempDouble);
-                    calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
+            }
+            else if (stringCompare(tempStr, "MOVE"))
+            {
+                sscanf(commandFromList, "%s %lf", tempStr, &tempDouble);
+                calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
 
-                    initString(&logLine, 47);
-                    sprintf(logLine, "DRAW (%8.3f, %8.3f)-(%8.3f, %8.3f)",
-                                            x1, y1, x2, y2);
+                initString(&logLine, LOG_LENGTH);
+                sprintf(logLine, MOVE_LOG, x1, y1, x2, y2);
 
-                    funcCommand = &putChar;
-                    plotData = &pat;
-                }
+                funcCommand = &doNothing;
+                plotData = NULL;
+            }
+            else if (stringCompare(tempStr, "DRAW"))
+            {
+                sscanf(commandFromList, "%s %lf", tempStr, &tempDouble);
+                calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
+
+                initString(&logLine, LOG_LENGTH);
+                sprintf(logLine, DRAW_LOG, x1, y1, x2, y2);
+
+                funcCommand = &putChar;
+                plotData = &pat;
+            }
 #ifndef SIMPLE
-                else if (stringCompare(tempStr, "FG"))
-                {
-                    sscanf(commandFromList, "%s %d", tempStr, &tempInt);
-                    fg = tempInt;
-                    setFgColour(fg);
-                }
-                else if (stringCompare(tempStr, "BG"))
-                {
-                    sscanf(commandFromList, "%s %d", tempStr, &tempInt);
-                    bg = tempInt;
-                    setBgColour(bg);
-                }
+            else if (stringCompare(tempStr, "FG"))
+            {
+                sscanf(commandFromList, "%s %d", tempStr, &tempInt);
+                fg = tempInt;
+                setFgColour(fg);
+            }
+            else if (stringCompare(tempStr, "BG"))
+            {
+                sscanf(commandFromList, "%s %d", tempStr, &tempInt);
+                bg = tempInt;
+                setBgColour(bg);
+            }
 #endif
-                else if (stringCompare(tempStr, "PATTERN"))
-                {
-                    sscanf(commandFromList, "%s %c", tempStr, &tempChar);
-                    pat = tempChar;
-                }
+            else if (stringCompare(tempStr, "PATTERN"))
+            {
+                sscanf(commandFromList, "%s %c", tempStr, &tempChar);
+                pat = tempChar;
+            }
 
-                if (funcCommand)
-                {
+            if (funcCommand)
+            {
 #ifdef DEBUG
-                    fprintf(stderr, "%s\n", logLine);
+                fprintf(stderr, "%s\n", logLine);
 #endif
-                    printToFile(logFile, "%s\n", logLine, LOG_ERR);
-                    line(
-                        (int)x1, (int)y1, (int)x2 - 1, (int)y2,
-                        funcCommand, plotData
-                    );
-                    freePtr((void**)&logLine);
-                }
+                printToFile(logFile, "%s\n", logLine, LOG_ERR);
+                line(
+                    (int)x1, (int)y1, (int)x2 - 1, (int)y2,
+                    funcCommand, plotData
+                );
+                freePtr((void**)&logLine);
             }
         }
 
@@ -473,29 +498,15 @@ void printVersion(void)
         "turtle: A terminal drawing program",
         "Written by Julian Heng (19473701)",
         "",
+        "Compiler      :",
         "Compile by    :",
         "Compile time  :",
         "Last Modified :"
     };
 
-    #ifndef USER
-    #define USER "unknown"
-    #endif
-
-    #ifndef HOST
-    #define HOST "unknown"
-    #endif
-
-    #ifndef COMPILE_DATE
-    #define COMPILE_DATE "unknown"
-    #endif
-
-    #ifndef MOD_DATE
-    #define MOD_DATE "unknown"
-    #endif
-
     printStringArray("%s\n", versionMsg, 3);
-    fprintf(stdout, "%s %s@%s\n", versionMsg[3], USER, HOST);
-    fprintf(stdout, "%s %s\n", versionMsg[4], COMPILE_DATE);
-    fprintf(stdout, "%s %s\n", versionMsg[5], MOD_DATE);
+    fprintf(stdout, "%s %s\n", versionMsg[3], COMPILER_INFO);
+    fprintf(stdout, "%s %s@%s\n", versionMsg[4], USER, HOST);
+    fprintf(stdout, "%s %s\n", versionMsg[5], COMPILE_DATE);
+    fprintf(stdout, "%s %s\n", versionMsg[6], MOD_DATE);
 }
