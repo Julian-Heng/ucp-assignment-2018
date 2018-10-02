@@ -13,8 +13,8 @@
 #define TOLERANCE 0.0000001
 #define PI 3.14159265358979323846
 #define DEG_TO_RAD(i) ((i) * (PI / 180.0))
-#define UPPER(i) if (islower(i)) { i -= 32; }
-#define LOWER(i) if (isupper(i)) { i += 32; }
+#define UPPER(i) if (islower(i)) { (i) -= 32; }
+#define LOWER(i) if (isupper(i)) { (i) += 32; }
 
 void initString(char** str, int len);
 void initStringWithContents(char** str, char* contents);

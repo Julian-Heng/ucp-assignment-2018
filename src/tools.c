@@ -16,7 +16,11 @@
 void initString(char** str, int len)
 {
     *str = (char*)malloc(len * sizeof(char));
-    memset(*str, '\0', len);
+
+    if (*str)
+    {
+        memset(*str, '\0', len);
+    }
 }
 
 void initStringWithContents(char** str, char* contents)
@@ -25,7 +29,11 @@ void initStringWithContents(char** str, char* contents)
 
     strLen = strlen(contents) + 1;
     initString(str, strLen);
-    strncpy(*str, contents, strLen);
+
+    if (*str)
+    {
+        strncpy(*str, contents, strLen);
+    }
 }
 
 void initStringArray(char*** arr, int rows, int cols)
@@ -33,9 +41,13 @@ void initStringArray(char*** arr, int rows, int cols)
     int i;
 
     *arr = (char**)malloc(rows * sizeof(char*));
-    for (i = 0; i < rows; i++)
+
+    if (*arr)
     {
-        initString((*arr) + i, cols);
+        for (i = 0; i < rows; i++)
+        {
+            initString((*arr) + i, cols);
+        }
     }
 }
 
@@ -90,10 +102,13 @@ void upperRange(char* str, int range)
 
     i = 0;
 
-    while (str[i] != '\0' && i < range)
+    if (str)
     {
-        UPPER(str[i]);
-        i++;
+        while (str[i] != '\0' && i < range)
+        {
+            UPPER(str[i]);
+            i++;
+        }
     }
 }
 
@@ -163,12 +178,15 @@ void removeTrailingNewline(char* str, int len)
     removed = FALSE;
     i = len;
 
-    while (! removed && --i >= 0)
+    if (str)
     {
-        if (str[i] == '\n')
+        while (! removed && --i >= 0)
         {
-            str[i] = '\0';
-            removed = TRUE;
+            if (str[i] == '\n')
+            {
+                str[i] = '\0';
+                removed = TRUE;
+            }
         }
     }
 }
@@ -177,39 +195,44 @@ int countWords(char* str)
 {
     int len, count, spaceCount, i;
 
-    len = strlen(str);
+    len = 0;
     count = 0;
     spaceCount = 0;
     i = 0;
 
-    if (len != 0)
+    if (str)
     {
-        while (str[i] != '\0' && i < len)
-        {
-            if (isspace(str[i]))
-            {
-                spaceCount++;
-            }
-            i++;
-        }
+        len = strlen(str);
 
-        if (spaceCount != len)
+        if (len != 0)
         {
-            i = 0;
             while (str[i] != '\0' && i < len)
             {
                 if (isspace(str[i]))
                 {
-                    count++;
-                    while (isspace(str[i]) && i++ < len);
+                    spaceCount++;
                 }
                 i++;
             }
-            count++;
-        }
-        else
-        {
-            count = 0;
+
+            if (spaceCount != len)
+            {
+                i = 0;
+                while (str[i] != '\0' && i < len)
+                {
+                    if (isspace(str[i]))
+                    {
+                        count++;
+                        while (isspace(str[i]) && i++ < len);
+                    }
+                    i++;
+                }
+                count++;
+            }
+            else
+            {
+                count = 0;
+            }
         }
     }
 
@@ -223,37 +246,42 @@ void trim(char** str)
 
     start = 0;
     end = 0;
-    len = strlen(*str) + 1;
+    len = 0;
     newLen = 0;
     i = 0;
     tempStr = NULL;
 
-    while (isspace((*str)[i]) && ++i < len)
+    if (*str)
     {
-        start++;
-    }
+        len = strlen(*str) + 1;
 
-    if (start == (len - 1))
-    {
-        freePtr((void**)str);
-        initStringWithContents(str, "");
-    }
-    else
-    {
-        i = len - 2;
-
-        while (isspace((*str)[i]) && --i >= 0)
+        while (isspace((*str)[i]) && ++i < len)
         {
-            end++;
+            start++;
         }
 
-        newLen = len - (start + end);
-        initString(&tempStr, newLen);
-        strncpy(tempStr, &((*str)[start]), newLen - 1);
+        if (start == (len - 1))
+        {
+            freePtr((void**)str);
+            initStringWithContents(str, "");
+        }
+        else
+        {
+            i = len - 2;
 
-        freePtr((void**)str);
-        initStringWithContents(str, tempStr);
-        freePtr((void**)&tempStr);
+            while (isspace((*str)[i]) && --i >= 0)
+            {
+                end++;
+            }
+
+            newLen = len - (start + end);
+            initString(&tempStr, newLen);
+            strncpy(tempStr, &((*str)[start]), newLen - 1);
+
+            freePtr((void**)str);
+            initStringWithContents(str, tempStr);
+            freePtr((void**)&tempStr);
+        }
     }
 }
 
@@ -261,8 +289,11 @@ void printStringArray(char* format, char** strArr, int len)
 {
     int i;
 
-    for (i = 0; i < len; i++)
+    if (strArr)
     {
-        fprintf(stdout, format, strArr[i]);
+        for (i = 0; i < len; i++)
+        {
+            fprintf(stdout, format, strArr[i]);
+        }
     }
 }
