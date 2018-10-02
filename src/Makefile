@@ -1,8 +1,9 @@
 CC = gcc
 CFLAGS = -Wall -Werror -ansi -pedantic
 DCFLAGS = $(CFLAGS) -g
-DATE = $(shell date)
-MOD_DATE = $(shell date -r ./turtle.c)
+COMPILER_INFO = $(shell $(CC) --version | head -n 1)
+DATE = $(shell date --iso-8601=seconds)
+MOD_DATE = $(shell date --iso-8601=seconds -r ./turtle.c)
 USER = $(shell whoami)
 HOST = $(shell hostname)
 
@@ -19,6 +20,7 @@ all: makedirs info
 	$(CC) $(CFLAGS) -c fileIO.c -o ./objects/fileIO.o
 	$(CC) $(CFLAGS) -c effects.c -o ./objects/effects.o
 	$(CC) $(CFLAGS) -c turtle.c -o ./objects/turtle.o \
+					-DCOMPILER_INFO="\"$(COMPILER_INFO)\"" \
 					-DCOMPILE_DATE="\"$(DATE)\"" \
 					-DMOD_DATE="\"$(MOD_DATE)\"" \
 					-DUSER="\"$(USER)\"" \
@@ -33,6 +35,7 @@ simple: makedirs info
 	$(CC) $(CFLAGS) -c effects.c -o ./objects/effects.o
 	$(CC) $(CFLAGS) -c turtle.c -o ./objects/turtle.o \
 					-DSIMPLE=1 \
+					-DCOMPILER_INFO="\"$(COMPILER_INFO)\"" \
 					-DCOMPILE_DATE="\"$(DATE)\"" \
 					-DMOD_DATE="\"$(MOD_DATE)\"" \
 					-DUSER="\"$(USER)\"" \
@@ -48,6 +51,7 @@ debug: makedirs info
 	$(CC) $(DCFLAGS) -c effects.c -o ./objects/effects.o
 	$(CC) $(DCFLAGS) -c turtle.c -o ./objects/turtle.o \
 					 -DDEBUG=1 \
+					 -DCOMPILER_INFO="\"$(COMPILER_INFO)\"" \
 					 -DCOMPILE_DATE="\"$(DATE)\"" \
 					 -DMOD_DATE="\"$(MOD_DATE)\"" \
 					 -DUSER="\"$(USER)\"" \
@@ -70,15 +74,16 @@ docs:
 
 info:
 	@echo -----[Makefile Variables]-----
-	@echo "CC       = $(CC)"
-	@echo "CFLAGS   = $(CFLAGS)"
-	@echo "DCFLAGS  = $(DCFLAGS)"
-	@echo "DATE     = $(DATE)"
-	@echo "MOD_DATE = $(MOD_DATE)"
-	@echo "USER     = $(USER)"
-	@echo "HOST     = $(HOST)"
-	@echo "OBJ      = $(OBJ)"
-	@echo "PROG     = $(PROG)"
+	@echo "CC            = $(CC)"
+	@echo "CFLAGS        = $(CFLAGS)"
+	@echo "DCFLAGS       = $(DCFLAGS)"
+	@echo "COMPILER_INFO = $(COMPILER_INFO)"
+	@echo "DATE          = $(DATE)"
+	@echo "MOD_DATE      = $(MOD_DATE)"
+	@echo "USER          = $(USER)"
+	@echo "HOST          = $(HOST)"
+	@echo "OBJ           = $(OBJ)"
+	@echo "PROG          = $(PROG)"
 	@echo
 
 makedirs:
