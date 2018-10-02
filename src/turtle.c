@@ -4,6 +4,7 @@
 #include <math.h>
 
 #include "tools.h"
+#include "linkedList.h"
 #include "fileIO.h"
 #include "effects.h"
 #include "turtle.h"
@@ -21,9 +22,13 @@
 
 int main(int argc, char** argv)
 {
+    LinkedList* commandList;
+
     int returnCode, rows, cols;
     char* filename;
     char** fileContents;
+
+    commandList = NULL;
 
     returnCode = 0;
     rows = 0;
@@ -38,7 +43,12 @@ int main(int argc, char** argv)
         {
             if (readFileToArray(filename, &fileContents, &rows, &cols))
             {
-                processCommands(fileContents, rows, &returnCode);
+                processCommands(
+                    fileContents,
+                    rows,
+                    &commandList,
+                    &returnCode
+                );
             }
             else
             {
@@ -54,6 +64,7 @@ int main(int argc, char** argv)
 
     freeArray((void***)&fileContents, rows);
     freePtr((void**)&filename);
+    clearListStack(&commandList);
 
     return returnCode;
 }
@@ -94,13 +105,20 @@ int processArgs(char* arg, char** filename, int* returnCode)
     return *returnCode;
 }
 
-void processCommands(char** commandArr, int numCommands, int* returnCode)
+void processCommands(
+    char** commandArr,
+    int numCommands,
+    LinkedList** commandList,
+    int* returnCode)
 {
     FILE* logFile;
 
     PlotFunc funcCommand;
     void* plotData;
-    int i, errLine;
+    int errLine;
+
+    LinkedListNode* nodeFromList;
+    char* commandFromList;
 
     char tempStr[8];
     char* logLine;
@@ -122,8 +140,10 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
     logFile = NULL;
     funcCommand = NULL;
     plotData = NULL;
-    i = 0;
     errLine= 0;
+
+    nodeFromList = NULL;
+    commandFromList = NULL;
 
     memset(tempStr, '\0', 8);
     logLine = NULL;
@@ -141,14 +161,20 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
 #endif
     pat = '+';
 
-    if (prepareCommands(commandArr, numCommands, &errLine))
+    *commandList = validateCommands(commandArr, numCommands, &errLine);
+
+    if (*commandList)
     {
         logFile = fopen("graphics.log", "a");
         printToFile(logFile, "%s\n", "---", LOG_ERR);
         clearScreen();
 
-        do
+        nodeFromList = (*commandList) -> head;
+        while (nodeFromList != NULL)
         {
+            commandFromList = nodeFromList -> value;
+            nodeFromList = nodeFromList -> next;
+
             tempDouble = 0.0;
 #ifndef SIMPLE
             tempInt = 0;
@@ -160,11 +186,11 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
 
             freePtr((void**)&logLine);
 
-            if (sscanf(commandArr[i], "%s", tempStr) == 1)
+            if (sscanf(commandFromList, "%s", tempStr) == 1)
             {
                 if (stringCompare(tempStr, "ROTATE"))
                 {
-                    sscanf(commandArr[i], "%s %lf", tempStr, &tempDouble);
+                    sscanf(commandFromList, "%s %lf", tempStr, &tempDouble);
                     angle += tempDouble;
 
                     if (DOUBLE_CHECK(0.0, angle))
@@ -178,7 +204,7 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
                 }
                 else if (stringCompare(tempStr, "MOVE"))
                 {
-                    sscanf(commandArr[i], "%s %lf", tempStr, &tempDouble);
+                    sscanf(commandFromList, "%s %lf", tempStr, &tempDouble);
                     calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
 
                     initString(&logLine, 47);
@@ -190,7 +216,7 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
                 }
                 else if (stringCompare(tempStr, "DRAW"))
                 {
-                    sscanf(commandArr[i], "%s %lf", tempStr, &tempDouble);
+                    sscanf(commandFromList, "%s %lf", tempStr, &tempDouble);
                     calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
 
                     initString(&logLine, 47);
@@ -203,20 +229,20 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
 #ifndef SIMPSIMPLE
                 else if (stringCompare(tempStr, "FG"))
                 {
-                    sscanf(commandArr[i], "%s %d", tempStr, &tempInt);
+                    sscanf(commandFromList, "%s %d", tempStr, &tempInt);
                     fg = tempInt;
                     setFgColour(fg);
                 }
                 else if (stringCompare(tempStr, "BG"))
                 {
-                    sscanf(commandArr[i], "%s %d", tempStr, &tempInt);
+                    sscanf(commandFromList, "%s %d", tempStr, &tempInt);
                     bg = tempInt;
                     setBgColour(bg);
                 }
 #endif
                 else if (stringCompare(tempStr, "PATTERN"))
                 {
-                    sscanf(commandArr[i], "%s %c", tempStr, &tempChar);
+                    sscanf(commandFromList, "%s %c", tempStr, &tempChar);
                     pat = tempChar;
                 }
 
@@ -233,7 +259,7 @@ void processCommands(char** commandArr, int numCommands, int* returnCode)
                     freePtr((void**)&logLine);
                 }
             }
-        } while (++i < numCommands);
+        }
 
         fprintf(stdout, "%s", "\033[0m");
         penDown();
@@ -294,11 +320,13 @@ void calcNewPosition(
 void doNothing(void* a) {}
 void putChar(void* voidPtr) { fputc(*(char*)voidPtr, stdout); }
 
-int prepareCommands(
+LinkedList* validateCommands(
     char** commandArr,
     int numCommands,
     int* errLine)
 {
+    LinkedList* commandList;
+
     int commandValid, tempStrLen, i;
 
     double real;
@@ -308,6 +336,7 @@ int prepareCommands(
     char tempStr[8];
     char* origStr;
 
+    commandList = initList();
     commandValid = FALSE;
     origStr = NULL;
     tempStrLen = 0;
@@ -323,7 +352,7 @@ int prepareCommands(
         initStringWithContents(&origStr, commandArr[i]);
         trim(&(commandArr[i]));
 
-        if (countWhiteSpace(commandArr[i]) == 1)
+        if (countWords(commandArr[i]) == 2)
         {
             /**
              * --[ACTIONS]-
@@ -348,6 +377,7 @@ int prepareCommands(
                 sscanf(commandArr[i], "%s %lf", tempStr, &real) == 2 &&
                 doubleBoundaryCheck(real, -360.0, 360.0))
             {
+                insertLast(commandList, commandArr[i]);
                 commandValid = TRUE;
             }
             else if ((stringCompare(tempStr, "MOVE") ||
@@ -355,30 +385,35 @@ int prepareCommands(
                       sscanf(commandArr[i], "%s %lf", tempStr, &real) == 2 &&
                       doubleBoundaryCheck(real, 0.0, -1.0))
             {
+                insertLast(commandList, commandArr[i]);
                 commandValid = TRUE;
             }
             else if (stringCompare(tempStr, "FG") &&
                      sscanf(commandArr[i], "%s %d", tempStr, &integer) == 2 &&
                      integerBoundaryCheck(integer, 0, 15))
             {
+                insertLast(commandList, commandArr[i]);
                 commandValid = TRUE;
             }
             else if (stringCompare(tempStr, "BG") &&
                      sscanf(commandArr[i], "%s %d", tempStr, &integer) == 2 &&
                      integerBoundaryCheck(integer, 0, 7))
             {
+                insertLast(commandList, commandArr[i]);
                 commandValid = TRUE;
             }
             else if (stringCompare(tempStr, "PATTERN") &&
                      sscanf(commandArr[i], "%s %c", tempStr, &pat) == 2 &&
                      pat != ' ')
             {
+                insertLast(commandList, commandArr[i]);
                 commandValid = TRUE;
             }
             else
             {
                 freePtr((void**)&commandArr[i]);
                 initStringWithContents(&commandArr[i], origStr);
+                clearListMalloc(&commandList);
             }
         }
         else if (stringCompare(commandArr[i], ""))
@@ -389,13 +424,14 @@ int prepareCommands(
         {
             freePtr((void**)&commandArr[i]);
             initStringWithContents(&commandArr[i], origStr);
+            clearListMalloc(&commandList);
         }
 
         freePtr((void**)&origStr);
     } while (++i < numCommands && commandValid);
 
     *errLine = i;
-    return commandValid;
+    return commandList;
 }
 
 void printUsage(void)
