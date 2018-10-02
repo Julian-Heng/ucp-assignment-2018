@@ -60,7 +60,9 @@ test: makedirs info debug
 	$(CC) $(DCFLAGS) -c test.c -o ./objects/test.o
 	$(CC) $(OBJ) ./objects/test.o -o ./build/test
 	./build/test
-	valgrind ./build/test
+	if command -v valgrind; then \
+		valgrind ./build/test; \
+	fi
 	@echo
 
 docs:
