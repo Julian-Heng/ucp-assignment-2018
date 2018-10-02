@@ -6,6 +6,9 @@ static void setNextToNode(LinkedListNode* node, LinkedListNode* nextNode);
 static void setPrevToNode(LinkedListNode* node, LinkedListNode* prevNode);
 static void setNextInList(LinkedListNode* node);
 static void setPrevInList(LinkedListNode* node);
+static int  getListLengthRecurse(LinkedListNode* node);
+static void clearListStackRecurse(LinkedListNode** node);
+static void clearListMallocRecurse(LinkedListNode** node);
 
 LinkedListNode* initNode(void* newValue)
 {
@@ -143,23 +146,44 @@ void* peekLast(LinkedList* list)
     return nodeValue;
 }
 
-void clearListStack(LinkedList** list)
+int getListLength(LinkedList* list)
 {
     LinkedListNode* inList;
+    int length;
 
     inList = NULL;
+    length = 0;
 
+    if (! isEmpty(list))
+    {
+        inList = list -> head;
+        length = getListLengthRecurse(inList);
+    }
+
+    return length;
+}
+
+int getListLengthRecurse(LinkedListNode* node)
+{
+    int length;
+
+    length = 0;
+
+    if (node)
+    {
+        length = 1 + getListLengthRecurse(node -> next);
+    }
+
+    return length;
+}
+
+void clearListStack(LinkedList** list)
+{
     if (*list)
     {
         if (! isEmpty(*list))
         {
-            while ((*list) -> head)
-            {
-                inList = (*list) -> head;
-                (*list) -> head = (*list) -> head -> next;
-                free(inList);
-                inList = NULL;
-            }
+            clearListStackRecurse(&((*list) -> head));
         }
 
         free(*list);
@@ -167,29 +191,39 @@ void clearListStack(LinkedList** list)
     }
 }
 
+void clearListStackRecurse(LinkedListNode** node)
+{
+    if (*node)
+    {
+        clearListStackRecurse(&((*node) -> next));
+        free(*node);
+        *node = NULL;
+    }
+}
+
 void clearListMalloc(LinkedList** list)
 {
-    LinkedListNode* inList;
-
-    inList = NULL;
-
     if (*list)
     {
         if (! isEmpty(*list))
         {
-            while ((*list) -> head)
-            {
-                inList = (*list) -> head;
-                (*list) -> head = (*list) -> head -> next;
-                free(inList -> value);
-                inList -> value = NULL;
-                free(inList);
-                inList = NULL;
-            }
+            clearListMallocRecurse(&((*list) -> head));
         }
 
         free(*list);
         *list = NULL;
+    }
+}
+
+void clearListMallocRecurse(LinkedListNode** node)
+{
+    if (*node)
+    {
+        clearListMallocRecurse(&((*node) -> next));
+        free((*node) -> value);
+        (*node) -> value = NULL;
+        free(*node);
+        *node = NULL;
     }
 }
 

@@ -25,6 +25,7 @@ LinkedListNode* removeFirst(LinkedList* list);
 LinkedListNode* removeLast(LinkedList* list);
 void* peekFirst(LinkedList* list);
 void* peekLast(LinkedList* list);
+int getListLength(LinkedList* list);
 void clearListStack(LinkedList** list);
 void clearListMalloc(LinkedList** list);
 int isEmpty(LinkedList* list);
