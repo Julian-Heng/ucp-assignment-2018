@@ -2,22 +2,26 @@
 
 #include "linkedList.h"
 
+static int  getListLengthRecurse(LinkedListNode* node);
+static void clearListStackRecurse(LinkedListNode** node);
+static void clearListMallocRecurse(LinkedListNode** node);
 static void setNextToNode(LinkedListNode* node, LinkedListNode* nextNode);
 static void setPrevToNode(LinkedListNode* node, LinkedListNode* prevNode);
 static void setNextInList(LinkedListNode* node);
 static void setPrevInList(LinkedListNode* node);
-static int  getListLengthRecurse(LinkedListNode* node);
-static void clearListStackRecurse(LinkedListNode** node);
-static void clearListMallocRecurse(LinkedListNode** node);
 
 LinkedListNode* initNode(void* newValue)
 {
     LinkedListNode* newNode;
+
     newNode = (LinkedListNode*)malloc(sizeof(LinkedListNode));
 
-    newNode -> next = NULL;
-    newNode -> prev = NULL;
-    newNode -> value = newValue;
+    if (newNode)
+    {
+        newNode -> next = NULL;
+        newNode -> prev = NULL;
+        newNode -> value = newValue;
+    }
 
     return newNode;
 }
@@ -28,8 +32,11 @@ LinkedList* initList()
 
     newList = (LinkedList*)malloc(sizeof(LinkedList));
 
-    newList -> head = NULL;
-    newList -> tail = NULL;
+    if (newList)
+    {
+        newList -> head = NULL;
+        newList -> tail = NULL;
+    }
 
     return newList;
 }
@@ -40,7 +47,7 @@ void insertFirst(LinkedList* list, void* newValue)
 
     newNode = initNode(newValue);
 
-    if (isEmpty(list))
+    if (list && isEmpty(list))
     {
         list -> head = newNode;
         list -> tail = newNode;
@@ -59,7 +66,7 @@ void insertLast(LinkedList* list, void* newValue)
 
     newNode = initNode(newValue);
 
-    if (isEmpty(list))
+    if (list && isEmpty(list))
     {
         list -> head = newNode;
         list -> tail = newNode;
@@ -78,7 +85,7 @@ LinkedListNode* removeFirst(LinkedList* list)
 
     remove = NULL;
 
-    if (! isEmpty(list))
+    if (list && ! isEmpty(list))
     {
         remove = list -> head;
         if (list -> head == list -> tail)
@@ -101,7 +108,7 @@ LinkedListNode* removeLast(LinkedList* list)
 
     remove = NULL;
 
-    if (! isEmpty(list))
+    if (list && ! isEmpty(list))
     {
         remove = list -> tail;
         if (list -> head == list -> tail)
@@ -124,7 +131,7 @@ void* peekFirst(LinkedList* list)
 
     nodeValue = NULL;
 
-    if (! isEmpty(list))
+    if (list && ! isEmpty(list))
     {
         nodeValue = list -> head -> value;
     }
@@ -138,7 +145,7 @@ void* peekLast(LinkedList* list)
 
     nodeValue = NULL;
 
-    if (! isEmpty(list))
+    if (list && ! isEmpty(list))
     {
         nodeValue = list -> tail -> value;
     }
@@ -154,7 +161,7 @@ int getListLength(LinkedList* list)
     inList = NULL;
     length = 0;
 
-    if (! isEmpty(list))
+    if (list && ! isEmpty(list))
     {
         inList = list -> head;
         length = getListLengthRecurse(inList);
@@ -163,7 +170,7 @@ int getListLength(LinkedList* list)
     return length;
 }
 
-int getListLengthRecurse(LinkedListNode* node)
+static int getListLengthRecurse(LinkedListNode* node)
 {
     int length;
 
@@ -191,7 +198,7 @@ void clearListStack(LinkedList** list)
     }
 }
 
-void clearListStackRecurse(LinkedListNode** node)
+static void clearListStackRecurse(LinkedListNode** node)
 {
     if (*node)
     {
@@ -215,7 +222,7 @@ void clearListMalloc(LinkedList** list)
     }
 }
 
-void clearListMallocRecurse(LinkedListNode** node)
+static void clearListMallocRecurse(LinkedListNode** node)
 {
     if (*node)
     {
@@ -230,24 +237,36 @@ void clearListMallocRecurse(LinkedListNode** node)
     }
 }
 
-void setNextToNode(LinkedListNode* node, LinkedListNode* nextNode)
+static void setNextToNode(LinkedListNode* node, LinkedListNode* nextNode)
 {
-    node -> next = nextNode;
+    if (node && nextNode)
+    {
+        node -> next = nextNode;
+    }
 }
 
-void setPrevToNode(LinkedListNode* node, LinkedListNode* prevNode)
+static void setPrevToNode(LinkedListNode* node, LinkedListNode* prevNode)
 {
-    node -> prev = prevNode;
+    if (node && prevNode)
+    {
+        node -> prev = prevNode;
+    }
 }
 
-void setNextInList(LinkedListNode* node)
+static void setNextInList(LinkedListNode* node)
 {
-    node = node -> next;
+    if (node)
+    {
+        node = node -> next;
+    }
 }
 
-void setPrevInList(LinkedListNode* node)
+static void setPrevInList(LinkedListNode* node)
 {
-    node = node -> prev;
+    if (node)
+    {
+        node = node -> prev;
+    }
 }
 
 int isEmpty(LinkedList* list)
