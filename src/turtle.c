@@ -413,7 +413,7 @@ LinkedList* validateCommands(
             {
                 freePtr((void**)&commandArr[i]);
                 initStringWithContents(&commandArr[i], origStr);
-                clearListMalloc(&commandList);
+                clearListStack(&commandList);
             }
         }
         else if (stringCompare(commandArr[i], ""))
@@ -424,13 +424,14 @@ LinkedList* validateCommands(
         {
             freePtr((void**)&commandArr[i]);
             initStringWithContents(&commandArr[i], origStr);
-            clearListMalloc(&commandList);
+            clearListStack(&commandList);
         }
 
         freePtr((void**)&origStr);
     } while (++i < numCommands && commandValid);
 
     *errLine = i;
+
     return commandList;
 }
 
