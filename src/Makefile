@@ -2,8 +2,13 @@ CC = gcc
 CFLAGS = -Wall -Werror -ansi -pedantic
 DCFLAGS = $(CFLAGS) -g
 COMPILER_INFO = $(shell $(CC) --version | head -n 1)
+ifneq ($(shell uname), Linux)
+DATE = $(shell date "+%Y-%m-%dT%H:%M:%S%z")
+MOD_DATE = $(shell stat -f %Sm -t "%Y-%m-%dT%H:%M:%S%z" ./turtle.c)
+else
 DATE = $(shell date --iso-8601=seconds)
-MOD_DATE = $(shell date --iso-8601=seconds -r ./turtle.c)
+MOD_DATE = $(shell date --iso-8601-seconds -r ./turtle.c)
+endif
 USER = $(shell whoami)
 HOST = $(shell hostname)
 
