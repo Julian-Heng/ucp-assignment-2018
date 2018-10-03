@@ -64,23 +64,29 @@ int main(int argc, char** argv)
     filename = NULL;
     fileContents = NULL;
 
-    if (! checkArgs(argc, argv))
+    if (checkArgs(argc, argv))
     {
-        printUsage();
-        returnCode = RETURN_INVALID_ARGS;
-    }
-    else if (! processArgs(argv[1], &filename, &returnCode))
-    {
-        fprintf(stderr, "%s\n", "Unable to allocate memory for filename");
-        fprintf(stderr, "%s\n", "Exitting...");
-    }
-    else if (! readFileToArray(filename, &fileContents, &rows, &cols))
-    {
-        returnCode = RETURN_INVALID_FILE;
+        if (processArgs(argv[1], &filename, &returnCode))
+        {
+            if (readFileToArray(filename, &fileContents, &rows, &cols))
+            {
+                processCommands(
+                    fileContents,
+                    rows,
+                    &commandList,
+                    &returnCode
+                );
+            }
+            else
+            {
+                returnCode = RETURN_INVALID_FILE;
+            }
+        }
     }
     else
     {
-        processCommands(fileContents, rows, &commandList, &returnCode);
+        printUsage();
+        returnCode = RETURN_INVALID_ARGS;
     }
 
     freeArray((void***)&fileContents, rows);
@@ -106,16 +112,22 @@ int checkArgs(int argc, char** argv)
 
 int processArgs(char* arg, char** filename, int* returnCode)
 {
+    int continueProgram;
+
+    continueProgram = TRUE;
+
     if (stringCompare(arg, "-h") ||
         stringCompare(arg, "--help"))
     {
         printUsage();
         *returnCode = RETURN_OK;
+        continueProgram = FALSE;
     }
     else if (stringCompare(arg, "--version"))
     {
         printVersion();
         *returnCode = RETURN_OK;
+        continueProgram = FALSE;
     }
     else
     {
@@ -130,7 +142,7 @@ int processArgs(char* arg, char** filename, int* returnCode)
         }
     }
 
-    return *returnCode;
+    return continueProgram;
 }
 
 void processCommands(
