@@ -66,7 +66,7 @@ int main(int argc, char** argv)
 
     if (checkArgs(argc, argv))
     {
-        if (processArgs(argv[1], &filename, &returnCode))
+        if (processArgs(argv[1], &filename))
         {
             if (readFileToArray(filename, &fileContents, &rows, &cols))
             {
@@ -110,7 +110,7 @@ int checkArgs(int argc, char** argv)
     return isValid;
 }
 
-int processArgs(char* arg, char** filename, int* returnCode)
+int processArgs(char* arg, char** filename)
 {
     int continueProgram;
 
@@ -120,25 +120,19 @@ int processArgs(char* arg, char** filename, int* returnCode)
         stringCompare(arg, "--help"))
     {
         printUsage();
-        *returnCode = RETURN_OK;
         continueProgram = FALSE;
     }
     else if (stringCompare(arg, "--version"))
     {
         printVersion();
-        *returnCode = RETURN_OK;
         continueProgram = FALSE;
     }
     else
     {
         initStringWithContents(filename, arg);
-        if (*filename)
+        if (! *filename)
         {
-            *returnCode = TRUE;
-        }
-        else
-        {
-            *returnCode = FALSE;
+            continueProgram = FALSE;
         }
     }
 
@@ -516,9 +510,40 @@ void printVersion(void)
         "Last Modified :"
     };
 
+    char* compiler = COMPILER_INFO;
+    char* user = USER;
+    char* host = HOST;
+    char* compileDate = COMPILE_DATE;
+    char* modDate = MOD_DATE;
+
+    if (stringCompare(compiler, ""))
+    {
+        compiler = "unknown";
+    }
+
+    if (stringCompare(user, ""))
+    {
+        user = "unknown";
+    }
+
+    if (stringCompare(host, ""))
+    {
+        host = "unknown";
+    }
+
+    if (stringCompare(compileDate, ""))
+    {
+        compileDate = "unknown";
+    }
+
+    if (stringCompare(modDate, ""))
+    {
+        modDate = "unknown";
+    }
+
     printStringArray("%s\n", versionMsg, 3);
-    fprintf(stdout, "%s %s\n", versionMsg[3], COMPILER_INFO);
-    fprintf(stdout, "%s %s@%s\n", versionMsg[4], USER, HOST);
-    fprintf(stdout, "%s %s\n", versionMsg[5], COMPILE_DATE);
-    fprintf(stdout, "%s %s\n", versionMsg[6], MOD_DATE);
+    fprintf(stdout, "%s %s\n", versionMsg[3], compiler);
+    fprintf(stdout, "%s %s@%s\n", versionMsg[4], user, host);
+    fprintf(stdout, "%s %s\n", versionMsg[5], compileDate);
+    fprintf(stdout, "%s %s\n", versionMsg[6], modDate);
 }
