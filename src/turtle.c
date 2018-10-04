@@ -43,8 +43,7 @@
 
 #define LOG_FILENAME "graphics.log"
 #define SPLIT "---"
-#define MOVE_LOG "MOVE (%8.3f, %8.3f)-(%8.3f, %8.3f)"
-#define DRAW_LOG "DRAW (%8.3f, %8.3f)-(%8.3f, %8.3f)"
+#define LOG_FORMAT "%s (%8.3f, %8.3f)-(%8.3f, %8.3f)"
 #define LOG_ERR "Error writing to log"
 
 int main(int argc, char** argv)
@@ -157,7 +156,7 @@ void processCommands(
     char tempStr[MAX_CMD_LENGTH];
     char* logLine;
 
-    double x1, y1, x2, y2;
+    double x1, y1, x2, y2, x3, y3;
 
     double angle;
 #ifndef SIMPLE
@@ -187,6 +186,9 @@ void processCommands(
 
     x2 = 0.0;
     y2 = 0.0;
+
+    x3 = 0.0;
+    y3 = 0.0;
 
     angle = 0.0;
 #ifndef SIMPLE
@@ -218,8 +220,6 @@ void processCommands(
             funcCommand = NULL;
             plotData = NULL;
 
-            freePtr((void**)&logLine);
-
             sscanf(commandFromList, "%s", tempStr);
 
             if (stringCompare(tempStr, "ROTATE"))
@@ -239,10 +239,7 @@ void processCommands(
             else if (stringCompare(tempStr, "MOVE"))
             {
                 sscanf(commandFromList, "%s %lf", tempStr, &tempDouble);
-                calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
-
-                initString(&logLine, LOG_LENGTH);
-                sprintf(logLine, MOVE_LOG, x1, y1, x2, y2);
+                calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble - 1);
 
                 funcCommand = &doNothing;
                 plotData = NULL;
@@ -250,10 +247,7 @@ void processCommands(
             else if (stringCompare(tempStr, "DRAW"))
             {
                 sscanf(commandFromList, "%s %lf", tempStr, &tempDouble);
-                calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble);
-
-                initString(&logLine, LOG_LENGTH);
-                sprintf(logLine, DRAW_LOG, x1, y1, x2, y2);
+                calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble - 1);
 
                 funcCommand = &putChar;
                 plotData = &pat;
@@ -280,26 +274,21 @@ void processCommands(
 
             if (funcCommand)
             {
+                line(
+                    (int)x1, (int)y1, (int)x2, (int)y2,
+                    funcCommand, plotData
+                );
+
+                x3 = x1;
+                y3 = y1;
+
+                calcNewPosition(&x1, &y1, &x2, &y2, angle, 1.0);
+                initString(&logLine, LOG_LENGTH);
+                sprintf(logLine, LOG_FORMAT, tempStr, x3, y3, x2, y2);
 #ifdef DEBUG
                 fprintf(stderr, "%s\n", logLine);
 #endif
                 printToFile(logFile, "%s\n", logLine, LOG_ERR);
-                if (doubleCompare(x2 - x1, 1.0) ||
-                    doubleCompare(x2 - x1, 2.0))
-                {
-                    line(
-                        (int)x1, (int)y1, (int)x2 - 1, (int)y2,
-                        funcCommand, plotData
-                    );
-                }
-                else
-                {
-                    line(
-                        (int)x1, (int)y1, (int)x2, (int)y2,
-                        funcCommand, plotData
-                    );
-                }
-
                 freePtr((void**)&logLine);
             }
         }
@@ -327,30 +316,29 @@ void calcNewPosition(
 {
     double xDelta, yDelta;
 
+    xDelta = 0.0;
+    yDelta = 0.0;
+
     if (doubleCompare(angle, 0.0) || doubleCompare(angle, 360.0))
     {
         xDelta = length;
-        yDelta = 0.0;
     }
     else if (doubleCompare(angle, 90.0))
     {
-        xDelta = 0.0;
         yDelta = length;
     }
     else if (doubleCompare(angle, 180.0))
     {
         xDelta = -length;
-        yDelta = 0.0;
     }
     else if (doubleCompare(angle, 270.0))
     {
-        xDelta = 0.0;
-        yDelta= -length;
+        yDelta = -length;
     }
     else
     {
-        xDelta = (length * cos(DEG_TO_RAD(angle)));
-        yDelta = (length * sin(DEG_TO_RAD(angle)));
+        xDelta = length * cos(DEG_TO_RAD(angle));
+        yDelta = length * sin(DEG_TO_RAD(angle));
     }
 
     *x1 = *x2;
