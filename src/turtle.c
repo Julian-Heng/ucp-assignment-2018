@@ -284,10 +284,22 @@ void processCommands(
                 fprintf(stderr, "%s\n", logLine);
 #endif
                 printToFile(logFile, "%s\n", logLine, LOG_ERR);
-                line(
-                    (int)x1, (int)y1, (int)x2 - 1, (int)y2,
-                    funcCommand, plotData
-                );
+                if (doubleCompare(x2 - x1, 1.0) ||
+                    doubleCompare(x2 - x1, 2.0))
+                {
+                    line(
+                        (int)x1, (int)y1, (int)x2 - 1, (int)y2,
+                        funcCommand, plotData
+                    );
+                }
+                else
+                {
+                    line(
+                        (int)x1, (int)y1, (int)x2, (int)y2,
+                        funcCommand, plotData
+                    );
+                }
+
                 freePtr((void**)&logLine);
             }
         }
