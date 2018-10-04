@@ -475,7 +475,7 @@ void testFileIO(int* status)
     {
         fprintf(stdout, "%s: ", testMsg[0]);
         readFileToArray(
-            "../test/3_5",
+            "../test/test/3_5",
             &fileContents,
             &rows,
             &columns
@@ -506,7 +506,7 @@ void testFileIO(int* status)
     {
         fprintf(stdout, "%s: ", testMsg[1]);
         readFileToArray(
-            "../test/3vpyramids",
+            "../test/test/3vpyramids",
             &fileContents,
             &rows,
             &columns
@@ -539,7 +539,7 @@ void testFileIO(int* status)
     {
         fprintf(stdout, "%s: ", testMsg[2]);
         readFileToArray(
-            "../test/3vpyramids_trail",
+            "../test/test/3vpyramids_trail",
             &fileContents,
             &rows,
             &columns
@@ -572,7 +572,7 @@ void testFileIO(int* status)
     {
         fprintf(stdout, "%s: ", testMsg[3]);
         readFileToArray(
-            "../test/3hpyramids",
+            "../test/test/3hpyramids",
             &fileContents,
             &rows,
             &columns
@@ -603,7 +603,7 @@ void testFileIO(int* status)
     {
         fprintf(stdout, "%s: ", testMsg[4]);
         readFileToArray(
-            "../test/3hpyramids_trail",
+            "../test/test/3hpyramids_trail",
             &fileContents,
             &rows,
             &columns
@@ -634,7 +634,7 @@ void testFileIO(int* status)
     {
         fprintf(stdout, "%s: ", testMsg[5]);
         readFileToArray(
-            "../test/4_1_4_1",
+            "../test/test/4_1_4_1",
             &fileContents,
             &rows,
             &columns
@@ -666,7 +666,7 @@ void testFileIO(int* status)
     {
         fprintf(stdout, "%s: ", testMsg[6]);
         readFileToArray(
-            "../test/4_1_4_1_trail",
+            "../test/test/4_1_4_1_trail",
             &fileContents,
             &rows,
             &columns
@@ -698,7 +698,7 @@ void testFileIO(int* status)
     {
         fprintf(stdout, "%s: ", testMsg[7]);
         readFileToArray(
-            "../test/newline",
+            "../test/test/newline",
             &fileContents,
             &rows,
             &columns
@@ -727,7 +727,7 @@ void testFileIO(int* status)
     {
         fprintf(stdout, "%s: ", testMsg[8]);
         readFileToArray(
-            "../test/whitespace",
+            "../test/test/whitespace",
             &fileContents,
             &rows,
             &columns
@@ -756,7 +756,7 @@ void testFileIO(int* status)
     {
         fprintf(stdout, "%s: ", testMsg[9]);
         readFileToArray(
-            "../test/empty_file",
+            "../test/test/empty_file",
             &fileContents,
             &rows,
             &columns
@@ -780,7 +780,7 @@ void testFileIO(int* status)
     {
         fprintf(stdout, "%s: ", testMsg[10]);
         readFileToArray(
-            "../test/a non existant file",
+            "../test/test/a non existant file",
             &fileContents,
             &rows,
             &columns
