@@ -100,4 +100,4 @@ makedirs:
 	fi
 
 clean:
-	@rm -rfv ./build ./objects ../docs/AssignmentDoc.pdf
+	@rm -rfv ./build ./objects ../docs/AssignmentDoc.pdf *.log
