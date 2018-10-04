@@ -1,0 +1,2 @@
+pattern .
+draw 1

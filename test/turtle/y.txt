@@ -1,0 +1,3 @@
+rotate 90
+pattern .
+draw 1
