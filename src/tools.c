@@ -1,3 +1,14 @@
+/**
+ * Filename: tools.c
+ * Author:   Julian Heng (19473701)
+ * Purpose:  Provide utility functions to other files
+ *           that includes tools.h. Such tools include
+ *           mallocing functions, freeing functions,
+ *           string manipulation and number comparisons
+ *
+ * Last Modified: 2018-10-05T18:41:10+08:00
+ **/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,40 +21,105 @@
 #define TRUE !FALSE
 
 /**
- *  Mallocing functions
+ * Name:     initString
+ * Purpose:
+ *     Allocate memory in the heap for a string and then
+ *     fill the string with null terminators. Required as to
+ *     prevent manually setting null terminator at the end
+ *     of a string and gives a clean state to a string
+ *
+ * Parameters:
+ *   - str : A pointer to a string
+ *   - len : An integer for the string length
+ *
+ * Returns:  void
+ * Assertions:
+ *     Assumptions:
+ *         len is 1 or larger
+ *     Results:
+ *         str will be allocated memory for storing a string
  **/
 
 void initString(char** str, int len)
 {
+    /* Allocate memory in the heap and set all elements to null character */
     *str = (char*)malloc(len * sizeof(char));
 
+    /* Check if malloc failed */
     if (*str)
     {
         memset(*str, '\0', len);
     }
 }
 
+/**
+ * Name:     initStringWithContents
+ * Purpose:
+ *     Allocate memory in the heap for a string and then
+ *     copy the contents of the imported string to the
+ *     new string. Useful for initialising a string with
+ *     a set string.
+ *
+ * Parameters:
+ *   - str      : A pointer to a string
+ *   - contents : A string to be allocated
+ *
+ * Returns:  void
+ * Assertions:
+ *     Assumptions:
+ *         contents contains a string
+ *     Results:
+ *         str will be allocated memory for storing contents
+ **/
+
 void initStringWithContents(char** str, char* contents)
 {
-    int strLen;
+    int len;
 
-    strLen = strlen(contents) + 1;
-    initString(str, strLen);
+    /* Get length of string plus one for null terminator, then init string*/
+    len = strlen(contents) + 1;
+    initString(str, len);
 
+    /* If malloc failed */
     if (*str)
     {
-        strncpy(*str, contents, strLen);
+        strncpy(*str, contents, len);
     }
 }
+
+/**
+ * Name:     initStringArray
+ * Purpose:
+ *     Allocate memory in the heap for a string array.
+ *     Essentially the same as initString() but done in a loop
+ *     for setting up a string array, thus creating a string
+ *     array full of clean strings.
+ *
+ * Parameters:
+ *   - arr  : A pointer to an array of strings
+ *   - rows : An integer for the number of rows
+ *   - cols : An integer for the number of columns
+ *            or maximum string length
+ *
+ * Returns:  void
+ * Assertions:
+ *     Assumptions:
+ *         rows and cols are 1 or larger
+ *     Results:
+ *         arr will be allocated memory for storing arrays of strings
+ **/
 
 void initStringArray(char*** arr, int rows, int cols)
 {
     int i;
 
+    /* Allocate memory in heap for array */
     *arr = (char**)malloc(rows * sizeof(char*));
 
+    /* Check if malloc failed */
     if (*arr)
     {
+        /* Call initString on each element in string array */
         for (i = 0; i < rows; i++)
         {
             initString((*arr) + i, cols);
@@ -52,24 +128,59 @@ void initStringArray(char*** arr, int rows, int cols)
 }
 
 /**
- *  Free functions
+ * Name:     freePtr
+ * Purpose:
+ *     Wrapper function for free(). Does two tasks; free the pointer
+ *     and set it to null. Simply a wrapper, nothing else.
+ *
+ * Parameters:
+ *   - ptr : A void pointer to be freed
+ *
+ * Returns:  void
+ * Assertions:
+ *     Assumptions:
+ *         none
+ *     Results:
+ *         ptr will be freed
  **/
 
 void freePtr(void** ptr)
 {
+    /* Check if pointer is not null */
     if (*ptr)
     {
+        /* Free and set to NULL */
         free(*ptr);
         *ptr = NULL;
     }
 }
 
+/**
+ * Name:     freeArray
+ * Purpose:
+ *     Wrapper function for free() on arrays. Same as freePtr but
+ *     is applied to all elements in array. Simply a wrapper, nothing else.
+ *
+ * Parameters:
+ *   - ptr : A void pointer to an array to be freed
+ *   - len : An integer for the number of elements in array
+ *
+ * Returns:  void
+ * Assertions:
+ *     Assumptions:
+ *         none
+ *     Results:
+ *         ptr and all the elements will be freed
+ **/
+
 void freeArray(void*** ptr, int len)
 {
     int i;
 
+    /* check if pointer is not null */
     if (*ptr)
     {
+        /* Free each element and free array pointer */
         for (i = 0; i < len; i++)
         {
             freePtr(&(*ptr)[i]);
@@ -79,7 +190,21 @@ void freeArray(void*** ptr, int len)
 }
 
 /**
- *  Utilities
+ * Name:     stringCompare
+ * Purpose:
+ *     Wrapper function for strcmp so that it returns sensible
+ *     boolean value. This is simply syntatic sugar.
+ *
+ * Parameters:
+ *   - str1 : A string
+ *   - str2 : A string
+ *
+ * Returns:  int / boolean
+ * Assertions:
+ *     Assumptions:
+ *         none
+ *     Results:
+ *         Returns TRUE (1) or FALSE (0)
  **/
 
 int stringCompare(char* str1, char* str2)
@@ -88,6 +213,7 @@ int stringCompare(char* str1, char* str2)
 
     returnCode = FALSE;
 
+    /* If string matches, return TRUE */
     if (! strcmp(str1, str2))
     {
         returnCode = TRUE;
@@ -96,14 +222,36 @@ int stringCompare(char* str1, char* str2)
     return returnCode;
 }
 
+/**
+ * Name:     upperRange
+ * Purpose:
+ *     Convert characters up to range to uppercase. Useful if needed to
+ *     convert the first n characters to uppercase, instead of the entire
+ *     string.
+ *
+ * Parameters:
+ *   - str   : A string to be changed to uppercase
+ *   - range : An integer for the range
+ *
+ * Returns:  void
+ * Assertions:
+ *     Assumptions:
+ *         str contains a string
+ *         range is less than string length and larger than one
+ *     Results:
+ *         Characters up to range will be uppercase
+ **/
+
 void upperRange(char* str, int range)
 {
     int i;
 
     i = 0;
 
-    if (str)
+    /* If string is valid */
+    if (str && ! stringCompare(str, ""))
     {
+        /* While within range, convert to uppercase */
         while (str[i] != '\0' && i < range)
         {
             str[i] = toupper(str[i]);
@@ -112,12 +260,31 @@ void upperRange(char* str, int range)
     }
 }
 
+/**
+ * Name:     doubleComare
+ * Purpose:
+ *     Compares two doubles. Needed due to how doubles are not precise
+ *     due to floating points. Inherited from Java.
+ *
+ * Parameters:
+ *   - num1 : First double
+ *   - num2 : Second double to compare two
+ *
+ * Returns:  int / boolean
+ * Assertions:
+ *     Assumptions:
+ *         none
+ *     Results:
+ *         Returns TRUE (1) or FALSE (0)
+ **/
+
 int doubleCompare(double num1, double num2)
 {
     int isEqual;
 
     isEqual = FALSE;
 
+    /* Check the double's tolerance value after getting the difference */
     if (fabs(num1 - num2) < TOLERANCE)
     {
         isEqual = TRUE;
@@ -126,6 +293,24 @@ int doubleCompare(double num1, double num2)
     return isEqual;
 }
 
+/**
+ * Name:     removeTrailingNewline
+ * Purpose:
+ *     Remove trailing newline in string. Useful for striping a string
+ *     from any trailing newline, cleaning the string up.
+ *
+ * Parameters:
+ *   - str : A string
+ *   - len : The string length
+ *
+ * Returns:  void
+ * Assertions:
+ *     Assumptions:
+ *         str is a valid string
+ *     Results:
+ *         Trailing newline will be removed from str
+ **/
+
 void removeTrailingNewline(char* str, int len)
 {
     int removed, i;
@@ -133,8 +318,10 @@ void removeTrailingNewline(char* str, int len)
     removed = FALSE;
     i = len;
 
-    if (str)
+    /* Check if string is valid */
+    if (str && ! stringCompare(str, ""))
     {
+        /* While newline is not yet removed and not at the start of string */
         while (! removed && --i >= 0)
         {
             if (str[i] == '\n')
@@ -146,6 +333,25 @@ void removeTrailingNewline(char* str, int len)
     }
 }
 
+/**
+ * Name:     countWords
+ * Purpose:
+ *     Count the number of words in string. Useful for either scanning
+ *     the contents of a string to variables, or checking if string
+ *     contains the right amount of inputs we're expecting.
+ *
+ * Parameters:
+ *   - str : A string
+ *
+ * Returns:  int
+ * Assertions:
+ *     Assumptions:
+ *         str is a valid string that has no leading
+ *         or trailing whitespaces
+ *     Results:
+ *         Returns number of words of string
+ **/
+
 int countWords(char* str)
 {
     int len, count, spaceCount, i;
@@ -155,44 +361,63 @@ int countWords(char* str)
     spaceCount = 0;
     i = 0;
 
-    if (str)
+    /* If string is valid */
+    if (str && ! stringCompare(str, ""))
     {
-        len = strlen(str);
+        len = strlen(str) + 1;
 
-        if (len != 0)
+        /* Check if string is all whitespace */
+        while (str[i] != '\0' && i < len)
         {
+            if (isspace(str[i]))
+            {
+                spaceCount++;
+            }
+            i++;
+        }
+
+        if (spaceCount != len - 1)
+        {
+            i = 0;
+
+            /* From the start of the string, count words */
             while (str[i] != '\0' && i < len)
             {
+                /* If whitespace, find the index for the next word */
                 if (isspace(str[i]))
                 {
-                    spaceCount++;
+                    count++;
+                    while (isspace(str[i]) && i++ < len);
                 }
                 i++;
             }
-
-            if (spaceCount != len)
-            {
-                i = 0;
-                while (str[i] != '\0' && i < len)
-                {
-                    if (isspace(str[i]))
-                    {
-                        count++;
-                        while (isspace(str[i]) && i++ < len);
-                    }
-                    i++;
-                }
-                count++;
-            }
-            else
-            {
-                count = 0;
-            }
+            count++;
+        }
+        else
+        {
+            count = 0;
         }
     }
 
     return count;
 }
+
+/**
+ * Name:     trim
+ * Purpose:
+ *     Remove leading and trailing whitespaces from string. Useful for
+ *     cleaning up a string.
+ *
+ * Parameters:
+ *   - str : A pointer to a string
+ *
+ * Returns:  void
+ * Assertions:
+ *     Assumptions:
+ *         str is a valid string in stored in heap
+ *     Results:
+ *         Leading and trailing whitespace is removed from string
+ **/
 
 void trim(char** str)
 {
@@ -206,15 +431,18 @@ void trim(char** str)
     i = 0;
     tempStr = NULL;
 
-    if (*str)
+    /* Check if str is a valid string */
+    if (*str && ! stringCompare(*str, ""))
     {
         len = strlen(*str) + 1;
 
+        /* Count the number of leading whitespace */
         while (isspace((*str)[i]) && ++i < len)
         {
             start++;
         }
 
+        /* If the string is all white space */
         if (start == (len - 1))
         {
             freePtr((void**)str);
@@ -222,30 +450,62 @@ void trim(char** str)
         }
         else
         {
+            /* Minus 2 because of array index and null terminator */
             i = len - 2;
 
+            /* Count number of trailing whitespaces */
             while (isspace((*str)[i]) && --i >= 0)
             {
                 end++;
             }
 
+            /* Init a new string with new size */
             newLen = len - (start + end);
             initString(&tempStr, newLen);
+
+            /* Copy the contents of the string, starting at start */
             strncpy(tempStr, &((*str)[start]), newLen - 1);
 
+            /**
+             * Reallocate the contents of the strings back to the
+             * original str variable
+             **/
             freePtr((void**)str);
             initStringWithContents(str, tempStr);
+
+            /* Garbage collection */
             freePtr((void**)&tempStr);
         }
     }
 }
 
+/**
+ * Name:     printStringArray
+ * Purpose:
+ *     Print each element in a string array. Useful for printing out
+ *     the contents of a string array.
+ *
+ * Parameters:
+ *   - format : The format string to print
+ *   - strArr : An array of strings
+ *   - len    : An int for the number or elements in strArr
+ *
+ * Returns:  void
+ * Assertions:
+ *     Assumptions:
+ *         strArr is a valid string array
+ *     Results:
+ *         Contents of strArr is printed
+ **/
+
 void printStringArray(char* format, char** strArr, int len)
 {
     int i;
 
+    /* Check if strArr is a valid pointer */
     if (strArr)
     {
+        /* Print each element in strArr to stdout */
         for (i = 0; i < len; i++)
         {
             fprintf(stdout, format, strArr[i]);
