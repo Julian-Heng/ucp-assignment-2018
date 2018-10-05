@@ -106,24 +106,10 @@ void upperRange(char* str, int range)
     {
         while (str[i] != '\0' && i < range)
         {
-            UPPER(str[i]);
+            str[i] = toupper(str[i]);
             i++;
         }
     }
-}
-
-int integerBoundaryCheck(int i, int lower, int upper)
-{
-    int isValid;
-
-    isValid = FALSE;
-
-    if (INT_BOUND(i, lower, upper))
-    {
-        isValid = TRUE;
-    }
-
-    return isValid;
 }
 
 int doubleCompare(double num1, double num2)
@@ -138,37 +124,6 @@ int doubleCompare(double num1, double num2)
     }
 
     return isEqual;
-}
-
-int doubleBoundaryCheck(double i, double lower, double upper)
-{
-    int isValid;
-
-    isValid = FALSE;
-
-    if (upper < lower)
-    {
-        if (DOUBLE_CHECK(i, lower))
-        {
-            isValid = TRUE;
-        }
-    }
-    else if (upper < lower)
-    {
-        if (DOUBLE_CHECK(upper, i))
-        {
-            isValid = TRUE;
-        }
-    }
-    else
-    {
-        if (DOUBLE_BOUND(i, lower, upper))
-        {
-            isValid = TRUE;
-        }
-    }
-
-    return isValid;
 }
 
 void removeTrailingNewline(char* str, int len)
