@@ -35,15 +35,16 @@
 #define RETURN_OK 0
 #define RETURN_INVALID_ARGS 1
 #define RETURN_INVALID_FILE 2
-#define RETURN_INVALID_CMD 3
+#define RETURN_ERROR_WRITE 3
+#define RETURN_INVALID_CMD 4
 
 #define MIN_ARGS 1
 #define MAX_CMD_LENGTH 8
-#define LOG_LENGTH 47
+#define LOG_LENGTH 43
 
 #define LOG_FILENAME "graphics.log"
 #define SPLIT "---"
-#define LOG_FORMAT "%s (%8.3f, %8.3f)-(%8.3f, %8.3f)"
+#define LOG_FORMAT "%s (%7.3f, %7.3f)-(%7.3f, %7.3f)"
 #define LOG_ERR "Error writing to log"
 
 int main(int argc, char** argv)
@@ -145,6 +146,7 @@ void processCommands(
     int* returnCode)
 {
     FILE* logFile;
+    int writeOK;
 
     PlotFunc funcCommand;
     void* plotData;
@@ -171,6 +173,7 @@ void processCommands(
     char tempChar;
 
     logFile = NULL;
+    writeOK = TRUE;
     funcCommand = NULL;
     plotData = NULL;
     errLine= 0;
@@ -197,16 +200,28 @@ void processCommands(
 #endif
     pat = '+';
 
+    tempDouble = 0.0;
+#ifndef SIMPLE
+    tempInt = 0;
+#endif
+    tempChar = '\0';
+
     *commandList = validateCommands(commandArr, numCommands, &errLine);
 
     if (*commandList)
     {
         logFile = fopen(LOG_FILENAME, "a");
-        printToFile(logFile, "%s\n", SPLIT, LOG_ERR);
-        clearScreen();
+        writeOK = appendToFile(logFile, "%s\n", SPLIT, LOG_ERR);
 
+        clearScreen();
         nodeFromList = (*commandList) -> head;
-        while (nodeFromList)
+
+        if (! writeOK)
+        {
+            printFileError(LOG_ERR, "");
+        }
+
+        while (nodeFromList && writeOK)
         {
             commandFromList = nodeFromList -> value;
             nodeFromList = nodeFromList -> next;
@@ -288,7 +303,13 @@ void processCommands(
 #ifdef DEBUG
                 fprintf(stderr, "%s\n", logLine);
 #endif
-                printToFile(logFile, "%s\n", logLine, LOG_ERR);
+                writeOK = appendToFile(logFile, "%s\n", logLine, LOG_ERR);
+
+                if (! writeOK)
+                {
+                    printFileError(LOG_ERR, "");
+                }
+
                 freePtr((void**)&logLine);
             }
         }
@@ -296,7 +317,15 @@ void processCommands(
         fprintf(stdout, "%s", "\033[0m");
         penDown();
         fclose(logFile);
-        *returnCode = RETURN_OK;
+
+        if (writeOK)
+        {
+            *returnCode = RETURN_OK;
+        }
+        else
+        {
+            *returnCode = RETURN_ERROR_WRITE;
+        }
     }
     else
     {
@@ -319,21 +348,29 @@ void calcNewPosition(
     xDelta = 0.0;
     yDelta = 0.0;
 
-    if (doubleCompare(angle, 0.0) || doubleCompare(angle, 360.0))
+    if (fmod(angle, 90.0) == 0.0)
     {
-        xDelta = length;
-    }
-    else if (doubleCompare(angle, 90.0))
-    {
-        yDelta = length;
-    }
-    else if (doubleCompare(angle, 180.0))
-    {
-        xDelta = -length;
-    }
-    else if (doubleCompare(angle, 270.0))
-    {
-        yDelta = -length;
+        if (doubleCompare(angle, 0.0) || doubleCompare(angle, 360.0))
+        {
+            xDelta = length;
+        }
+        else if (doubleCompare(angle, 90.0))
+        {
+            yDelta = length;
+        }
+        else if (doubleCompare(angle, 180.0))
+        {
+            xDelta = -length;
+        }
+        else if (doubleCompare(angle, 270.0))
+        {
+            yDelta = -length;
+        }
+        else
+        {
+            xDelta = length * cos(DEG_TO_RAD(angle));
+            yDelta = length * sin(DEG_TO_RAD(angle));
+        }
     }
     else
     {
@@ -406,7 +443,7 @@ LinkedList* validateCommands(
 
             if (stringCompare(tempStr, "ROTATE") &&
                 sscanf(commandArr[i], "%s %lf", tempStr, &real) == 2 &&
-                doubleBoundaryCheck(real, -360.0, 360.0))
+                DOUBLE_BOUND(real, -360.0, 360.0))
             {
                 insertLast(commandList, commandArr[i]);
                 commandValid = TRUE;
@@ -414,21 +451,21 @@ LinkedList* validateCommands(
             else if ((stringCompare(tempStr, "MOVE") ||
                       stringCompare(tempStr, "DRAW")) &&
                       sscanf(commandArr[i], "%s %lf", tempStr, &real) == 2 &&
-                      doubleBoundaryCheck(real, 0.0, -1.0))
+                      DOUBLE_CHECK(real, 0.0))
             {
                 insertLast(commandList, commandArr[i]);
                 commandValid = TRUE;
             }
             else if (stringCompare(tempStr, "FG") &&
                      sscanf(commandArr[i], "%s %d", tempStr, &integer) == 2 &&
-                     integerBoundaryCheck(integer, 0, 15))
+                     INT_BOUND(integer, 0, 15))
             {
                 insertLast(commandList, commandArr[i]);
                 commandValid = TRUE;
             }
             else if (stringCompare(tempStr, "BG") &&
                      sscanf(commandArr[i], "%s %d", tempStr, &integer) == 2 &&
-                     integerBoundaryCheck(integer, 0, 7))
+                     INT_BOUND(integer, 0, 7))
             {
                 insertLast(commandList, commandArr[i]);
                 commandValid = TRUE;
@@ -491,11 +528,12 @@ void printUsage(void)
         "    0 - No errors",
         "    1 - Invalid arguments",
         "    2 - Invalid file",
-        "    3 - Invalid command in file",
+        "    3 - Error writing to log file",
+        "    4 - Invalid command in file",
         ""
     };
 
-    printStringArray("%s\n", usageMsg, 24);
+    printStringArray("%s\n", usageMsg, GET_STACK_2D_ARRAY_SIZE(usageMsg));
 }
 
 void printVersion(void)
