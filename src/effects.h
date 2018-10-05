@@ -4,7 +4,7 @@
 typedef void (*PlotFunc)(void *plotData);
 
 /**
- * Draw a line from (x1,y1) to (x2,y2) using the *plotter function to actually
+ * Draw a line from (x1,y1) to (x2,y2) using the *plotter function to actually 
  * plot each "pixel" (character).
  */
 void line(int x1, int y1, int x2, int y2, PlotFunc plotter, void *plotData);
@@ -14,8 +14,8 @@ void line(int x1, int y1, int x2, int y2, PlotFunc plotter, void *plotData);
  */
 void clearScreen();
 
-/**
- * Moves the cursor to the bottom of the screen, so that the shell's prompt
+/** 
+ * Moves the cursor to the bottom of the screen, so that the shell's prompt 
  * doesn't overwrite our beautiful drawings.
  */
 void penDown();
