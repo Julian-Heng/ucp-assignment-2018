@@ -50,23 +50,23 @@ void testTools(int* status)
     /* 11 */ "Testing upperRange() with lowercase",
     /* 12 */ "Testing upperRange() with uppercase",
     /* 13 */ "Testing upperRange() with mix case",
-    /* 14 */ "Testing integerBoundaryCheck() [in bounds]",
-    /* 15 */ "Testing integerBoundaryCheck() [out of lower bounds]",
-    /* 16 */ "Testing integerBoundaryCheck() [out of upper bounds]",
-    /* 17 */ "Testing integerBoundaryCheck() [inclusive lower bounds]",
-    /* 18 */ "Testing integerBoundaryCheck() [inclusive upper bounds]",
+    /* 14 */ "Testing INT_BOUND() [in bounds]",
+    /* 15 */ "Testing INT_BOUND() [out of lower bounds]",
+    /* 16 */ "Testing INT_BOUND() [out of upper bounds]",
+    /* 17 */ "Testing INT_BOUND() [inclusive lower bounds]",
+    /* 18 */ "Testing INT_BOUND() [inclusive upper bounds]",
     /* 19 */ "Testing doubleCompare() with 1.0 and 1.0",
     /* 20 */ "Testing doubleCompare() with 1.0 and 1.1",
     /* 21 */ "Testing doubleCompare() with 1.1 and 1.0",
     /* 22 */ "Testing doubleCompare() with 1.1000010 and 1.1000010",
     /* 23 */ "Testing doubleCompare() with 1.1000010 and 1.1000011",
-    /* 24 */ "Testing doubleBoundaryCheck() [in bounds]",
-    /* 25 */ "Testing doubleBoundaryCheck() [out of lower bounds]",
-    /* 26 */ "Testing doubleBoundaryCheck() [out of upper bounds]",
-    /* 27 */ "Testing doubleBoundaryCheck() [inclusive lower bounds]",
-    /* 28 */ "Testing doubleBoundaryCheck() [inclusive upper bounds]",
-    /* 29 */ "Testing doubleBoundaryCheck() [just out of lower bounds]",
-    /* 30 */ "Testing doubleBoundaryCheck() [just out of upper bounds]",
+    /* 24 */ "Testing DOUBLE_BOUND() [in bounds]",
+    /* 25 */ "Testing DOUBLE_BOUND() [out of lower bounds]",
+    /* 26 */ "Testing DOUBLE_BOUND() [out of upper bounds]",
+    /* 27 */ "Testing DOUBLE_BOUND() [inclusive lower bounds]",
+    /* 28 */ "Testing DOUBLE_BOUND() [inclusive upper bounds]",
+    /* 29 */ "Testing DOUBLE_BOUND() [just out of lower bounds]",
+    /* 30 */ "Testing DOUBLE_BOUND() [just out of upper bounds]",
     /* 31 */ "Testing removeTrailingNewline() with a newline string",
     /* 32 */ "Testing removeTrailingNewline() without a newline string",
     /* 33 */ "Testing countWords() with empty string",
@@ -242,31 +242,31 @@ void testTools(int* status)
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[14]);
-        *status = printResult(integerBoundaryCheck(1, 0, 2));
+        *status = printResult(INT_BOUND(1, 0, 2));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[15]);
-        *status = printResult(! integerBoundaryCheck(-1, 0, 1));
+        *status = printResult(! INT_BOUND(-1, 0, 1));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[16]);
-        *status = printResult(! integerBoundaryCheck(10, 0, 8));
+        *status = printResult(! INT_BOUND(10, 0, 8));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[17]);
-        *status = printResult(integerBoundaryCheck(0, 0, 1));
+        *status = printResult(INT_BOUND(0, 0, 1));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[18]);
-        *status = printResult(integerBoundaryCheck(1, 0, 1));
+        *status = printResult(INT_BOUND(1, 0, 1));
     }
 
     if (*status)
@@ -302,43 +302,43 @@ void testTools(int* status)
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[24]);
-        *status = printResult(doubleBoundaryCheck(10.01, 1.01, 12.01));
+        *status = printResult(DOUBLE_BOUND(10.01, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[25]);
-        *status = printResult(! doubleBoundaryCheck(0.01, 1.01, 12.01));
+        *status = printResult(! DOUBLE_BOUND(0.01, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[26]);
-        *status = printResult(! doubleBoundaryCheck(13.01, 1.01, 12.01));
+        *status = printResult(! DOUBLE_BOUND(13.01, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[27]);
-        *status = printResult(doubleBoundaryCheck(1.01, 1.01, 12.01));
+        *status = printResult(DOUBLE_BOUND(1.01, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[28]);
-        *status = printResult(doubleBoundaryCheck(12.01, 1.01, 12.01));
+        *status = printResult(DOUBLE_BOUND(12.01, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[29]);
-        *status = printResult(! doubleBoundaryCheck(1.00, 1.01, 12.01));
+        *status = printResult(! DOUBLE_BOUND(1.00, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[30]);
-        *status = printResult(! doubleBoundaryCheck(12.02, 1.01, 12.01));
+        *status = printResult(! DOUBLE_BOUND(12.02, 1.01, 12.01));
     }
 
     if (*status)
