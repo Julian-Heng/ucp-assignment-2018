@@ -1,0 +1,5 @@
+\babel@toc {english}{}
+\contentsline {section}{\numberline {1}Design Philosophy}{2}
+\contentsline {section}{\numberline {2}Conversion from file to image}{3}
+\contentsline {section}{\numberline {3}Functions Descriptions}{4}
+\contentsline {section}{\numberline {4}Demonstration}{5}

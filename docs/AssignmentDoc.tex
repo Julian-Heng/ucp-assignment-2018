@@ -1,4 +1,4 @@
-\documentclass[10pt]{article}
+\documentclass[a4paper, 10pt, titlepage]{article}
 
 \usepackage[
     a4paper,
@@ -7,93 +7,37 @@
     tmargin=20mm,
     bmargin=20mm
 ]{geometry}
-\usepackage{listings}
-\usepackage[simplified]{pgf-umlcd}
-\usepackage{color}
-\usepackage{inconsolata}
-\usepackage{multicol}
-\usepackage{fancyhdr}
-\usepackage{nameref}
-\usepackage{enumitem}
 
-\makeatletter
-\newcommand*{\currentname}{\@currentlabelname}
-\makeatother
+\usepackage[english]{babel}
+\usepackage{blindtext}
 
-\definecolor{dkgreen}{rgb}{0,0.6,0}
-\definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{codegray}{gray}{0.9}
-\definecolor{mauve}{rgb}{0.58,0,0.82}
-
-\newcommand{\code}[1]{\tiny\texttt{#1}\normalsize}
-
-\lstset
-{
-    % -- Settings -- %
-    columns=flexible,
-    xleftmargin=0.65cm,
-    showstringspaces=false,
-    breaklines=true,
-    numbers=left,
-    breakatwhitespace=true,
-    language=c,
-    % -- Looks -- %
-    basicstyle=\linespread{1}\small\ttfamily,
-    numberstyle=\ttfamily\color{gray},
-    keywordstyle=\color{blue},
-    commentstyle=\color{dkgreen},
-    stringstyle=\color{mauve}
-}
-
-\pagestyle{fancy}
-\fancyhf{}
-\setlength\columnseprule{0.4pt}
-\setlength{\parindent}{0pt}
+\title{\huge Turtle program - UCP Assignment}
+\author{Julian Heng (19473701)}
+\date{October, 2018}
 
 \begin{document}
-\setlist[enumerate]{itemsep=0mm}
+
+\maketitle
+\tableofcontents
+\newpage
 
 \section{Design Philosophy}
-\fancyhf[HL]{\footnotesize\currentname}
-\fancyhf[FC]{\thepage}
-\fancyhf[FL]{\footnotesize{Julian Heng [19473701]}}
-\subsection{Description}
 
 \newpage
 
 
-\section{Source Code}
-    \fancyhead[R]{\footnotesize{Makefile}}
-    \lstinputlisting[language=make]{../src/Makefile}\newpage
+\section{Conversion from file to image}
 
-    \fancyhead[R]{\footnotesize{turtle.c}}
-    \lstinputlisting{../src/turtle.c}\newpage
+\newpage
 
-    \fancyhead[R]{\footnotesize{turtle.h}}
-    \lstinputlisting{../src/turtle.h}\newpage
 
-    \fancyhead[R]{\footnotesize{effects.c}}
-    \lstinputlisting{../src/effects.c}\newpage
+\section{Functions Descriptions}
 
-    \fancyhead[R]{\footnotesize{effects.h}}
-    \lstinputlisting{../src/effects.h}\newpage
+\newpage
 
-    \fancyhead[R]{\footnotesize{tools.c}}
-    \lstinputlisting{../src/tools.c}\newpage
 
-    \fancyhead[R]{\footnotesize{tools.h}}
-    \lstinputlisting{../src/tools.h}\newpage
+\section{Demonstration}
 
-    \fancyhead[R]{\footnotesize{fileIO.c}}
-    \lstinputlisting{../src/fileIO.c}\newpage
-
-    \fancyhead[R]{\footnotesize{fileIO.h}}
-    \lstinputlisting{../src/fileIO.h}\newpage
-
-    \fancyhead[R]{\footnotesize{test.c}}
-    \lstinputlisting{../src/test.c}\newpage
-
-    \fancyhead[R]{\footnotesize{test.h}}
-    \lstinputlisting{../src/test.h}\newpage
+\newpage
 
 \end{document}
