@@ -24,4 +24,4 @@ LinkedList* validateCommands(
 void printUsage(void);
 void printVersion(void);
 
-#endif
+#endif /* End of turtle.h */

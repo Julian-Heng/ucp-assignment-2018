@@ -29,4 +29,4 @@ int countWords(char* str);
 void trim(char** str);
 void printStringArray(char* format, char** strArr, int len);
 
-#endif
+#endif /* End of tools.h */

@@ -30,4 +30,4 @@ void clearListStack(LinkedList** list);
 void clearListMalloc(LinkedList** list);
 int isEmpty(LinkedList* list);
 
-#endif
+#endif /* End of linkedList.h */
