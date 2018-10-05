@@ -19,7 +19,7 @@ OBJ = ./objects/tools.o \
 PROG = ./build/turtle
 
 all: makedirs info
-	@echo -----[TurtleGraphics]-----
+	@echo =====[TurtleGraphics]=====
 	$(CC) $(CFLAGS) -c tools.c -o ./objects/tools.o
 	$(CC) $(CFLAGS) -c linkedList.c -o ./objects/linkedList.o
 	$(CC) $(CFLAGS) -c fileIO.c -o ./objects/fileIO.o
@@ -33,7 +33,7 @@ all: makedirs info
 	$(CC) $(OBJ) ./objects/turtle.o -lm -o $(PROG)
 
 simple: makedirs info
-	@echo -----[TurtleGraphics Simple]-----
+	@echo =====[TurtleGraphics Simple]=====
 	$(CC) $(CFLAGS) -c tools.c -o ./objects/tools.o
 	$(CC) $(CFLAGS) -c linkedList.c -o ./objects/linkedList.o
 	$(CC) $(CFLAGS) -c fileIO.c -o ./objects/fileIO.o
@@ -49,7 +49,7 @@ simple: makedirs info
 	@echo
 
 debug: makedirs info
-	@echo -----[Debug]-----
+	@echo =====[Debug]=====
 	$(CC) $(DCFLAGS) -c tools.c -o ./objects/tools.o
 	$(CC) $(DCFLAGS) -c linkedList.c -o ./objects/linkedList.o
 	$(CC) $(DCFLAGS) -c fileIO.c -o ./objects/fileIO.o
@@ -65,7 +65,7 @@ debug: makedirs info
 	@echo
 
 test: makedirs info debug
-	@echo -----[Test]-----
+	@echo =====[Test]=====
 	$(CC) $(DCFLAGS) -c test.c -o ./objects/test.o
 	$(CC) $(OBJ) ./objects/test.o -o ./build/test
 	./build/test
@@ -78,7 +78,7 @@ docs:
 	@bash -c '{ cd ../docs || exit; } && pdflatex AssignmentDoc.tex'
 
 info:
-	@echo -----[Makefile Variables]-----
+	@echo =====[Makefile Variables]=====
 	@echo "CC            = $(CC)"
 	@echo "CFLAGS        = $(CFLAGS)"
 	@echo "DCFLAGS       = $(DCFLAGS)"
