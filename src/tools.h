@@ -1,6 +1,9 @@
 #ifndef TOOLS_H
 #define TOOLS_H
 
+#define TOLERANCE 0.0000001
+#define PI 3.14159265358979323846
+
 #define DOUBLE_CHECK(a, b) \
     (((a) > (b)) || (doubleCompare((a), (b))))
 
@@ -9,10 +12,7 @@
 #define DOUBLE_BOUND(a, low, up) \
     ((DOUBLE_CHECK((a), (low))) && (DOUBLE_CHECK((up), (a))))
 
-#define TOLERANCE 0.0000001
-#define PI 3.14159265358979323846
 #define DEG_TO_RAD(i) ((i) * (PI / 180.0))
-
 #define GET_STACK_2D_ARRAY_SIZE(arr) \
     (sizeof((arr)) / sizeof((arr)[0]))
 
