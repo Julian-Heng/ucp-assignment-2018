@@ -1,5 +1,67 @@
 \babel@toc {english}{}
-\contentsline {section}{\numberline {1}Design Philosophy}{2}
-\contentsline {section}{\numberline {2}Conversion from file to image}{3}
-\contentsline {section}{\numberline {3}Functions Descriptions}{4}
-\contentsline {section}{\numberline {4}Demonstration}{5}
+\contentsline {section}{\numberline {1}Design Philosophy}{3}
+\contentsline {subsection}{\numberline {1.1}Program Flow}{3}
+\contentsline {subsection}{\numberline {1.2}Function Structure}{3}
+\contentsline {subsection}{\numberline {1.3}Printing}{3}
+\contentsline {subsection}{\numberline {1.4}Strings}{3}
+\contentsline {subsection}{\numberline {1.5}Boolean values}{3}
+\contentsline {subsection}{\numberline {1.6}Miscellaneous design}{4}
+\contentsline {section}{\numberline {2}Conversion from file to image}{5}
+\contentsline {subsection}{\numberline {2.1}My Implementation}{5}
+\contentsline {subsection}{\numberline {2.2}Alternate ways}{6}
+\contentsline {section}{\numberline {3}Functions Descriptions}{7}
+\contentsline {subsection}{\numberline {3.1}List of Standard Library Used}{7}
+\contentsline {subsection}{\numberline {3.2}fileIO.c}{7}
+\contentsline {subsubsection}{\numberline {3.2.1}readFileToArray}{7}
+\contentsline {subsubsection}{\numberline {3.2.2}appendToFile}{7}
+\contentsline {subsubsection}{\numberline {3.2.3}getFileStats}{7}
+\contentsline {subsubsection}{\numberline {3.2.4}printFileError}{7}
+\contentsline {subsection}{\numberline {3.3}linkedList.c}{8}
+\contentsline {subsubsection}{\numberline {3.3.1}initNode}{8}
+\contentsline {subsubsection}{\numberline {3.3.2}initList}{8}
+\contentsline {subsubsection}{\numberline {3.3.3}insertFirst}{8}
+\contentsline {subsubsection}{\numberline {3.3.4}insertLast}{8}
+\contentsline {subsubsection}{\numberline {3.3.5}removeFirst}{8}
+\contentsline {subsubsection}{\numberline {3.3.6}removeLast}{8}
+\contentsline {subsubsection}{\numberline {3.3.7}peekFirst}{8}
+\contentsline {subsubsection}{\numberline {3.3.8}peekLast}{8}
+\contentsline {subsubsection}{\numberline {3.3.9}getListLength}{8}
+\contentsline {subsubsection}{\numberline {3.3.10}clearListStack}{8}
+\contentsline {subsubsection}{\numberline {3.3.11}clearListMalloc}{8}
+\contentsline {subsubsection}{\numberline {3.3.12}isEmpty}{8}
+\contentsline {subsection}{\numberline {3.4}test.c}{8}
+\contentsline {subsubsection}{\numberline {3.4.1}testTools}{8}
+\contentsline {subsubsection}{\numberline {3.4.2}testFileIO}{8}
+\contentsline {subsubsection}{\numberline {3.4.3}testLinkedList}{8}
+\contentsline {subsubsection}{\numberline {3.4.4}printResult}{8}
+\contentsline {subsubsection}{\numberline {3.4.5}header}{8}
+\contentsline {subsection}{\numberline {3.5}tools.h}{8}
+\contentsline {subsubsection}{\numberline {3.5.1}initString}{8}
+\contentsline {subsubsection}{\numberline {3.5.2}initStringWithContents}{9}
+\contentsline {subsubsection}{\numberline {3.5.3}initStringArray}{9}
+\contentsline {subsubsection}{\numberline {3.5.4}freePtr}{9}
+\contentsline {subsubsection}{\numberline {3.5.5}freeArray}{9}
+\contentsline {subsubsection}{\numberline {3.5.6}stringCompare}{9}
+\contentsline {subsubsection}{\numberline {3.5.7}upperRange}{9}
+\contentsline {subsubsection}{\numberline {3.5.8}doubleCompare}{9}
+\contentsline {subsubsection}{\numberline {3.5.9}removeTrailingNewline}{9}
+\contentsline {subsubsection}{\numberline {3.5.10}countWords}{10}
+\contentsline {subsubsection}{\numberline {3.5.11}trim}{10}
+\contentsline {subsubsection}{\numberline {3.5.12}printStringArray}{10}
+\contentsline {subsection}{\numberline {3.6}turtle.h}{10}
+\contentsline {subsubsection}{\numberline {3.6.1}main}{10}
+\contentsline {subsubsection}{\numberline {3.6.2}checkArgs}{10}
+\contentsline {subsubsection}{\numberline {3.6.3}processArgs}{10}
+\contentsline {subsubsection}{\numberline {3.6.4}processCommands}{10}
+\contentsline {subsubsection}{\numberline {3.6.5}calcNewPosition}{10}
+\contentsline {subsubsection}{\numberline {3.6.6}doNothing}{10}
+\contentsline {subsubsection}{\numberline {3.6.7}putChar}{10}
+\contentsline {subsubsection}{\numberline {3.6.8}validateCommands}{10}
+\contentsline {subsubsection}{\numberline {3.6.9}printUsage}{10}
+\contentsline {subsubsection}{\numberline {3.6.10}printVersion}{10}
+\contentsline {section}{\numberline {4}Demonstration}{11}
+\contentsline {subsection}{\numberline {4.1}Help Message}{11}
+\contentsline {subsection}{\numberline {4.2}Version Message}{11}
+\contentsline {subsection}{\numberline {4.3}Valid File}{11}
+\contentsline {subsection}{\numberline {4.4}Invalid File}{14}
+\contentsline {subsection}{\numberline {4.5}Invalid Command Line Arguments}{14}

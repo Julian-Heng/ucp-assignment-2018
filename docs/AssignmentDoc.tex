@@ -1,4 +1,4 @@
-\documentclass[a4paper, 10pt, titlepage]{article}
+\documentclass[a4paper, 12pt, titlepage]{article}
 
 \usepackage[
     a4paper,
@@ -10,6 +10,36 @@
 
 \usepackage[english]{babel}
 \usepackage{blindtext}
+
+\usepackage{parskip}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage{listing}
+\usepackage{color}
+\usepackage{inconsolata}
+
+\newcommand{\code}[1]{\small\texttt{#1}\normalsize}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{codegray}{gray}{0.9}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset
+{
+    % -- Settings -- %
+    columns=fixed,
+    xleftmargin=0.65cm,
+    showstringspaces=false,
+    breaklines=true,
+    breakatwhitespace=true,
+    % -- Looks -- %
+    basicstyle=\footnotesize\ttfamily,
+    numberstyle=\ttfamily\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{dkgreen},
+    stringstyle=\color{mauve}
+}
 
 \title{\huge Turtle program - UCP Assignment}
 \author{Julian Heng (19473701)}
@@ -23,20 +53,569 @@
 
 \section{Design Philosophy}
 
+\subsection{Program Flow}
+
+In the main function of \code{turtle.c}, there are many conditionals
+before \code{processCommands()}. This is to ensure that when calling
+\code{processCommands()}, all the checks that preceed 
+\code{processCommands()} have returned TRUE, meaning that the program 
+can continue with drawing without any problems.
+
+\subsection{Function Structure}
+
+In addition to following the Curtin provided ``C/C++ Coding Guidelines'', 
+the functions in the turtle program share the same function structure.
+
+Each function is expected to have all variable declaration on the top, 
+followed by setting default values to the variables. After finishing the 
+actions in the functions, any local variables that is allocated memory 
+in the heap will be freed.
+
+\subsection{Printing}
+
+There are no \code{printf()} statements, instead opting for using 
+\code{fprintf()} statements instead. This way, it makes it easier to 
+see which messages are being print to stdout or to stderr. All output 
+to stdout will use \code{fprintf(stdout, ...)} while all debuging 
+information or error messages will use \code{fprintf(stderr, ...)}.
+
+\subsection{Strings}
+
+Most strings in this program are stored in the heap. The only strings 
+that uses the stack are strings used to store temporary information, 
+such as the command type from the input file. The choice for using 
+malloced strings instead of stack strings is to favour reliability 
+instead of convenience. This also serves as covering the edge case 
+for strings that can exceed the maximum set string length.
+
+\subsection{Boolean values}
+
+Integers are used to represent boolean values. They are used to exit 
+out of the program if an error occurs. In loops, boolean variables are 
+used to exit out of the loop if an error occurs.
+
+\subsection{Miscellaneous design}
+
+\begin{itemize}[label={--}]
+\begin{samepage}
+    \item Do not return expressions, i.e \code{return (i \% 2) == 0;}
+    \item Do not use ternary operations, i.e \code{a = i == 1 ? 0 : 1;}
+    \item Use brackets on if-else statements, even if the conditional 
+          statement is one line.
+    \item Use provided library functions if possible, i.e \code{isupper()} 
+          from \code{ctype.h}.
+    \item Don't compare boolean values with the \code{==} operator.
+\end{samepage}
+\end{itemize}
+
 \newpage
 
 
 \section{Conversion from file to image}
+
+\subsection{My Implementation}
+
+Here is an excerpt from a file of commands the turtle program will accept:
+
+\begin{lstlisting}
+PATTERN .
+
+DRAW 1
+ROTATE 180
+MOVE 1
+ROTATE -90
+MOVE 1
+ROTATE -90
+
+DRAW 2
+ROTATE 180
+MOVE 2
+ROTATE -90
+MOVE 1
+ROTATE -90
+
+DRAW 3
+ROTATE 180
+MOVE 3
+ROTATE -90
+MOVE 1
+ROTATE -90
+
+DRAW 4
+\end{lstlisting}
+
+Firstly, the program takes the entire file, line by line, and saves it to
+an array within memory. Then it would validate each command in the array. 
+If the command is invalid, the program will print an error, which includes 
+the problematic line and the line number, and exits with an error code of 
+4. If a command is valid, the command is then added to a linked list. The 
+linked list in question is used like a queue.
+
+After all commands are validated and added to a linked list, the turtle 
+program will start drawing or interpreting the commands in the list. When 
+calculating the new x and y coordinates, we have to take into consideration 
+of the limitations with drawing on the terminal.
+
+For example, drawing from the coordinates (0, 0) to (0, 0) will only draw 
+one character, even though the coordinates provided did not change. 
+Thus whenever we do a \code{MOVE} or \code{DRAW} command, the resulting 
+line will always be one unit length too long. To solve this overhead, 
+when a \code{MOVE} or \code{DRAW} command is invoked, we calculate the 
+new coordinates but using the length provided minus one. Thus, this gives 
+us the coordindates of the new set of coordinates, but only one unit away 
+in the direction of the current angle.
+
+Using the excerpt above, when the program encounter \code{DRAW 2}, 
+with the current angle still at 0.0 degrees and coordinates at (0, 0), 
+the coordinates for drawing will be (1, 0). After drawing, the coordinates 
+will then be updated to (2, 0) for the next \code{MOVE} or \code{DRAW} 
+command.
+
+\subsection{Alternate ways}
+
+In my implementation, the program reads through the command list once to 
+read it to an array, read it again to validate the commands and then 
+reading it once more to execute the command. An alternate way to this 
+approach is to instead perform the validation and the execution while reading 
+the file. This version of the program would consume less memory as it does 
+require an array for storing the file contents, but it would cause the 
+program to draw before doing any commands validation.
+
+In terms of calculating the new coordinates, instead of calculating the 
+drawing coordinates and updating after executing the command, we calculate 
+new coordinates using the full length, but then provide the drawing 
+coordinates to the drawing function. This isn't an improvement over my 
+implementation as it simply recalculates the drawing coordinates in a 
+different order.
 
 \newpage
 
 
 \section{Functions Descriptions}
 
+\subsection{List of Standard Library Used}
+
+\begin{itemize}[label={--}]
+    \item \code{ctype.h}
+    \item \code{math.h}
+    \item \code{stdio.h}
+    \item \code{stdlib.h}
+    \item \code{string.h}
+\end{itemize}
+
+\subsection{fileIO.c}
+\subsubsection{readFileToArray}
+
+Read a file into an array. Useful for getting the contents to a string 
+array for use in a program, instead of using the FILE pointer to process 
+the file. Used in \code{turtle.c} to get the input file into an array.
+
+\subsubsection{appendToFile}
+
+Append a line to a file. This is used in \code{turtle.c} for adding log 
+entries to the log file. It already assums that the FILE pointer to the 
+log file is already set.
+
+\subsubsection{getFileStats}
+
+Get a file's length and maximum line lenght. Useful for getting information 
+needed to create an array to fit the file or checking if the file is valid. 
+Used in \code{turtle.c} to get the right dimensions for allocating memory 
+for the string array to hold the file contents.
+
+\subsubsection{printFileError}
+
+Print an error message if a file error occurs. Simply a wrapper function to 
+format and print a file error. Used in almost all file input and output 
+operations for if an error were to occur.
+
+\subsection{linkedList.c}
+\subsubsection{initNode}
+
+\subsubsection{initList}
+
+\subsubsection{insertFirst}
+
+\subsubsection{insertLast}
+
+\subsubsection{removeFirst}
+
+\subsubsection{removeLast}
+
+\subsubsection{peekFirst}
+
+\subsubsection{peekLast}
+
+\subsubsection{getListLength}
+
+\subsubsection{clearListStack}
+
+\subsubsection{clearListMalloc}
+
+\subsubsection{isEmpty}
+
+\subsection{test.c}
+\subsubsection{testTools}
+
+\subsubsection{testFileIO}
+
+\subsubsection{testLinkedList}
+
+\subsubsection{printResult}
+
+\subsubsection{header}
+
+\subsection{tools.h}
+\subsubsection{initString}
+
+Allocate memory in the heap for a string and then fill the string with null 
+terminators. Required as to prevent manually setting null terminator at the 
+end of a string and gives a clean state to a string. Used mostly in 
+\code{tools.c} for initialising string arrays or in \code{turtle.c} for 
+getting filenames to a string.
+
+\subsubsection{initStringWithContents}
+
+Allocate memory in the heap for a string and then copy the contents of the 
+imported string to the new string. Useful for initialising a string with a
+set string. Used as an alternative to \code{initString}.
+
+\subsubsection{initStringArray}
+
+Allocate memory in the heap for a string array. Essentially the same as 
+\code{initString} but done in a loop for setting up a string array, thus 
+creating a string array full of clean strings.
+
+\subsubsection{freePtr}
+
+Wrapper function for \code{free}. Does two tasks; free the pointer and 
+set it to null. Simply a wrapper, nothing else.
+
+\subsubsection{freeArray}
+
+Wrapper function for \code{free} on arrays. Same as freePtr but is applied 
+to all elements in array. Simply a wrapper, nothing else.
+
+\subsubsection{stringCompare}
+
+Wrapper function for \code{strcmp} so that it returns a sensible boolean 
+value. This is simply syntatic sugar.
+
+\subsubsection{upperRange}
+
+Convert characters up to a range to uppercase. This function is primarily 
+used when converting command names to uppercase. A range is needed because 
+applying uppercase to the entire string can cause the pattern to also change 
+to uppercase. This is undesirable, thus using a range prevents this problem.
+
+\subsubsection{doubleCompare}
+
+Compares two doubles. Needed due to how doubles are not precise because of 
+floating points. Used to check if a double is within range of two doubles 
+inclusive.
+
+\subsubsection{removeTrailingNewline}
+
+Remove trailing newline in string. Used in \code{fileIO.c} when recording 
+each line in a file to an array.
+
+\subsubsection{countWords}
+
+Count the number of words in string. Useful for either scanning the contents 
+of a string to variables, or checking if string contains the right amount of 
+inputs we're expecting. Used for command validation in \code{turtle.c}.
+
+\subsubsection{trim}
+
+Remove leading and trailing whitespaces from string. Used for input 
+validation in \code{turtle.c} for accepting commands with leading or trailing 
+whitespaces.
+
+\subsubsection{printStringArray}
+
+Print each element in a string array. Useful for printing out the contents 
+of a string array. Used in \code{turtle.c} for printing out help and version 
+messages.
+
+\subsection{turtle.h}
+\subsubsection{main}
+
+\subsubsection{checkArgs}
+
+\subsubsection{processArgs}
+
+\subsubsection{processCommands}
+
+\subsubsection{calcNewPosition}
+
+\subsubsection{doNothing}
+
+\subsubsection{putChar}
+
+\subsubsection{validateCommands}
+
+\subsubsection{printUsage}
+
+\subsubsection{printVersion}
+
+
 \newpage
 
 
 \section{Demonstration}
+
+\subsection{Help Message}
+
+\begin{lstlisting}
+$ turtle --help
+Usage: turtle [FILE]
+Draw a graphic from commands in FILE
+Example: turtle ./picture.txt
+
+Valid commands:
+
+    +---------+-------+-----------------------+
+    | Command | Type  | Range                 |
+    +---------+-------+-----------------------+
+    | ROTATE  | float | -360 to 360 inclusive |
+    | MOVE    | float | Positive              |
+    | DRAW    | float | Positive              |
+    | FG      | int   | 0 to 15 inclusive     |
+    | BG      | int   | 0 to 7 inclusive      |
+    | PATTERN | char  | Any character         |
+    +---------+-------+-----------------------+
+
+Exit values:
+
+    0 - No errors
+    1 - Invalid arguments
+    2 - Invalid file
+    3 - Error writing to log file
+    4 - Invalid command in file
+
+\end{lstlisting}
+
+\subsection{Version Message}
+
+\begin{lstlisting}
+$ turtle --version
+turtle: A terminal drawing program
+Written by Julian Heng (19473701)
+
+Compiler      : gcc (Ubuntu 7.3.0-27ubuntu1~18.04) 7.3.0
+Compile by    : 19473701@314-buntu
+Compile time  : 2018-10-06T23:30:42+08:00
+Last Modified : 2018-10-05T21:01:36+08:00
+\end{lstlisting}
+
+\subsection{Valid File}
+
+\begin{lstlisting}
+$ cat ../test/turtle/pyramid.txt 
+pattern .
+
+draw 1
+rotate 180
+move 1
+rotate -90
+move 1
+rotate -90
+
+draw 2
+rotate 180
+move 2
+rotate -90
+move 1
+rotate -90
+
+draw 3
+rotate 180
+move 3
+rotate -90
+move 1
+rotate -90
+
+draw 4
+rotate 180
+move 4
+rotate -90
+move 1
+rotate -90
+
+draw 5
+rotate 180
+move 5
+rotate -90
+move 1
+rotate -90
+
+draw 6
+rotate 180
+move 6
+rotate -90
+move 1
+rotate -90
+
+draw 7
+rotate 180
+move 7
+rotate -90
+move 1
+rotate -90
+
+draw 8
+rotate 180
+move 8
+rotate -90
+move 1
+rotate -90
+
+draw 9
+rotate 180
+move 9
+rotate -90
+move 1
+rotate -90
+
+draw 10
+rotate 180
+move 10
+rotate -90
+move 1
+rotate -90
+
+draw 9
+rotate 180
+move 9
+rotate -90
+move 1
+rotate -90
+
+draw 8
+rotate 180
+move 8
+rotate -90
+move 1
+rotate -90
+
+draw 7
+rotate 180
+move 7
+rotate -90
+move 1
+rotate -90
+
+draw 6
+rotate 180
+move 6
+rotate -90
+move 1
+rotate -90
+
+draw 5
+rotate 180
+move 5
+rotate -90
+move 1
+rotate -90
+
+draw 4
+rotate 180
+move 4
+rotate -90
+move 1
+rotate -90
+
+draw 3
+rotate 180
+move 3
+rotate -90
+move 1
+rotate -90
+
+draw 2
+rotate 180
+move 2
+rotate -90
+move 1
+rotate -90
+
+draw 1
+rotate 180
+move 1
+rotate -90
+move 1
+rotate -90
+
+$ turtle ../test/turtle/pyramid.txt
+.
+..
+...
+....
+.....
+......
+.......
+........
+.........
+..........
+.........
+........
+.......
+......
+.....
+....
+...
+..
+.
+\end{lstlisting}
+
+\subsection{Invalid File}
+
+\begin{lstlisting}
+$ cat ../test/turtle/small_fail.txt
+fgg 5
+$ turtle ../test/turtle/small_fail.txt
+Invalid command on line 1: fgg 5
+$ echo $?
+4
+$ turtle `a non existant file'
+Error opening `a non existant file': No such file or directory
+$ echo $?
+2
+\end{lstlisting}
+
+\subsection{Invalid Command Line Arguments}
+
+\begin{lstlisting}
+$ turtle
+Usage: turtle [FILE]
+Draw a graphic from commands in FILE
+Example: turtle ./picture.txt
+
+Valid commands:
+
+    +---------+-------+-----------------------+
+    | Command | Type  | Range                 |
+    +---------+-------+-----------------------+
+    | ROTATE  | float | -360 to 360 inclusive |
+    | MOVE    | float | Positive              |
+    | DRAW    | float | Positive              |
+    | FG      | int   | 0 to 15 inclusive     |
+    | BG      | int   | 0 to 7 inclusive      |
+    | PATTERN | char  | Any character         |
+    +---------+-------+-----------------------+
+
+Exit values:
+
+    0 - No errors
+    1 - Invalid arguments
+    2 - Invalid file
+    3 - Error writing to log file
+    4 - Invalid command in file
+
+$ echo $?
+1
+\end{lstlisting}
 
 \newpage
 
