@@ -532,7 +532,7 @@ void printUsage(void)
         ""
     };
 
-    printStringArray("%s\n", usageMsg, GET_STACK_2D_ARRAY_SIZE(usageMsg));
+    printStringArray("%s\n", usageMsg, GET_STACK_ARRAY_SIZE(usageMsg));
 }
 
 void printVersion(void)
