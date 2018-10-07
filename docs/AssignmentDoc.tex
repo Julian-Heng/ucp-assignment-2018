@@ -295,7 +295,7 @@ stack structure.
 
 \subsubsection{insertLast}
 
-Insert a linked list not to the tail of the linked list. Useful for a 
+Insert a linked list node to the tail of the linked list. Useful for a 
 queue structure.
 
 \subsubsection{removeFirst}
@@ -323,12 +323,22 @@ the program, used as a generic function in the linked list.
 Get the number of linked list node in the linked list. Not part of the 
 program, used as a generic function in the linked list.
 
+\subsubsection{getListLengthRecurse}
+
+A recursive function to get the number of nodes in the linked list. Used in 
+conjunction to \code{getListLength}.
+
 \subsubsection{clearListStack}
 
 Clear all nodes in the linked list. Required as all the linked list nodes are 
 allocated in the heap. This version of the clear list function assumes that 
 all the pointers in the linked list nodes are stored in the stack, thus it 
 does not attempt to free the node values.
+
+\subsubsection{clearListStackRecurse}
+
+A recursive function to clear all the nodes in the linked list. Used in 
+conjunction to \code{clearListStack}.
 
 \subsubsection{clearListMalloc}
 
@@ -339,6 +349,21 @@ frees the node values as well as the linked list node. In cases where a
 linked list contains both values stored in the heap and stack, it is 
 recommended to manually free the list by removing the linked list node from 
 the list.
+
+\subsubsection{clearListMallocRecurse}
+
+A recursive function to clear all the nodes in the linked list. Used in 
+conjunction to \code{clearListMalloc}.
+
+\subsubsection{setNextToNode}
+
+Set a linked list node to the next pointer of another linked list node. This 
+function is used internally within \code{linkedList.c} as a static function.
+
+\subsubsection{setPrevToNode}
+
+Set a linked list node to the prev pointer of another linked list node. This 
+function is used internally within \code{linkedList.c} as a static function.
 
 \subsubsection{isEmpty}
 
