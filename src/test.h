@@ -1,6 +1,7 @@
 #ifndef TEST_H
 #define TEST_H
 
+/* Function prototypes */
 void testTools(int* status);
 void testFileIO(int* status);
 void testLinkedList(int* status);

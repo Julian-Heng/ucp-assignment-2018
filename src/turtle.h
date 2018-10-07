@@ -1,6 +1,7 @@
 #ifndef TURTLE_H
 #define TURTLE_H
 
+/* Function prototypes */
 int checkArgs(int argc, char** argv);
 int processArgs(char* arg, char** filename);
 void processCommands(

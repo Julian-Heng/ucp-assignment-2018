@@ -1,8 +1,26 @@
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
 
+/* Typedef linked list node and linked list */
 typedef struct LinkedListNode LinkedListNode;
 typedef struct LinkedList LinkedList;
+
+/**
+ * Struct Name: LinkedListNode
+ * Purpose:     A node that is part of a linked list. Contains two
+ *              pointer to another node, one for previous node and
+ *              one for next node. By default, both will point to null.
+ *              This node is node is designed to be doubly linked
+ *
+ *          +-----------+           +-----------+
+ *          |           |   next    |           |
+ *          |           | --------> |           |
+ * Null <-- |   node    |           |   node    | --> Null
+ *          |           | <-------- |           |
+ *          |           |   prev    |           |
+ *          +-----------+           +-----------+
+ *
+ **/
 
 struct LinkedListNode
 {
@@ -11,12 +29,30 @@ struct LinkedListNode
     void* value;
 };
 
+/**
+ * Struct Name: LinkedList
+ * Purpose:     A "wrapper" struct for containing linked list nodes.
+ *              It's essentially providing a pointer to the start and
+ *              the end of a list. This list is designed to be double
+ *              ended
+ *
+ *              +-----------+           +-----------+
+ *     Null <-- |           |   next    |           | --> Null
+ *              |           | --------> |           |
+ * +------+     |   node    |           |   node    |     +------+
+ * | head | --> |           | <-------- |           | <-- | tail |
+ * +------+     |           |   prev    |           |     +------+
+ *              +-----------+           +-----------+
+ *
+ **/
+
 struct LinkedList
 {
     LinkedListNode* head;
     LinkedListNode* tail;
 };
 
+/* Function prototypes */
 LinkedListNode* initNode(void* newValue);
 LinkedList* initList();
 void insertFirst(LinkedList* list, void* newValue);
