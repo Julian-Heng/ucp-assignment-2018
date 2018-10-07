@@ -6,3 +6,4 @@ objects/
 *.log
 docs/*.aux
 docs/*.pdf
+docs/*.toc
