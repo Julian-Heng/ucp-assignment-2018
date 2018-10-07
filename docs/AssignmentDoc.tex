@@ -8,40 +8,44 @@
     bmargin=20mm
 ]{geometry}
 
-\usepackage[english]{babel}
-\usepackage{blindtext}
-
-\usepackage{parskip}
-\usepackage{listings}
-\usepackage{enumitem}
-\usepackage{listing}
 \usepackage{color}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
 \usepackage{inconsolata}
+\usepackage{listings}
+\usepackage{listing}
+\usepackage{nameref}
+\usepackage{parskip}
+\usepackage{tocloft}
 
 \newcommand{\code}[1]{\small\texttt{#1}\normalsize}
 
+\definecolor{codegray}{gray}{0.9}
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{codegray}{gray}{0.9}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
 \lstset
 {
     % -- Settings -- %
-    columns=fixed,
-    xleftmargin=0.65cm,
-    showstringspaces=false,
-    breaklines=true,
     breakatwhitespace=true,
+    breaklines=true,
+    columns=fixed,
+    showstringspaces=false,
+    xleftmargin=0.65cm,
     % -- Looks -- %
     basicstyle=\footnotesize\ttfamily,
-    numberstyle=\ttfamily\color{gray},
-    keywordstyle=\color{blue},
     commentstyle=\color{dkgreen},
+    keywordstyle=\color{blue},
+    numberstyle=\ttfamily\color{gray},
     stringstyle=\color{mauve}
 }
 
-\title{\huge Turtle program - UCP Assignment}
+\fancyhf{}
+\setlength\columnseprule{0.4pt}
+\setlength{\parindent}{0pt}
+
+\title{\huge \textbf{UCP Assignment\\Turtle program}}
 \author{Julian Heng (19473701)}
 \date{October, 2018}
 
@@ -51,15 +55,22 @@
 \tableofcontents
 \newpage
 
+\pagestyle{fancy}
+
+\fancyhf[HL]{\footnotesize{UCP Assignment - Turtle Program}}
+\fancyhf[FC]{\thepage}
+\fancyhf[FL]{\footnotesize{Julian Heng (19473701)}}
+
 \section{Design Philosophy}
+\fancyhf[HR]{\footnotesize{Design Philosophy}}
 
 \subsection{Program Flow}
 
-In the main function of \code{turtle.c}, there are many conditionals
-before \code{processCommands()}. This is to ensure that when calling
-\code{processCommands()}, all the checks that preceed 
-\code{processCommands()} have returned TRUE, meaning that the program 
-can continue with drawing without any problems.
+In the main function of \code{turtle.c}, there are many conditionals 
+before \code{processCommands()}. This is to ensure that when calling 
+\code{processCommands()}, all the checks that preceed it have returned 
+TRUE, meaning that the program can continue with drawing without any 
+problems.
 
 \subsection{Function Structure}
 
@@ -92,7 +103,9 @@ for strings that can exceed the maximum set string length.
 
 Integers are used to represent boolean values. They are used to exit 
 out of the program if an error occurs. In loops, boolean variables are 
-used to exit out of the loop if an error occurs.
+used to exit out of the loop if an error occurs. Boolean variables in 
+functions are set to their default values on the top of the function, then 
+modified if a condition is satisfied.
 
 \subsection{Miscellaneous design}
 
@@ -100,18 +113,19 @@ used to exit out of the loop if an error occurs.
 \begin{samepage}
     \item Do not return expressions, i.e \code{return (i \% 2) == 0;}
     \item Do not use ternary operations, i.e \code{a = i == 1 ? 0 : 1;}
+    \item Don't compare boolean values with the \code{==} operator.
     \item Use brackets on if-else statements, even if the conditional 
           statement is one line.
-    \item Use provided library functions if possible, i.e \code{isupper()} 
+    \item Use provided library functions if possible, i.e \code{toupper()} 
           from \code{ctype.h}.
-    \item Don't compare boolean values with the \code{==} operator.
 \end{samepage}
 \end{itemize}
 
 \newpage
 
 
-\section{Conversion from file to image}
+\section{Conversion From File to Image}
+\fancyhf[HR]{\footnotesize{Conversion From File to Image}}
 
 \subsection{My Implementation}
 
@@ -192,6 +206,7 @@ different order.
 
 
 \section{Functions Descriptions}
+\fancyhf[HR]{\footnotesize{Functions Descriptions}}
 
 \subsection{List of Standard Library Function Used}
 
@@ -210,31 +225,32 @@ different order.
         \end{itemize}
     \item \code{stdio.h}
         \begin{itemize}[label={--}, noitemsep]
-            \item \code{fprintf}
-            \item \code{fopen}
             \item \code{fclose}
-            \item \code{fgets}
-            \item \code{perror}
             \item \code{fgetc}
-            \item \code{fseek}
-            \item \code{sscanf}
-            \item \code{sprintf}
+            \item \code{fgets}
+            \item \code{fopen}
+            \item \code{fprintf}
             \item \code{fputc}
+            \item \code{fseek}
+            \item \code{perror}
+            \item \code{sprintf}
+            \item \code{sscanf}
         \end{itemize}
     \item \code{stdlib.h}
         \begin{itemize}[label={--}, noitemsep]
-            \item \code{free}
             \item \code{malloc}
+            \item \code{free}
         \end{itemize}
     \item \code{string.h}
         \begin{itemize}[label={--}, noitemsep]
-            \item \code{strncpy}
-            \item \code{strcmp}
             \item \code{memset}
+            \item \code{strcmp}
             \item \code{strlen}
+            \item \code{strncpy}
         \end{itemize}
 \end{itemize}
 
+\pagebreak
 \subsection{fileIO.c}
 \subsubsection{readFileToArray}
 
@@ -261,31 +277,75 @@ Print an error message if a file error occurs. Simply a wrapper function to
 format and print a file error. Used in almost all file input and output 
 operations for if an error were to occur.
 
+\pagebreak
 \subsection{linkedList.c}
 \subsubsection{initNode}
 
+Create a linked list node to be inserted into a linked list. Required to 
+set values into a linked list node for a linked list.
+
 \subsubsection{initList}
+
+Create a linked list. Required to create a linked list for inserting nodes.
 
 \subsubsection{insertFirst}
 
+Insert a linked list node to the head of the linked list. Useful for a 
+stack structure.
+
 \subsubsection{insertLast}
+
+Insert a linked list not to the tail of the linked list. Useful for a 
+queue structure.
 
 \subsubsection{removeFirst}
 
+Remove a linked list node from the head of the linked list. Useful for a 
+stack structure.
+
 \subsubsection{removeLast}
+
+Remove a linked list node from the tail of the linked list. Useful for a 
+queue structure.
 
 \subsubsection{peekFirst}
 
+Get the memory address of the first linked list node in the list. Not part of 
+the program, used as a generic function in the linked list.
+
 \subsubsection{peekLast}
+
+Get the memory address of the last linked list node in the list. Not part of 
+the program, used as a generic function in the linked list.
 
 \subsubsection{getListLength}
 
+Get the number of linked list node in the linked list. Not part of the 
+program, used as a generic function in the linked list.
+
 \subsubsection{clearListStack}
+
+Clear all nodes in the linked list. Required as all the linked list nodes are 
+allocated in the heap. This version of the clear list function assumes that 
+all the pointers in the linked list nodes are stored in the stack, thus it 
+does not attempt to free the node values.
 
 \subsubsection{clearListMalloc}
 
+Clear all nodes in the linked list. Required as all the linked list nodes are 
+allocated in the heap. This version of the clear list function assumes that 
+all the pointers in the linked list nodes are stored in the heap, thus it 
+frees the node values as well as the linked list node. In cases where a 
+linked list contains both values stored in the heap and stack, it is 
+recommended to manually free the list by removing the linked list node from 
+the list.
+
 \subsubsection{isEmpty}
 
+Checks if the linked list contains no linked list nodes. Useful for checking 
+iterating through a linked list.
+
+\pagebreak
 \subsection{test.c}
 \subsubsection{testTools}
 
@@ -314,6 +374,7 @@ evaulated conditional. Purely eye candy.
 
 A function that prints a message and a line of equal length. Purely eye candy.
 
+\pagebreak
 \subsection{tools.h}
 \subsubsection{initString}
 
@@ -386,32 +447,66 @@ Print each element in a string array. Useful for printing out the contents
 of a string array. Used in \code{turtle.c} for printing out help and version 
 messages.
 
+\pagebreak
 \subsection{turtle.h}
 \subsubsection{main}
 
+The main function which starts the entire program. Set's up the structure 
+and the flow of events to draw images in the terminal. First few statements 
+are validating input file before processing the inputs.
+
 \subsubsection{checkArgs}
+
+Part one of validating inputs. Checks if program has the right amount of 
+command line arguments. We're expecting a minimum of one command line 
+argument which is the input filename or displaying help messages.
 
 \subsubsection{processArgs}
 
+Part two of validating inputs. This checks if we're calling the help message 
+or the version message or we're giving the program an input file.
+
 \subsubsection{processCommands}
+
+The function which does most of the drawing. After the file is successfully 
+stored into a string array, the commands are validated executed.
 
 \subsubsection{calcNewPosition}
 
+Calculates new x and y coordinates using the current angle and length.
+Used when \code{MOVE} or \code{DRAW} is invoked.
+
 \subsubsection{doNothing}
+
+A function specifically given to \code{MOVE} since we're not printing any 
+characters to the screen when moving. We don't use putChar with a whitespace 
+because it would erase the drawing on screen.
 
 \subsubsection{putChar}
 
+A function specifically given to \code{DRAW}. Simply places the given 
+character onto stdout.
+
 \subsubsection{validateCommands}
+
+Checks all the commands in the command array and determines if they're valid.
+Strips any leading or trailing whitespaces and make the command names case 
+insensitive.
 
 \subsubsection{printUsage}
 
+Prints the usage message for basic usage.
+
 \subsubsection{printVersion}
+
+Prints the version/build information of the program.
 
 
 \newpage
 
 
 \section{Demonstration}
+\fancyhf[HR]{\footnotesize{Demonstration}}
 
 \subsection{Help Message}
 
@@ -633,6 +728,7 @@ $ echo $?
 2
 \end{lstlisting}
 
+\pagebreak
 \subsection{Invalid Command Line Arguments}
 
 \begin{lstlisting}
