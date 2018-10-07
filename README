@@ -1,0 +1,62 @@
+   ###########################################
+######## UCP Assignment - Turtle Program ########
+   ###########################################
+
+...Written by Julian Heng (19473701)
+
+   ###############################
+######## Directory Structure ########
+   ###############################
+
+.
+├── docs        | Documentation
+├── src         | Source files
+└── test        | Test folder
+    ├── test    | Other test files
+    └── turtle  | Turtle input test files
+
+   ########################
+######## Instructions ########
+   ########################
+
+To make normal:
+  $ cd src
+  $ make
+
+To make simple:
+  $ cd src
+  $ make simple
+
+To make debug:
+  $ cd src
+  $ make debug
+
+To clean src directory:
+  $ make clean
+
+Help message:
+
+Usage: turtle [FILE]
+Draw a graphic from commands in FILE
+Example: turtle ./picture.txt
+
+Valid commands:
+
+    +---------+-------+-----------------------+
+    | Command | Type  | Range                 |
+    +---------+-------+-----------------------+
+    | ROTATE  | float | -360 to 360 inclusive |
+    | MOVE    | float | Positive              |
+    | DRAW    | float | Positive              |
+    | FG      | int   | 0 to 15 inclusive     |
+    | BG      | int   | 0 to 7 inclusive      |
+    | PATTERN | char  | Any character         |
+    +---------+-------+-----------------------+
+
+Exit values:
+
+    0 - No errors
+    1 - Invalid arguments
+    2 - Invalid file
+    3 - Error writing to log file
+    4 - Invalid command in file
