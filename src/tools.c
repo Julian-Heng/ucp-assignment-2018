@@ -88,46 +88,6 @@ void initStringWithContents(char** str, char* contents)
 }
 
 /**
- * Name:     initStringArray
- * Purpose:
- *     Allocate memory in the heap for a string array.
- *     Essentially the same as initString() but done in a loop
- *     for setting up a string array, thus creating a string
- *     array full of clean strings.
- *
- * Parameters:
- *   - arr  : A pointer to an array of strings
- *   - rows : An integer for the number of rows
- *   - cols : An integer for the number of columns
- *            or maximum string length
- *
- * Returns:  void
- * Assertions:
- *     Assumptions:
- *         rows and cols are 1 or larger
- *     Results:
- *         arr will be allocated memory for storing arrays of strings
- **/
-
-void initStringArray(char*** arr, int rows, int cols)
-{
-    int i;
-
-    /* Allocate memory in heap for array */
-    *arr = (char**)malloc(rows * sizeof(char*));
-
-    /* Check if malloc failed */
-    if (*arr)
-    {
-        /* Call initString on each element in string array */
-        for (i = 0; i < rows; i++)
-        {
-            initString((*arr) + i, cols);
-        }
-    }
-}
-
-/**
  * Name:     freePtr
  * Purpose:
  *     Wrapper function for free(). Does two tasks; free the pointer
@@ -152,40 +112,6 @@ void freePtr(void** ptr)
         /* Free and set to NULL */
         free(*ptr);
         *ptr = NULL;
-    }
-}
-
-/**
- * Name:     freeArray
- * Purpose:
- *     Wrapper function for free() on arrays. Same as freePtr but
- *     is applied to all elements in array. Simply a wrapper, nothing else.
- *
- * Parameters:
- *   - ptr : A void pointer to an array to be freed
- *   - len : An integer for the number of elements in array
- *
- * Returns:  void
- * Assertions:
- *     Assumptions:
- *         none
- *     Results:
- *         ptr and all the elements will be freed
- **/
-
-void freeArray(void*** ptr, int len)
-{
-    int i;
-
-    /* check if pointer is not null */
-    if (*ptr)
-    {
-        /* Free each element and free array pointer */
-        for (i = 0; i < len; i++)
-        {
-            freePtr(&(*ptr)[i]);
-        }
-        freePtr((void**)ptr);
     }
 }
 
@@ -223,11 +149,9 @@ int stringCompare(char* str1, char* str2)
 }
 
 /**
- * Name:     upperRange
+ * Name:     upper
  * Purpose:
- *     Convert characters up to range to uppercase. Useful if needed to
- *     convert the first n characters to uppercase, instead of the entire
- *     string.
+ *     Convert all characters in string to uppercase
  *
  * Parameters:
  *   - str   : A string to be changed to uppercase
@@ -242,7 +166,7 @@ int stringCompare(char* str1, char* str2)
  *         Characters up to range will be uppercase
  **/
 
-void upperRange(char* str, int range)
+void upper(char* str)
 {
     int i;
 
@@ -252,7 +176,7 @@ void upperRange(char* str, int range)
     if (str && ! stringCompare(str, ""))
     {
         /* While within range, convert to uppercase */
-        while (str[i] != '\0' && i < range)
+        while (str[i] != '\0')
         {
             str[i] = toupper(str[i]);
             i++;

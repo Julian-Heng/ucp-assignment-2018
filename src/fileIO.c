@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "tools.h"
+#include "linkedList.h"
 #include "fileIO.h"
 
 #define FALSE 0
@@ -18,38 +19,42 @@
 #define EXTRA_PAD 4
 
 /**
- * Name:     readFileToArray
+ * Name:     readFileToList
  * Purpose:
- *     Read a file into an array. Useful for getting the contents
- *     to a string array for use in a program, instead of using
+ *     Read a file into a linked list. Useful for getting the contents
+ *     to a string list for use in a program, instead of using
  *     the FILE pointer to process the file.
  *
  * Parameters:
  *   - filename : A string for the filename
- *   - arr      : A pointer to a string array
- *   - lines    : A pointer to an int for the number of lines
- *   - length   : A pointer to an int for the maximum length of a line
  *
- * Returns: int / boolean
+ * Returns: LinkedList pointer
  * Assertions:
  *     Assumptions:
  *         None
  *     Results:
- *         arr will contain the file contents
+ *         list will contain the file contents
  **/
 
-int readFileToArray(char* filename, char*** arr, int* lines, int* length)
+LinkedList* readFileToList(char* filename)
 {
+    LinkedList* list;
+
     FILE* file;
     char* tempStr;
-    int isEOF, statusCode, count;
+    char* toAdd;
+    int lines, length, count, isEOF;
 
+    list = NULL;
     file = NULL;
     tempStr = NULL;
+    toAdd = NULL;
+
+    lines = 0;
+    length = 0;
+    count = 0;
 
     isEOF = FALSE;
-    statusCode = TRUE;
-    count = 0;
 
     file = fopen(filename, "r");
 
@@ -58,32 +63,35 @@ int readFileToArray(char* filename, char*** arr, int* lines, int* length)
     {
         /* Print error message */
         printFileError("Error opening", filename);
-        statusCode = FALSE;
     }
     else
     {
-        statusCode = TRUE;
         /* Get file statistics and check if it's length is not 0 */
-        if (getFileStats(filename, file, lines, length) &&
-            *lines != 0)
+        if (getFileStats(filename, file, &lines, &length) &&
+            lines != 0)
         {
-            /* Allocate memory in heap to store file contents */
-            initStringArray(arr, *lines, *length);
+            /* Allocate memory for list head */
+            list = initList();
 
             do
             {
-                /* Allocate memory for a temporary string */
-                initString(&tempStr, (*length) + 1);
+                /**
+                 * Allocate memory for a temporary string and
+                 * linked list node contents
+                 **/
+                initString(&tempStr, length + 1);
+                initString(&toAdd, length);
 
                 /**
                  * Get line in file, with the maximum line length
                  * Plus one is for including newline
                  **/
-                if (fgets(tempStr, (*length) + 1, file))
+                if (fgets(tempStr, length + 1, file))
                 {
-                    /* Copy from temporary string to array */
-                    removeTrailingNewline(tempStr, (*length) + 1);
-                    strncpy((*arr)[count], tempStr, (*length));
+                    /* Copy from temporary string to linked list */
+                    removeTrailingNewline(tempStr, length + 1);
+                    strncpy(toAdd, tempStr, length);
+                    insertLast(list, toAdd);
                 }
                 else
                 {
@@ -95,24 +103,19 @@ int readFileToArray(char* filename, char*** arr, int* lines, int* length)
                 {
                     /* Print error and clear array */
                     printFileError("Error reading", filename);
-                    freeArray((void***)arr, *lines);
-                    statusCode = FALSE;
+                    clearListMalloc(&list);
                     isEOF = TRUE;
                 }
 
                 /* Garbage collection */
                 freePtr((void**)&tempStr);
-            } while (++count < *lines && ! isEOF);
-        }
-        else
-        {
-            statusCode = FALSE;
+            } while (++count < lines && ! isEOF);
         }
 
         fclose(file);
     }
 
-    return statusCode;
+    return list;
 }
 
 /**
@@ -194,6 +197,7 @@ int getFileStats(char* filename, FILE* file, int* lines, int* length)
             if ((ch = fgetc(file)) == '\n')
             {
                 (*lines)++;
+
                 /* Check current line is longer than the current maximum */
                 if (currentLength > *length)
                 {

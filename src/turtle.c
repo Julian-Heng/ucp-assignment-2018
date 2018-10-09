@@ -50,36 +50,38 @@ int main(int argc, char** argv)
 {
     LinkedList* commandList;
 
-    int returnCode, rows, cols;
     char* filename;
-    char** fileContents;
+    int returnCode;
 
     commandList = NULL;
-
-    returnCode = 0;
-    rows = 0;
-    cols = 0;
-
     filename = NULL;
-    fileContents = NULL;
+    returnCode = RETURN_OK;
 
     if (checkArgs(argc, argv))
     {
         if (processArgs(argv[1], &filename))
         {
-            if (readFileToArray(filename, &fileContents, &rows, &cols))
+            commandList = readFileToList(filename);
+
+            if (commandList)
             {
-                processCommands(
-                    fileContents,
-                    rows,
-                    &commandList,
-                    &returnCode
-                );
+                if (validateList(commandList))
+                {
+                    processList(commandList);
+                }
+                else
+                {
+                    returnCode = RETURN_INVALID_CMD;
+                }
+
+                clearListMalloc(&commandList);
             }
             else
             {
                 returnCode = RETURN_INVALID_FILE;
             }
+
+            freePtr((void**)&filename);
         }
     }
     else
@@ -87,10 +89,6 @@ int main(int argc, char** argv)
         printUsage();
         returnCode = RETURN_INVALID_ARGS;
     }
-
-    freeArray((void***)&fileContents, rows);
-    freePtr((void**)&filename);
-    clearListStack(&commandList);
 
     return returnCode;
 }
@@ -138,27 +136,119 @@ int processArgs(char* arg, char** filename)
     return continueProgram;
 }
 
-void processCommands(
-    char** commandArr,
-    int numCommands,
-    LinkedList** commandList,
-    int* returnCode)
+int validateList(LinkedList* list)
 {
-    FILE* logFile;
-    int writeOK;
+    LinkedListNode* node;
+    int commandValid, lineNum;
 
-    PlotFunc funcCommand;
-    void* plotData;
-    int errLine;
-
-    LinkedListNode* nodeFromList;
-    char* commandFromList;
+    double real;
+    int integer;
+    char pat;
 
     char tempStr[MAX_CMD_LENGTH];
+    char* command;
+
+    node = list -> head;
+    commandValid = FALSE;
+    lineNum = 0;
+
+    real = 0.0;
+    integer = 0;
+    pat = '\0';
+
+    memset(tempStr, '\0', MAX_CMD_LENGTH);
+
+    while (node)
+    {
+        lineNum++;
+        commandValid = FALSE;
+        memset(tempStr, '\0', MAX_CMD_LENGTH);
+        initStringWithContents(&command, node -> value);
+        node = node -> next;
+
+        real = 0.0;
+        integer = 0;
+        pat = 0;
+
+        trim(&command);
+
+        if (countWords(command) == 2)
+        {
+            sscanf(command, "%s", tempStr);
+            upper(tempStr);
+
+            if (stringCompare(tempStr, "ROTATE") &&
+                sscanf(command, "%s %lf", tempStr, &real) == 2 &&
+                DOUBLE_BOUND(real, -360.0, 360.0))
+            {
+                commandValid = TRUE;
+            }
+            else if ((stringCompare(tempStr, "MOVE") ||
+                      stringCompare(tempStr, "DRAW")) &&
+                      sscanf(command, "%s %lf", tempStr, &real) == 2 &&
+                      DOUBLE_CHECK(real, 0.0))
+            {
+                commandValid = TRUE;
+            }
+            else if (stringCompare(tempStr, "FG") &&
+                     sscanf(command, "%s %d", tempStr, &integer) == 2 &&
+                     INT_BOUND(integer, 0, 15))
+            {
+                commandValid = TRUE;
+            }
+            else if (stringCompare(tempStr, "BG") &&
+                     sscanf(command, "%s %d", tempStr, &integer) == 2 &&
+                     INT_BOUND(integer, 0, 7))
+            {
+                commandValid = TRUE;
+            }
+            else if (stringCompare(tempStr, "PATTERN") &&
+                     sscanf(command, "%s %c", tempStr, &pat) == 2 &&
+                     pat != ' ')
+            {
+                commandValid = TRUE;
+            }
+            else
+            {
+                printLineError(command, lineNum);
+            }
+        }
+        else if (stringCompare(command, ""))
+        {
+            commandValid = TRUE;
+        }
+        else
+        {
+            printLineError(command, lineNum);
+        }
+
+        freePtr((void**)&command);
+    }
+
+    return commandValid;
+}
+
+void printLineError(char* line, int lineNum)
+{
+    fprintf(stderr, "%s %d: ", "Invalid command on line", lineNum);
+    fprintf(stderr, "%s\n", line);
+}
+
+void processList(LinkedList* list)
+{
+    LinkedListNode* node;
+
+    FILE* logFile;
+    int writeOK;
     char* logLine;
 
-    double x1, y1, x2, y2, x3, y3;
+    PlotFunc plotter;
+    void* data;
 
+    char tempStr[MAX_CMD_LENGTH];
+    char* command;
+
+    double x1, y1, x2, y2, x3, y3;
     double angle;
 #ifndef SIMPLE
     int fg, bg;
@@ -171,17 +261,17 @@ void processCommands(
 #endif
     char tempChar;
 
-    logFile = NULL;
-    writeOK = TRUE;
-    funcCommand = NULL;
-    plotData = NULL;
-    errLine= 0;
+    node = NULL;
 
-    nodeFromList = NULL;
-    commandFromList = NULL;
+    logFile = fopen(LOG_FILENAME, "a");
+    writeOK = TRUE;
+    logLine = NULL;
+
+    plotter = NULL;
+    data = NULL;
 
     memset(tempStr, '\0', MAX_CMD_LENGTH);
-    logLine = NULL;
+    command = NULL;
 
     x1 = 0.0;
     y1 = 0.0;
@@ -205,25 +295,27 @@ void processCommands(
 #endif
     tempChar = '\0';
 
-    *commandList = validateCommands(commandArr, numCommands, &errLine);
-
-    if (*commandList)
+    if (! logFile)
     {
-        logFile = fopen(LOG_FILENAME, "a");
+        printFileError("Error opening", LOG_FILENAME);
+    }
+    else
+    {
         writeOK = appendToFile(logFile, "%s\n", SPLIT, LOG_ERR);
-
         clearScreen();
-        nodeFromList = (*commandList) -> head;
+        node = list -> head;
 
         if (! writeOK)
         {
             printFileError(LOG_ERR, "");
         }
 
-        while (nodeFromList && writeOK)
+        while (node && writeOK)
         {
-            commandFromList = nodeFromList -> value;
-            nodeFromList = nodeFromList -> next;
+            memset(tempStr, '\0', MAX_CMD_LENGTH);
+
+            command = node -> value;
+            node = node -> next;
 
             tempDouble = 0.0;
 #ifndef SIMPLE
@@ -231,14 +323,15 @@ void processCommands(
 #endif
             tempChar = '\0';
 
-            funcCommand = NULL;
-            plotData = NULL;
+            plotter = NULL;
+            data = NULL;
 
-            sscanf(commandFromList, "%s", tempStr);
+            sscanf(command, "%s", tempStr);
+            upper(tempStr);
 
             if (stringCompare(tempStr, "ROTATE"))
             {
-                sscanf(commandFromList, "%s %lf", tempStr, &tempDouble);
+                sscanf(command, "%s %lf", tempStr, &tempDouble);
                 angle += tempDouble;
 
                 if (DOUBLE_CHECK(0.0, angle))
@@ -252,56 +345,59 @@ void processCommands(
             }
             else if (stringCompare(tempStr, "MOVE"))
             {
-                sscanf(commandFromList, "%s %lf", tempStr, &tempDouble);
+                sscanf(command, "%s %lf", tempStr, &tempDouble);
                 calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble - 1);
 
-                funcCommand = &doNothing;
-                plotData = NULL;
+                plotter = doNothing;
+                data = NULL;
             }
             else if (stringCompare(tempStr, "DRAW"))
             {
-                sscanf(commandFromList, "%s %lf", tempStr, &tempDouble);
+                sscanf(command, "%s %lf", tempStr, &tempDouble);
                 calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble - 1);
 
-                funcCommand = &putChar;
-                plotData = &pat;
+                plotter = putChar;
+                data = &pat;
             }
 #ifndef SIMPLE
             else if (stringCompare(tempStr, "FG"))
             {
-                sscanf(commandFromList, "%s %d", tempStr, &tempInt);
+                sscanf(command, "%s %d", tempStr, &tempInt);
                 fg = tempInt;
                 setFgColour(fg);
             }
             else if (stringCompare(tempStr, "BG"))
             {
-                sscanf(commandFromList, "%s %d", tempStr, &tempInt);
+                sscanf(command, "%s %d", tempStr, &tempInt);
                 bg = tempInt;
                 setBgColour(bg);
             }
 #endif
             else if (stringCompare(tempStr, "PATTERN"))
             {
-                sscanf(commandFromList, "%s %c", tempStr, &tempChar);
+                sscanf(command, "%s %c", tempStr, &tempChar);
                 pat = tempChar;
             }
 
-            if (funcCommand)
+            if (plotter)
             {
                 line(
                     (int)x1, (int)y1, (int)x2, (int)y2,
-                    funcCommand, plotData
+                    plotter, data
                 );
 
                 x3 = x1;
                 y3 = y1;
 
                 calcNewPosition(&x1, &y1, &x2, &y2, angle, 1.0);
+
                 initString(&logLine, LOG_LENGTH);
+                upper(tempStr);
                 sprintf(logLine, LOG_FORMAT, tempStr, x3, y3, x2, y2);
 #ifdef DEBUG
                 fprintf(stderr, "%s\n", logLine);
 #endif
+
                 writeOK = appendToFile(logFile, "%s\n", logLine, LOG_ERR);
 
                 if (! writeOK)
@@ -316,21 +412,6 @@ void processCommands(
         fprintf(stdout, "%s", "\033[0m");
         penDown();
         fclose(logFile);
-
-        if (writeOK)
-        {
-            *returnCode = RETURN_OK;
-        }
-        else
-        {
-            *returnCode = RETURN_ERROR_WRITE;
-        }
-    }
-    else
-    {
-        fprintf(stderr, "%s %d: ", "Invalid command on line", errLine);
-        fprintf(stderr, "%s\n", commandArr[errLine - 1]);
-        *returnCode = RETURN_INVALID_CMD;
     }
 }
 
@@ -386,121 +467,6 @@ void calcNewPosition(
 
 void doNothing(void* a) {}
 void putChar(void* voidPtr) { fputc(*(char*)voidPtr, stdout); }
-
-LinkedList* validateCommands(
-    char** commandArr,
-    int numCommands,
-    int* errLine)
-{
-    LinkedList* commandList;
-
-    int commandValid, tempStrLen, i;
-
-    double real;
-    int integer;
-    char pat;
-
-    char tempStr[8];
-    char* origStr;
-
-    commandList = initList();
-    commandValid = FALSE;
-    origStr = NULL;
-    tempStrLen = 0;
-    i = 0;
-
-    do
-    {
-        commandValid = FALSE;
-        real = 0.0;
-        integer = 0;
-        pat = '\0';
-
-        initStringWithContents(&origStr, commandArr[i]);
-        trim(&(commandArr[i]));
-
-        if (countWords(commandArr[i]) == 2)
-        {
-            /**
-             * --[ACTIONS]-
-             * 1. Get the command string and length
-             * 2. Uppercase only the command string portion of the commands
-             *   array
-             * 3. Copy back from commands array to tempstr for comparison
-             *
-             * --[RATIONALE]--
-             * Required for converting the command to uppercase in order
-             * to accept mixed case commands
-             *
-             * Range is so that we do not change the pattern, which can
-             * be a alpha character, to uppercase
-             **/
-            sscanf(commandArr[i], "%s", tempStr);
-            tempStrLen = strlen(tempStr);
-            upperRange(commandArr[i], tempStrLen);
-            strncpy(tempStr, commandArr[i], tempStrLen);
-
-            if (stringCompare(tempStr, "ROTATE") &&
-                sscanf(commandArr[i], "%s %lf", tempStr, &real) == 2 &&
-                DOUBLE_BOUND(real, -360.0, 360.0))
-            {
-                insertLast(commandList, commandArr[i]);
-                commandValid = TRUE;
-            }
-            else if ((stringCompare(tempStr, "MOVE") ||
-                      stringCompare(tempStr, "DRAW")) &&
-                      sscanf(commandArr[i], "%s %lf", tempStr, &real) == 2 &&
-                      DOUBLE_CHECK(real, 0.0))
-            {
-                insertLast(commandList, commandArr[i]);
-                commandValid = TRUE;
-            }
-            else if (stringCompare(tempStr, "FG") &&
-                     sscanf(commandArr[i], "%s %d", tempStr, &integer) == 2 &&
-                     INT_BOUND(integer, 0, 15))
-            {
-                insertLast(commandList, commandArr[i]);
-                commandValid = TRUE;
-            }
-            else if (stringCompare(tempStr, "BG") &&
-                     sscanf(commandArr[i], "%s %d", tempStr, &integer) == 2 &&
-                     INT_BOUND(integer, 0, 7))
-            {
-                insertLast(commandList, commandArr[i]);
-                commandValid = TRUE;
-            }
-            else if (stringCompare(tempStr, "PATTERN") &&
-                     sscanf(commandArr[i], "%s %c", tempStr, &pat) == 2 &&
-                     pat != ' ')
-            {
-                insertLast(commandList, commandArr[i]);
-                commandValid = TRUE;
-            }
-            else
-            {
-                freePtr((void**)&commandArr[i]);
-                initStringWithContents(&commandArr[i], origStr);
-                clearListStack(&commandList);
-            }
-        }
-        else if (stringCompare(commandArr[i], ""))
-        {
-            commandValid = TRUE;
-        }
-        else
-        {
-            freePtr((void**)&commandArr[i]);
-            initStringWithContents(&commandArr[i], origStr);
-            clearListStack(&commandList);
-        }
-
-        freePtr((void**)&origStr);
-    } while (++i < numCommands && commandValid);
-
-    *errLine = i;
-
-    return commandList;
-}
 
 void printUsage(void)
 {

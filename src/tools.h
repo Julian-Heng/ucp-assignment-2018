@@ -29,11 +29,9 @@
 /* Function prototypes */
 void initString(char** str, int len);
 void initStringWithContents(char** str, char* contents);
-void initStringArray(char***, int rows, int cols);
 void freePtr(void** ptr);
-void freeArray(void*** ptr, int len);
 int stringCompare(char* str1, char* str2);
-void upperRange(char* str, int range);
+void upper(char* str);
 int doubleCompare(double num1, double num2);
 void removeTrailingNewline(char* str, int len);
 int countWords(char* str);
