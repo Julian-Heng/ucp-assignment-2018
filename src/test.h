@@ -3,8 +3,8 @@
 
 /* Function prototypes */
 void testTools(int* status);
-void testFileIO(int* status);
 void testLinkedList(int* status);
+void testFileIO(int* status);
 int printResult(int testCondition);
 void header(char* msg);
 
