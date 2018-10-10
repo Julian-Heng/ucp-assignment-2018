@@ -290,7 +290,7 @@ int countWords(char* str)
     {
         len = strlen(str) + 1;
 
-        /* Check if string is all whitespace */
+        /* Count number of whitespaces */
         while (str[i] != '\0' && i < len)
         {
             if (isspace(str[i]))
@@ -300,7 +300,8 @@ int countWords(char* str)
             i++;
         }
 
-        if (spaceCount != len - 1)
+        /* Check if string is all whitespace */
+        if (spaceCount != (len - 1))
         {
             i = 0;
 
@@ -388,7 +389,7 @@ void trim(char** str)
             initString(&tempStr, newLen);
 
             /* Copy the contents of the string, starting at start */
-            strncpy(tempStr, &((*str)[start]), newLen - 1);
+            strncpy(tempStr, (*str) + start, newLen - 1);
 
             /**
              * Reallocate the contents of the strings back to the
