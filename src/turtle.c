@@ -113,16 +113,26 @@ int processArgs(char* arg, char** filename)
 
     continueProgram = TRUE;
 
-    if (stringCompare(arg, "-h") ||
-        stringCompare(arg, "--help"))
+    if (strstr(arg, "--"))
     {
-        printUsage();
-        continueProgram = FALSE;
-    }
-    else if (stringCompare(arg, "--version"))
-    {
-        printVersion();
-        continueProgram = FALSE;
+        if (stringCompare(arg, "-h") ||
+            stringCompare(arg, "--help"))
+        {
+            printUsage();
+            continueProgram = FALSE;
+        }
+        else if (stringCompare(arg, "--version"))
+        {
+            printVersion();
+            continueProgram = FALSE;
+        }
+        else
+        {
+            printUsage();
+            fprintf(stderr, "%s: ", "Invalid argument");
+            fprintf(stderr, "%s\n\n", arg);
+            continueProgram = FALSE;
+        }
     }
     else
     {
