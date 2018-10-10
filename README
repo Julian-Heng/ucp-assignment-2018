@@ -31,6 +31,10 @@ To make debug:
   $ cd src
   $ make debug
 
+To run test:
+  $ cd src
+  $ make test
+
 To clean src directory:
   $ make clean
 
