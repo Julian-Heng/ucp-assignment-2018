@@ -438,7 +438,7 @@ void calcNewPosition(
     xDelta = 0.0;
     yDelta = 0.0;
 
-    if (fmod(angle, 90.0) == 0.0)
+    if (doubleMod(angle, 90.0) == 0.0)
     {
         if (doubleCompare(angle, 0.0) || doubleCompare(angle, 360.0))
         {

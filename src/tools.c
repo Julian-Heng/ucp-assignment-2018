@@ -12,8 +12,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include <ctype.h>
 
 #include "tools.h"
 
@@ -178,7 +176,10 @@ void upper(char* str)
         /* While within range, convert to uppercase */
         while (str[i] != '\0')
         {
-            str[i] = toupper(str[i]);
+            if (INT_BOUND(str[i], 'a', 'z'))
+            {
+                str[i] -= 32;
+            }
             i++;
         }
     }
@@ -209,12 +210,32 @@ int doubleCompare(double num1, double num2)
     isEqual = FALSE;
 
     /* Check the double's tolerance value after getting the difference */
-    if (fabs(num1 - num2) < TOLERANCE)
+    if (doubleAbs(num1 - num2) < TOLERANCE)
     {
         isEqual = TRUE;
     }
 
     return isEqual;
+}
+
+double doubleAbs(double num)
+{
+    if (num < 0.0)
+    {
+        num = -num;
+    }
+
+    return num;
+}
+
+double doubleMod(double num, double divide)
+{
+    while (DOUBLE_CHECK(num, divide))
+    {
+        num -= divide;
+    }
+
+    return num;
 }
 
 /**
@@ -293,7 +314,7 @@ int countWords(char* str)
         /* Count number of whitespaces */
         while (str[i] != '\0' && i < len)
         {
-            if (isspace(str[i]))
+            if (str[i] == ' ')
             {
                 spaceCount++;
             }
@@ -309,10 +330,10 @@ int countWords(char* str)
             while (str[i] != '\0' && i < len)
             {
                 /* If whitespace, find the index for the next word */
-                if (isspace(str[i]))
+                if (str[i] == ' ')
                 {
                     count++;
-                    while (isspace(str[i]) && i++ < len);
+                    while (str[i] == ' ' && i++ < len);
                 }
                 i++;
             }
@@ -362,7 +383,7 @@ void trim(char** str)
         len = strlen(*str) + 1;
 
         /* Count the number of leading whitespace */
-        while (isspace((*str)[i]) && ++i < len)
+        while ((*str)[i] == ' ' && ++i < len)
         {
             start++;
         }
@@ -379,7 +400,7 @@ void trim(char** str)
             i = len - 2;
 
             /* Count number of trailing whitespaces */
-            while (isspace((*str)[i]) && --i >= 0)
+            while ((*str)[i] == ' ' && --i >= 0)
             {
                 end++;
             }

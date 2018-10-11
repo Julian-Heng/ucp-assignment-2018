@@ -33,6 +33,8 @@ void freePtr(void** ptr);
 int stringCompare(char* str1, char* str2);
 void upper(char* str);
 int doubleCompare(double num1, double num2);
+double doubleAbs(double num);
+double doubleMod(double num, double divide);
 void removeTrailingNewline(char* str, int len);
 int countWords(char* str);
 void trim(char** str);
