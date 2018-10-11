@@ -54,23 +54,27 @@ void testTools(int* status)
     /* 16 */ "Testing doubleCompare() with 1.1 and 1.0",
     /* 17 */ "Testing doubleCompare() with 1.1000010 and 1.1000010",
     /* 18 */ "Testing doubleCompare() with 1.1000010 and 1.1000011",
-    /* 19 */ "Testing DOUBLE_BOUND() [in bounds]",
-    /* 20 */ "Testing DOUBLE_BOUND() [out of lower bounds]",
-    /* 21 */ "Testing DOUBLE_BOUND() [out of upper bounds]",
-    /* 22 */ "Testing DOUBLE_BOUND() [inclusive lower bounds]",
-    /* 23 */ "Testing DOUBLE_BOUND() [inclusive upper bounds]",
-    /* 24 */ "Testing DOUBLE_BOUND() [just out of lower bounds]",
-    /* 25 */ "Testing DOUBLE_BOUND() [just out of upper bounds]",
-    /* 26 */ "Testing removeTrailingNewline() with a newline string",
-    /* 27 */ "Testing removeTrailingNewline() without a newline string",
-    /* 28 */ "Testing countWords() with empty string",
-    /* 29 */ "Testing countWords() with 2 words",
-    /* 30 */ "Testing countWords() with whitespace",
-    /* 31 */ "Testing trim() with leading whitespace",
-    /* 32 */ "Testing trim() with trailing whitespace",
-    /* 33 */ "Testing trim() with all whitespace",
-    /* 34 */ "Testing trim() with a normal string",
-    /* 35 */ "Testing trim() with a large gap"
+    /* 19 */ "Testing doubleAbs() with a positive double",
+    /* 20 */ "Testing doubleAbs() with a negative double",
+    /* 21 */ "Testing doubleMod() with a divisible double",
+    /* 22 */ "Testing doubleMod() with a non-divisible double",
+    /* 23 */ "Testing DOUBLE_BOUND() [in bounds]",
+    /* 24 */ "Testing DOUBLE_BOUND() [out of lower bounds]",
+    /* 25 */ "Testing DOUBLE_BOUND() [out of upper bounds]",
+    /* 26 */ "Testing DOUBLE_BOUND() [inclusive lower bounds]",
+    /* 27 */ "Testing DOUBLE_BOUND() [inclusive upper bounds]",
+    /* 28 */ "Testing DOUBLE_BOUND() [just out of lower bounds]",
+    /* 29 */ "Testing DOUBLE_BOUND() [just out of upper bounds]",
+    /* 30 */ "Testing removeTrailingNewline() with a newline string",
+    /* 31 */ "Testing removeTrailingNewline() without a newline string",
+    /* 32 */ "Testing countWords() with empty string",
+    /* 33 */ "Testing countWords() with 2 words",
+    /* 34 */ "Testing countWords() with whitespace",
+    /* 35 */ "Testing trim() with leading whitespace",
+    /* 36 */ "Testing trim() with trailing whitespace",
+    /* 37 */ "Testing trim() with all whitespace",
+    /* 38 */ "Testing trim() with a normal string",
+    /* 39 */ "Testing trim() with a large gap"
     };
 
     str = NULL;
@@ -225,48 +229,72 @@ void testTools(int* status)
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[19]);
-        *status = printResult(DOUBLE_BOUND(10.01, 1.01, 12.01));
+        *status = printResult(doubleCompare(doubleAbs(1.123), 1.123));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[20]);
-        *status = printResult(! DOUBLE_BOUND(0.01, 1.01, 12.01));
+        *status = printResult(doubleCompare(doubleAbs(-1.123), 1.123));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[21]);
-        *status = printResult(! DOUBLE_BOUND(13.01, 1.01, 12.01));
+        *status = printResult(doubleCompare(doubleMod(10.0, 5.0), 0.0));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[22]);
-        *status = printResult(DOUBLE_BOUND(1.01, 1.01, 12.01));
+        *status = printResult(doubleCompare(doubleMod(10.123, 5.0), 0.123));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[23]);
-        *status = printResult(DOUBLE_BOUND(12.01, 1.01, 12.01));
+        *status = printResult(DOUBLE_BOUND(10.01, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[24]);
-        *status = printResult(! DOUBLE_BOUND(1.00, 1.01, 12.01));
+        *status = printResult(! DOUBLE_BOUND(0.01, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[25]);
-        *status = printResult(! DOUBLE_BOUND(12.02, 1.01, 12.01));
+        *status = printResult(! DOUBLE_BOUND(13.01, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[26]);
+        *status = printResult(DOUBLE_BOUND(1.01, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[27]);
+        *status = printResult(DOUBLE_BOUND(12.01, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[28]);
+        *status = printResult(! DOUBLE_BOUND(1.00, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[29]);
+        *status = printResult(! DOUBLE_BOUND(12.02, 1.01, 12.01));
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[30]);
         initStringWithContents(&str, "This has a newline\n");
         removeTrailingNewline(str, strlen(str));
         *status = printResult(strcmp(str, "This has a newline") == 0);
@@ -276,7 +304,7 @@ void testTools(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[27]);
+        fprintf(stdout, "%s: ", testMsg[31]);
         initStringWithContents(&str, "This does not have a newline");
         removeTrailingNewline(str, strlen(str));
         *status = printResult(
@@ -288,7 +316,7 @@ void testTools(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[28]);
+        fprintf(stdout, "%s: ", testMsg[32]);
         *status = printResult(countWords("") == 0);
         free(str);
         str = NULL;
@@ -296,7 +324,7 @@ void testTools(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[29]);
+        fprintf(stdout, "%s: ", testMsg[33]);
         *status = printResult(
             countWords("two words") == 2
         );
@@ -306,7 +334,7 @@ void testTools(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[30]);
+        fprintf(stdout, "%s: ", testMsg[34]);
         *status = printResult(
             countWords("      ") == 0
         );
@@ -316,7 +344,7 @@ void testTools(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[31]);
+        fprintf(stdout, "%s: ", testMsg[35]);
         initStringWithContents(&str, "    leading whitespace");
         trim(&str);
         *status = printResult(strcmp(str, "leading whitespace") == 0);
@@ -326,7 +354,7 @@ void testTools(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[32]);
+        fprintf(stdout, "%s: ", testMsg[36]);
         initStringWithContents(&str, "trailing whitespace    ");
         trim(&str);
         *status = printResult(strcmp(str, "trailing whitespace") == 0);
@@ -336,7 +364,7 @@ void testTools(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[33]);
+        fprintf(stdout, "%s: ", testMsg[37]);
         initStringWithContents(&str, "        ");
         trim(&str);
         *status = printResult(strcmp(str, "") == 0);
@@ -346,7 +374,7 @@ void testTools(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[34]);
+        fprintf(stdout, "%s: ", testMsg[38]);
         initStringWithContents(&str, "a normal string");
         trim(&str);
         *status = printResult(strcmp(str, "a normal string") == 0);
@@ -356,7 +384,7 @@ void testTools(int* status)
 
     if (*status)
     {
-        fprintf(stdout, "%s: ", testMsg[35]);
+        fprintf(stdout, "%s: ", testMsg[39]);
         initStringWithContents(&str, "a        b");
         trim(&str);
         *status = printResult(strcmp(str, "a        b") == 0);
