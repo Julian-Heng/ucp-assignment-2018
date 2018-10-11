@@ -70,7 +70,9 @@ In the main function of \code{turtle.c}, there are many conditionals
 before \code{processCommands()}. This is to ensure that when calling 
 \code{processCommands()}, all the checks that preceed it have returned 
 TRUE, meaning that the program can continue with drawing without any 
-problems.
+problems. As such, we can assume that the program has successfully checked 
+and validated variables before reaching the drawing command, ensuring 
+that no problems can occur as the program could not reach that function.
 
 \subsection{Function Structure}
 
@@ -80,7 +82,7 @@ the functions in the turtle program share the same function structure.
 Each function is expected to have all variable declaration on the top, 
 followed by setting default values to the variables. After finishing the 
 actions in the functions, any local variables that is allocated memory 
-in the heap will be freed.
+in the heap will be freed in the same function they are declared in.
 
 \subsection{Printing}
 
@@ -114,10 +116,10 @@ modified if a condition is satisfied.
     \item Do not return expressions, i.e \code{return (i \% 2) == 0;}
     \item Do not use ternary operations, i.e \code{a = i == 1 ? 0 : 1;}
     \item Don't compare boolean values with the \code{==} operator.
+    \item Use constants for string literals if possible
     \item Use brackets on if-else statements, even if the conditional 
           statement is one line.
-    \item Use provided library functions if possible, i.e \code{toupper()} 
-          from \code{ctype.h}.
+    \item Do not use any functions from standard library unless necessary
 \end{samepage}
 \end{itemize}
 
@@ -158,17 +160,19 @@ ROTATE -90
 DRAW 4
 \end{lstlisting}
 
-Firstly, the program takes the entire file, line by line, and saves it to
-an array within memory. Then it would validate each command in the array. 
+Firstly, the program takes the entire file, line by line, and saves it to 
+a linked list within memory. Then it would validate each command in the list. 
 If the command is invalid, the program will print an error, which includes 
-the problematic line and the line number, and exits with an error code of 
-4. If a command is valid, the command is then added to a linked list. The 
-linked list in question is used like a queue.
+the problematic line and the line number, and exits with an error code of 4. 
+If a command is valid, then the program will continue until it has reached 
+the end of the linked list.
 
-After all commands are validated and added to a linked list, the turtle 
-program will start drawing or interpreting the commands in the list. When 
-calculating the new x and y coordinates, we have to take into consideration 
-of the limitations with drawing on the terminal.
+After all commands are verified and validated, the turtle program will start 
+drawing or interpreting the commands in the list. In this case, the linked 
+list is used like a queue, where the file contents are added in last, and 
+commands are read from the head. When calculating the new x and y coordinates, 
+we have to take into consideration of the limitations with drawing on the 
+terminal.
 
 For example, drawing from the coordinates (0, 0) to (0, 0) will only draw 
 one character, even though the coordinates provided did not change. 
@@ -183,17 +187,23 @@ Using the excerpt above, when the program encounter \code{DRAW 2},
 with the current angle still at 0.0 degrees and coordinates at (0, 0), 
 the coordinates for drawing will be (1, 0). After drawing, the coordinates 
 will then be updated to (2, 0) for the next \code{MOVE} or \code{DRAW} 
-command.
+command. The coordinates are needed to be updated so that they get recorded 
+in the log file correctly.
 
 \subsection{Alternate ways}
 
-In my implementation, the program reads through the command list once to 
-read it to an array, read it again to validate the commands and then 
-reading it once more to execute the command. An alternate way to this 
-approach is to instead perform the validation and the execution while reading 
-the file. This version of the program would consume less memory as it does 
-require an array for storing the file contents, but it would cause the 
-program to draw before doing any commands validation.
+In my implementation, the program reads through the input file and converts 
+it to a linked list. The list is then first vaildated, then processed. An 
+alternative way to this approach is instead of reading, then validating, 
+then processing, we could do these 3 actions line by line in the file. 
+This version of the program could potentially be faster as it does not 
+utilise a linked list, thus taking less memory. The drawbacks to this 
+approach however is that the picture would be half drawn if an error occurs 
+and would theoretically be slower due to calling the validating and 
+processing functions on each line in file. In my opinion, I prefer my 
+approach as it is a much cleaner way of processing these input files, as 
+it the functions do return back to main function instead of the file reading 
+function.
 
 In terms of calculating the new coordinates, instead of calculating the 
 drawing coordinates and updating after executing the command, we calculate 
@@ -211,15 +221,8 @@ different order.
 \subsection{List of Standard Library Function Used}
 
 \begin{itemize}[label={--}, noitemsep]
-    \item \code{ctype.h}
-        \begin{itemize}[label={--}, noitemsep]
-            \item \code{toupper}
-            \item \code{isspace}
-        \end{itemize}
     \item \code{math.h}
         \begin{itemize}[label={--}, noitemsep]
-            \item \code{fabs}
-            \item \code{fmod}
             \item \code{sin}
             \item \code{cos}
         \end{itemize}
@@ -252,11 +255,19 @@ different order.
 
 \pagebreak
 \subsection{fileIO.c}
-\subsubsection{readFileToArray}
+\subsubsection{Libraries}
 
-Read a file into an array. Useful for getting the contents to a string 
-array for use in a program, instead of using the FILE pointer to process 
-the file. Used in \code{turtle.c} to get the input file into an array.
+\begin{itemize}[label={--}, noitemsep]
+    \item \code{stdio.h}
+    \item \code{stdlib.h}
+    \item \code{string.h}
+\end{itemize}
+
+\subsubsection{readFileToList}
+
+Read a file into a linked list. Useful for getting the contents to a string 
+list for use in a program, instead of using the FILE pointer to process 
+the file. Used in \code{turtle.c} to get the input file into a linked list.
 
 \subsubsection{appendToFile}
 
@@ -279,6 +290,12 @@ operations for if an error were to occur.
 
 \pagebreak
 \subsection{linkedList.c}
+\subsubsection{Libraries}
+
+\begin{itemize}[label={--}, noitemsep]
+    \item \code{stdlib.h}
+\end{itemize}
+
 \subsubsection{initNode}
 
 Create a linked list node to be inserted into a linked list. Required to 
@@ -372,6 +389,14 @@ iterating through a linked list.
 
 \pagebreak
 \subsection{test.c}
+\subsubsection{Libraries}
+
+\begin{itemize}[label={--}, noitemsep]
+    \item \code{stdio.h}
+    \item \code{stdlib.h}
+    \item \code{string.h}
+\end{itemize}
+
 \subsubsection{testTools}
 
 Test all the non-printing functions in \code{tools.c}. This testing structure 
@@ -401,6 +426,14 @@ A function that prints a message and a line of equal length. Purely eye candy.
 
 \pagebreak
 \subsection{tools.h}
+\subsubsection{Libraries}
+
+\begin{itemize}[label={--}, noitemsep]
+    \item \code{stdio.h}
+    \item \code{stdlib.h}
+    \item \code{string.h}
+\end{itemize}
+
 \subsubsection{initString}
 
 Allocate memory in the heap for a string and then fill the string with null 
@@ -415,33 +448,21 @@ Allocate memory in the heap for a string and then copy the contents of the
 imported string to the new string. Useful for initialising a string with a
 set string. Used as an alternative to \code{initString}.
 
-\subsubsection{initStringArray}
-
-Allocate memory in the heap for a string array. Essentially the same as 
-\code{initString} but done in a loop for setting up a string array, thus 
-creating a string array full of clean strings.
-
 \subsubsection{freePtr}
 
 Wrapper function for \code{free}. Does two tasks; free the pointer and 
 set it to null. Simply a wrapper, nothing else.
-
-\subsubsection{freeArray}
-
-Wrapper function for \code{free} on arrays. Same as freePtr but is applied 
-to all elements in array. Simply a wrapper, nothing else.
 
 \subsubsection{stringCompare}
 
 Wrapper function for \code{strcmp} so that it returns a sensible boolean 
 value. This is simply syntatic sugar.
 
-\subsubsection{upperRange}
+\subsubsection{upper}
 
-Convert characters up to a range to uppercase. This function is primarily 
-used when converting command names to uppercase. A range is needed because 
-applying uppercase to the entire string can cause the pattern to also change 
-to uppercase. This is undesirable, thus using a range prevents this problem.
+Convert characters in a string to uppercase. This function is primarily
+used when converting command names to uppercase so that the program and 
+accept mixed case inputs.
 
 \subsubsection{doubleCompare}
 
@@ -449,10 +470,21 @@ Compares two doubles. Needed due to how doubles are not precise because of
 floating points. Used to check if a double is within range of two doubles 
 inclusive.
 
+\subsubsection{doubleAbs}
+
+Get the absolute value of a double. Required in \code{doubleCompare} as it 
+checks the tolerance of the two double it compares.
+
+\subsubsection{doubleMod}
+
+Get the modulus of a double. Required in turtle to check if the angle is 
+a right angle. An alternative to \code{fmod} in \code{math.h}.
+
 \subsubsection{removeTrailingNewline}
 
 Remove trailing newline in string. Used in \code{fileIO.c} when recording 
-each line in a file to an array.
+each line in a file to an array. An alternative to \code{fabs} in 
+\code{math.h}
 
 \subsubsection{countWords}
 
@@ -474,6 +506,14 @@ messages.
 
 \pagebreak
 \subsection{turtle.h}
+\subsubsection{Libraries}
+
+\begin{itemize}[label={--}, noitemsep]
+    \item \code{stdio.h}
+    \item \code{string.h}
+    \item \code{math.h}
+\end{itemize}
+
 \subsubsection{main}
 
 The main function which starts the entire program. Set's up the structure 
@@ -580,7 +620,7 @@ Last Modified : 2018-10-05T21:01:36+08:00
 \subsection{Valid File}
 
 \begin{lstlisting}
-$ cat ../test/turtle/pyramid.txt 
+$ cat ../test/turtle/pyramid.txt
 pattern .
 
 draw 1
@@ -736,6 +776,75 @@ $ turtle ../test/turtle/pyramid.txt
 ...
 ..
 .
+
+$ cat ../test/turtle/octo.txt
+move 30
+
+rotate 90
+move 10
+rotate -90
+
+rotate 45
+bg 5
+pattern #.
+ draw 6
+bg 0
+
+rotate 45
+pattern .
+ draw 6
+
+rotate 45
+pattern #
+ draw 6
+
+rotate 45
+pattern .
+ draw 6
+
+rotate 45
+pattern #
+ draw 6
+
+rotate 45
+pattern .
+ draw 6
+
+rotate 45
+pattern #
+ draw 6
+
+rotate 45
+pattern .
+ draw 6
+
+$ turtle ../test/turtle/pyramid.txt
+
+
+
+
+
+
+
+
+
+
+                        ......
+                       #      #
+                      #        #
+                     #          #
+                    #            #
+                   #              .
+                   .              .
+                   .              .
+                   .              .
+                   .              .
+                   .              .
+                   .#             #
+                     #           #
+                      #        ##
+                       #      #
+                        #......
 \end{lstlisting}
 
 \subsection{Invalid File}
