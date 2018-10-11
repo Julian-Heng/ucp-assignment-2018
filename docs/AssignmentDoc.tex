@@ -97,7 +97,7 @@ information or error messages will use \code{fprintf(stderr, ...)}.
 Most strings in this program are stored in the heap. The only strings 
 that uses the stack are strings used to store temporary information, 
 such as the command type from the input file. The choice for using 
-malloced strings instead of stack strings is to favour reliability 
+malloced strings instead of stack strings is to increase reliability 
 instead of convenience. This also serves as covering the edge case 
 for strings that can exceed the maximum set string length.
 
@@ -115,11 +115,13 @@ modified if a condition is satisfied.
 \begin{samepage}
     \item Do not return expressions, i.e \code{return (i \% 2) == 0;}
     \item Do not use ternary operations, i.e \code{a = i == 1 ? 0 : 1;}
-    \item Don't compare boolean values with the \code{==} operator.
+    \item Do not compare boolean values with the \code{==} operator
+    \item Do not use any functions from standard library unless necessary
     \item Use constants for string literals if possible
     \item Use brackets on if-else statements, even if the conditional 
-          statement is one line.
-    \item Do not use any functions from standard library unless necessary
+          statement is one line
+    \item Use wrapper functions to \code{malloc} and \code{free} in 
+          \code{tools.c}
 \end{samepage}
 \end{itemize}
 
@@ -218,7 +220,7 @@ different order.
 \section{Functions Descriptions}
 \fancyhf[HR]{\footnotesize{Functions Descriptions}}
 
-\subsection{List of Standard Library Function Used}
+\subsection{List of Standard Library Functions Used}
 
 \begin{itemize}[label={--}, noitemsep]
     \item \code{math.h}
