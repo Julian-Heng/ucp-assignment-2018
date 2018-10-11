@@ -19,6 +19,8 @@
 ######## Instructions ########
    ########################
 
+Report is located in the docs folder, under the filename `AssignmentDoc.pdf'
+
 To make normal:
   $ cd src
   $ make
@@ -30,6 +32,10 @@ To make simple:
 To make debug:
   $ cd src
   $ make debug
+
+To make document:
+  $ cd src
+  $ make docs # Might have compiler errors if missing latex packages
 
 To run test:
   $ cd src
