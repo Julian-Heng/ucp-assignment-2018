@@ -1,5 +1,7 @@
 build/
 objects/
+simple/
+debug/
 *.html
 *.swp
 *.nfs*
