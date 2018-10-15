@@ -41,11 +41,11 @@
 #define MAX_CMD_LENGTH 8
 
 /* Actual log length is 43, but gcc complains about format overflow */
-#define LOG_LENGTH 45
+#define LOG_LENGTH 46
 
 #define LOG_FILENAME "graphics.log"
 #define SPLIT "---"
-#define LOG_FORMAT "%s (%7.3f, %7.3f)-(%7.3f, %7.3f)"
+#define LOG_FORMAT "%4s (%7.3f, %7.3f)-(%7.3f, %7.3f)"
 #define LOG_ERR "Error writing to log"
 
 int main(int argc, char** argv)
