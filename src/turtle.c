@@ -161,7 +161,7 @@ int validateList(LinkedList* list)
     char* command;
 
     node = list -> head;
-    commandValid = FALSE;
+    commandValid = TRUE;
     lineNum = 0;
 
     real = 0.0;
@@ -170,7 +170,7 @@ int validateList(LinkedList* list)
 
     memset(tempStr, '\0', MAX_CMD_LENGTH);
 
-    while (node)
+    while (node && commandValid)
     {
         lineNum++;
         commandValid = FALSE;
@@ -191,26 +191,26 @@ int validateList(LinkedList* list)
 
             if (stringCompare(tempStr, "ROTATE") &&
                 sscanf(command, "%s %lf", tempStr, &real) == 2 &&
-                DOUBLE_BOUND(real, -360.0, 360.0))
+                doubleBound(real, -360.0, 360.0))
             {
                 commandValid = TRUE;
             }
             else if ((stringCompare(tempStr, "MOVE") ||
                       stringCompare(tempStr, "DRAW")) &&
                       sscanf(command, "%s %lf", tempStr, &real) == 2 &&
-                      DOUBLE_CHECK(real, 0.0))
+                      doubleCheck(real, 0.0))
             {
                 commandValid = TRUE;
             }
             else if (stringCompare(tempStr, "FG") &&
                      sscanf(command, "%s %d", tempStr, &integer) == 2 &&
-                     INT_BOUND(integer, 0, 15))
+                     intBound(integer, 0, 15))
             {
                 commandValid = TRUE;
             }
             else if (stringCompare(tempStr, "BG") &&
                      sscanf(command, "%s %d", tempStr, &integer) == 2 &&
-                     INT_BOUND(integer, 0, 7))
+                     intBound(integer, 0, 7))
             {
                 commandValid = TRUE;
             }
@@ -260,7 +260,9 @@ void processList(LinkedList* list)
     char tempStr[MAX_CMD_LENGTH];
     char* command;
 
-    double x1, y1, x2, y2, x3, y3, x4, y4;
+    int isZero;
+    double x1, y1, x2, y2, x5, y5;
+    int x3, y3, x4, y4;
     double angle;
 #ifndef SIMPLE
     int fg, bg;
@@ -285,17 +287,22 @@ void processList(LinkedList* list)
     memset(tempStr, '\0', MAX_CMD_LENGTH);
     command = NULL;
 
+    isZero = FALSE;
+
     x1 = 0.0;
     y1 = 0.0;
 
     x2 = 0.0;
     y2 = 0.0;
 
-    x3 = 0.0;
-    y3 = 0.0;
+    x3 = 0;
+    y3 = 0;
 
-    x4 = 0.0;
-    y4 = 0.0;
+    x4 = 0;
+    y4 = 0;
+
+    x5 = 0.0;
+    y5 = 0.0;
 
     angle = 0.0;
 #ifndef SIMPLE
@@ -335,6 +342,17 @@ void processList(LinkedList* list)
             command = node -> value;
             node = node -> next;
 
+            isZero = FALSE;
+
+            x3 = 0;
+            y3 = 0;
+
+            x4 = 0;
+            y4 = 0;
+
+            x5 = 0.0;
+            y5 = 0.0;
+
             tempDouble = 0.0;
 #ifndef SIMPLE
             tempInt = 0;
@@ -352,11 +370,11 @@ void processList(LinkedList* list)
                 sscanf(command, "%s %lf", tempStr, &tempDouble);
                 angle += tempDouble;
 
-                if (DOUBLE_CHECK(0.0, angle))
+                if (doubleCheck(0.0, angle))
                 {
                     angle += 360.0;
                 }
-                else if (DOUBLE_CHECK(angle, 360.0))
+                else if (doubleCheck(angle, 360.0))
                 {
                     angle -= 360.0;
                 }
@@ -364,18 +382,40 @@ void processList(LinkedList* list)
             else if (stringCompare(tempStr, "MOVE"))
             {
                 sscanf(command, "%s %lf", tempStr, &tempDouble);
-                calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble - 1);
 
-                plotter = doNothing;
-                data = NULL;
+                if (doubleCompare(tempDouble, 0.0))
+                {
+                    isZero = TRUE;
+                }
+                else
+                {
+                    calcNewPosition(
+                        &x1, &y1, &x2, &y2,
+                        angle, tempDouble - 1
+                    );
+
+                    plotter = doNothing;
+                    data = NULL;
+                }
             }
             else if (stringCompare(tempStr, "DRAW"))
             {
                 sscanf(command, "%s %lf", tempStr, &tempDouble);
-                calcNewPosition(&x1, &y1, &x2, &y2, angle, tempDouble - 1);
 
-                plotter = putChar;
-                data = &pat;
+                if (doubleCompare(tempDouble, 0.0))
+                {
+                    isZero = TRUE;
+                }
+                else
+                {
+                    calcNewPosition(
+                        &x1, &y1, &x2, &y2,
+                        angle, tempDouble - 1
+                    );
+
+                    plotter = putChar;
+                    data = &pat;
+                }
             }
 #ifndef SIMPLE
             else if (stringCompare(tempStr, "FG"))
@@ -397,18 +437,21 @@ void processList(LinkedList* list)
                 pat = tempChar;
             }
 
-            if (plotter)
+            if (plotter && ! isZero)
             {
-                x3 = x1;
-                y3 = y1;
+                x3 = doubleRound(doubleAbs(x1));
+                y3 = doubleRound(doubleAbs(y1));
 
-                x4 = x2;
-                y4 = y2;
+                x4 = doubleRound(doubleAbs(x2));
+                y4 = doubleRound(doubleAbs(y2));
+
+                x5 = x1;
+                y5 = y1;
 
                 calcNewPosition(&x1, &y1, &x2, &y2, angle, 1.0);
 
                 upper(tempStr);
-                sprintf(logLine, LOG_FORMAT, tempStr, x3, y3, x2, y2);
+                sprintf(logLine, LOG_FORMAT, tempStr, x5, y5, x2, y2);
 #ifdef DEBUG
                 fprintf(stderr, "%s\n", logLine);
 #endif
@@ -423,7 +466,7 @@ void processList(LinkedList* list)
                 memset(logLine, '\0', LOG_LENGTH);
 
                 line(
-                    (int)x3, (int)y3, (int)x4, (int)y4,
+                    x3, y3, x4, y4,
                     plotter, data
                 );
             }
@@ -468,14 +511,14 @@ void calcNewPosition(
         }
         else
         {
-            xDelta = length * cos(DEG_TO_RAD(angle));
-            yDelta = length * sin(DEG_TO_RAD(angle));
+            xDelta = length * cos(degToRad(angle));
+            yDelta = length * sin(degToRad(angle));
         }
     }
     else
     {
-        xDelta = length * cos(DEG_TO_RAD(angle));
-        yDelta = length * sin(DEG_TO_RAD(angle));
+        xDelta = length * cos(degToRad(angle));
+        yDelta = length * sin(degToRad(angle));
     }
 
     *x1 = *x2;
@@ -518,7 +561,9 @@ void printUsage(void)
         ""
     };
 
-    printStringArray("%s\n", usageMsg, GET_STACK_ARRAY_SIZE(usageMsg));
+    printStringArray(
+        "%s\n", usageMsg, sizeof(usageMsg) / sizeof(usageMsg[0])
+    );
 }
 
 void printVersion(void)
