@@ -4,7 +4,7 @@
  * Purpose:  Provide the initialisation of a doubly linked double ended
  *           linked list as well as several utility functions.
  *
- * Last Modified: 2018-10-07T20:07:22+08:00
+ * Last Modified: 2018-10-16T02:06:13+08:00
  **/
 
 #include <stdlib.h>
@@ -75,7 +75,7 @@ LinkedListNode* initNode(void* newValue)
  *         Return the memory address of a linked list
  **/
 
-LinkedList* initList()
+LinkedList* initList(void)
 {
     LinkedList* newList;
 
@@ -382,7 +382,7 @@ int getListLength(LinkedList* list)
  * Returns:  int
  * Assertions:
  *     Assumptions:
- *         none
+ *         None
  *     Results:
  *         Return length after recusively calling itself
  **/

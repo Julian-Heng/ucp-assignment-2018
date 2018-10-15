@@ -6,7 +6,7 @@
  *           mallocing functions, freeing functions,
  *           string manipulation and number comparisons
  *
- * Last Modified: 2018-10-05T18:41:10+08:00
+ * Last Modified: 2018-10-16T02:33:27+08:00
  **/
 
 #include <stdio.h>
@@ -97,7 +97,7 @@ void initStringWithContents(char** str, char* contents)
  * Returns:  void
  * Assertions:
  *     Assumptions:
- *         none
+ *         None
  *     Results:
  *         ptr will be freed
  **/
@@ -126,7 +126,7 @@ void freePtr(void** ptr)
  * Returns:  int / boolean
  * Assertions:
  *     Assumptions:
- *         none
+ *         None
  *     Results:
  *         Returns TRUE (1) or FALSE (0)
  **/
@@ -135,13 +135,8 @@ int stringCompare(char* str1, char* str2)
 {
     int returnCode;
 
-    returnCode = FALSE;
-
-    /* If string matches, return TRUE */
-    if (! strcmp(str1, str2))
-    {
-        returnCode = TRUE;
-    }
+    /* If string matches, return true */
+    returnCode = ! strcmp(str1, str2) ? TRUE : FALSE;
 
     return returnCode;
 }
@@ -188,28 +183,14 @@ void upper(char* str)
 int intBound(int i, int low, int up)
 {
     int inRange;
-
-    inRange = FALSE;
-
-    if ((i >= low) && (up >= i))
-    {
-        inRange = TRUE;
-    }
-
+    inRange = ((i >= low) && (up >= i)) ? TRUE : FALSE;
     return inRange;
 }
 
 int doubleBound(double i, double low, double up)
 {
     int inRange;
-
-    inRange = FALSE;
-
-    if (doubleCheck(i, low) && doubleCheck(up, i))
-    {
-        inRange = TRUE;
-    }
-
+    inRange = (doubleCheck(i, low) && doubleCheck(up, i)) ? TRUE : FALSE;
     return inRange;
 }
 
@@ -226,7 +207,7 @@ int doubleBound(double i, double low, double up)
  * Returns:  int / boolean
  * Assertions:
  *     Assumptions:
- *         none
+ *         None
  *     Results:
  *         Returns TRUE (1) or FALSE (0)
  **/
@@ -235,13 +216,8 @@ int doubleCompare(double num1, double num2)
 {
     int isEqual;
 
-    isEqual = FALSE;
-
     /* Check the double's tolerance value after getting the difference */
-    if (doubleAbs(num1 - num2) < TOLERANCE)
-    {
-        isEqual = TRUE;
-    }
+    isEqual = (doubleAbs(num1 - num2) < TOLERANCE) ? TRUE : FALSE;
 
     return isEqual;
 }
@@ -260,7 +236,7 @@ int doubleCompare(double num1, double num2)
  * Returns:  int / boolean
  * Assertions:
  *     Assumptions:
- *         none
+ *         None
  *     Results:
  *         Returns TRUE (1) or FALSE (0)
  **/
@@ -269,13 +245,8 @@ int doubleCheck(double num1, double num2)
 {
     int isLargerThan;
 
-    isLargerThan = FALSE;
-
     /* Check if num1 is larger or equal to num2 */
-    if (num1 > num2 || doubleCompare(num1, num2))
-    {
-        isLargerThan = TRUE;
-    }
+    isLargerThan = (num1 > num2 || doubleCompare(num1, num2)) ? TRUE : FALSE;
 
     return isLargerThan;
 }
@@ -291,7 +262,7 @@ int doubleCheck(double num1, double num2)
  * Returns:  double
  * Assertions:
  *     Assumptions:
- *         none
+ *         None
  *     Results:
  *         Returns absolute value of num
  **/
@@ -320,7 +291,7 @@ double doubleAbs(double num)
  * Returns:  double
  * Assertions:
  *     Assumptions:
- *         none
+ *         None
  *     Results:
  *         Returns the modulus of num by divide
  **/
@@ -328,9 +299,9 @@ double doubleAbs(double num)
 double doubleMod(double num, double divide)
 {
     /* While num is more than divide */
-    while (doubleCheck(num, divide))
+    if (! doubleCompare(divide, 0.0))
     {
-        num -= divide;
+        while (doubleCheck(num -= divide, divide));
     }
 
     return num;
@@ -347,7 +318,7 @@ double doubleMod(double num, double divide)
  * Returns:  int
  * Assertions:
  *     Assumptions:
- *         none
+ *         None
  *     Results:
  *         Returns TRUE (1) or FALSE (0)
  **/
@@ -355,16 +326,7 @@ double doubleMod(double num, double divide)
 int doubleRound(double num)
 {
     int rounded;
-
-    if (num > 0.0)
-    {
-        rounded = (int)(num + 0.5);
-    }
-    else
-    {
-        rounded = (int)(num - 0.5);
-    }
-
+    rounded = (num > 0.0) ? (int)(num + 0.5) : (int)(num - 0.5);
     return rounded;
 }
 
@@ -380,7 +342,7 @@ int doubleRound(double num)
  * Returns:  double
  * Assertions:
  *     Assumptions:
- *         none
+ *         None
  *     Results:
  *         Returns the angle in radians
  **/
@@ -388,9 +350,7 @@ int doubleRound(double num)
 double degToRad(double deg)
 {
     double rad;
-
     rad = deg * (PI / 180);
-
     return rad;
 }
 

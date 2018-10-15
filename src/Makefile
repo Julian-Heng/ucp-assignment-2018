@@ -27,9 +27,6 @@ DEFAULT_DEFINES = -DCOMPILER_INFO="$(COMPILER_INFO)" \
 					-DHOST="$(HOST)"
 
 # Declare all objects for all targets
-# SOURCE doesn't include turtle.c because of linking
-# issues with test.c
-
 OBJ = 	./objects/effects.o \
 		./objects/fileIO.o \
 		./objects/linkedList.o \
@@ -54,19 +51,25 @@ TEST_OBJ = 	./debug/effects.o \
 			./debug/tools.o \
 			./debug/test.o
 
+# Program name
 EXEC = turtle
 
+# Target to make everything
 all: turtleGraphics turtleGraphicsSimple turtleGraphicsDebug
 
+# Target to make normal turtle
 turtleGraphics: turtle.o
 	$(CC) $(OBJ) -lm -o ./build/$(EXEC)
 
+# Target to make simple turtle
 turtleGraphicsSimple: simple/turtle.o
 	$(CC) $(SIMPLE_OBJ) -lm -o ./build/$(EXEC)-simple
 
+# Target to make debug turtle
 turtleGraphicsDebug: debug/turtle.o
 	$(CC) $(DEBUG_OBJ) -lm -o ./build/$(EXEC)-debug
 
+# Test harness
 test: turtleGraphicsDebug test.o
 	$(CC) $(TEST_OBJ) -lm -o ./build/test
 	./build/test
@@ -167,9 +170,11 @@ simple/tools.o: makedirs tools.c tools.h
 debug/tools.o: makedirs tools.c tools.h
 	$(CC) $(DCFLAGS) -o ./debug/tools.o -c ./tools.c
 
+# Make documentation
 docs:
 	@bash -c '{ cd ../docs || exit; } && pdflatex AssignmentDoc.tex'
 
+# Make build and objects directories
 makedirs:
 	@if [ ! -e ./build ]; then \
 		mkdir -p ./build; \
@@ -184,6 +189,7 @@ makedirs:
 		mkdir -p ./debug; \
 	fi
 
+# Clean up build files
 clean:
 	@rm -rfv 	./build \
 				./objects \

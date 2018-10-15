@@ -4,7 +4,7 @@
  * Purpose:  Test functions in tools.c, linkedList.c and fileIO.c
  *           to ensure that their functions work as intended
  *
- * Last Modified: 2018-10-16T00:38:06+08:00
+ * Last Modified: 2018-10-16T02:33:56+08:00
  **/
 
 #include <stdio.h>
@@ -23,7 +23,7 @@
  *     Each test cases will run if the previous test case passed
  *
  * Arguments:
- *   - none
+ *   - None
  *
  * Exit codes:
  *   - 0 = success
@@ -46,14 +46,7 @@ int main(void)
     testFileIO(&status);
 
     /* If all tests passed, set status to 0 for shell */
-    if (status)
-    {
-        status = 0;
-    }
-    else
-    {
-        status = 1;
-    }
+    status = status ? 0 : 1;
 
     return status;
 }
@@ -1457,7 +1450,7 @@ void testFileIO(int* status)
  *                     conditional passed in from the test
  *                     harness
  *
- * Returns:  int
+ * Returns:  int / boolean
  * Assertions:
  *     Assumptions:
  *         *testCondition is either TRUE (1) or FALSE (0)
@@ -1500,7 +1493,7 @@ int printResult(int testCondition)
  * Returns:  void
  * Assertions:
  *     Assumptions:
- *         none
+ *         None
  *     Result:
  *         Header will be printed
  **/

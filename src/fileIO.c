@@ -2,7 +2,7 @@
  * Filename: fileIO.c
  * Author:   Julian Heng (19473701)
  * Purpose:  Provide functions relating to file input and output.
- * Last Modified: 2018-10-05T18:28:19+08:00
+ * Last Modified: 2018-10-16T00:01:48+08:00
  **/
 
 #include <stdio.h>
