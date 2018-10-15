@@ -39,7 +39,9 @@
 
 #define MIN_ARGS 1
 #define MAX_CMD_LENGTH 8
-#define LOG_LENGTH 43
+
+/* Actual log length is 43, but gcc complains about format overflow */
+#define LOG_LENGTH 45
 
 #define LOG_FILENAME "graphics.log"
 #define SPLIT "---"
@@ -250,7 +252,7 @@ void processList(LinkedList* list)
 
     FILE* logFile;
     int writeOK;
-    char* logLine;
+    char logLine[LOG_LENGTH];
 
     PlotFunc plotter;
     void* data;
@@ -258,7 +260,7 @@ void processList(LinkedList* list)
     char tempStr[MAX_CMD_LENGTH];
     char* command;
 
-    double x1, y1, x2, y2, x3, y3;
+    double x1, y1, x2, y2, x3, y3, x4, y4;
     double angle;
 #ifndef SIMPLE
     int fg, bg;
@@ -275,7 +277,7 @@ void processList(LinkedList* list)
 
     logFile = fopen(LOG_FILENAME, "a");
     writeOK = TRUE;
-    logLine = NULL;
+    memset(logLine, '\0', LOG_LENGTH);
 
     plotter = NULL;
     data = NULL;
@@ -292,10 +294,16 @@ void processList(LinkedList* list)
     x3 = 0.0;
     y3 = 0.0;
 
+    x4 = 0.0;
+    y4 = 0.0;
+
     angle = 0.0;
 #ifndef SIMPLE
     fg = 7;
     bg = 0;
+#else
+    setFgColour(0);
+    setBgColour(7);
 #endif
     pat = '+';
 
@@ -391,17 +399,14 @@ void processList(LinkedList* list)
 
             if (plotter)
             {
-                line(
-                    (int)x1, (int)y1, (int)x2, (int)y2,
-                    plotter, data
-                );
-
                 x3 = x1;
                 y3 = y1;
 
+                x4 = x2;
+                y4 = y2;
+
                 calcNewPosition(&x1, &y1, &x2, &y2, angle, 1.0);
 
-                initString(&logLine, LOG_LENGTH);
                 upper(tempStr);
                 sprintf(logLine, LOG_FORMAT, tempStr, x3, y3, x2, y2);
 #ifdef DEBUG
@@ -415,7 +420,12 @@ void processList(LinkedList* list)
                     printFileError(LOG_ERR, "");
                 }
 
-                freePtr((void**)&logLine);
+                memset(logLine, '\0', LOG_LENGTH);
+
+                line(
+                    (int)x3, (int)y3, (int)x4, (int)y4,
+                    plotter, data
+                );
             }
         }
 
