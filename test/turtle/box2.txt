@@ -1,0 +1,12 @@
+pattern >
+draw 10
+rotate -90
+pattern v
+draw 10
+rotate -90
+pattern <
+draw 10
+rotate -90
+pattern ^
+draw 10
+rotate -90

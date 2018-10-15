@@ -1,4 +1,3 @@
-pattern .
 draw 0
 rotate 90
 draw 0
