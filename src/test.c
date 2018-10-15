@@ -1,3 +1,12 @@
+/**
+ * Filename: test.c
+ * Author:   Julian Heng (19473701)
+ * Purpose:  Test functions in tools.c, linkedList.c and fileIO.c
+ *           to ensure that their functions work as intended
+ *
+ * Last Modified: 2018-10-16T00:38:06+08:00
+ **/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,17 +16,36 @@
 #include "fileIO.h"
 #include "test.h"
 
+/**
+ * Name:     test.c
+ * Purpose:
+ *     The main function to call all the test methods
+ *     Each test cases will run if the previous test case passed
+ *
+ * Arguments:
+ *   - none
+ *
+ * Exit codes:
+ *   - 0 = success
+ *   - 1 = error
+ **/
+
 int main(void)
 {
     int status;
 
+    /* Make status to true */
     status = 1;
 
+    /* Header message */
     header("MAKE SURE THIS IS RUN WITH MAKE");
+
+    /* Call test methods */
     testTools(&status);
     testLinkedList(&status);
     testFileIO(&status);
 
+    /* If all tests passed, set status to 0 for shell */
     if (status)
     {
         status = 0;
@@ -29,6 +57,22 @@ int main(void)
 
     return status;
 }
+
+/**
+ * Name:     testTools
+ * Purpose:
+ *     Test the functions in tools with different test cases
+ *
+ * Parameters:
+ *   - status : An int pointer to the status of the previous test case
+ *
+ * Returns:  void
+ * Assertions:
+ *     Assumptions:
+ *         *status is true
+ *     Result:
+ *         All test cases will be run
+ **/
 
 void testTools(int* status)
 {
@@ -83,17 +127,27 @@ void testTools(int* status)
 
     str = NULL;
 
+    /* Header to indicate which file is being tested */
     header("Testing functions in tools.c");
 
+    /* Check if previous test passed */
     if (*status)
     {
+        /* Print test message */
         fprintf(stdout, "%s: ", testMsg[0]);
+
+        /* Perform test */
         initString(&str, 1);
+
+        /* Check if test passed */
         *status = printResult(!!str);
+
+        /* Garbage collection */
         free(str);
         str = NULL;
     }
 
+    /* Repeat */
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[1]);
@@ -422,6 +476,22 @@ void testTools(int* status)
 
     header("Finish testing tools.c");
 }
+
+/**
+ * Name:     testLinkedList
+ * Purpose:
+ *     Test the functions in linkedList with different test cases
+ *
+ * Parameters:
+ *   - status : An int pointer to the status of the previous test case
+ *
+ * Returns:  void
+ * Assertions:
+ *     Assumptions:
+ *         *status is true
+ *     Result:
+ *         All test cases will be run
+ **/
 
 void testLinkedList(int* status)
 {
@@ -1119,6 +1189,22 @@ void testLinkedList(int* status)
     header("Finish testing linkedList.c");
 }
 
+/**
+ * Name:     testFileIO
+ * Purpose:
+ *     Test the functions in fileIO with different test cases
+ *
+ * Parameters:
+ *   - status : An int pointer to the status of the previous test case
+ *
+ * Returns:  void
+ * Assertions:
+ *     Assumptions:
+ *         *status is true
+ *     Result:
+ *         All test cases will be run
+ **/
+
 void testFileIO(int* status)
 {
     LinkedList* listFile;
@@ -1361,16 +1447,36 @@ void testFileIO(int* status)
     header("Finish testing fileIO.c");
 }
 
+/**
+ * Name:     printResult
+ * Purpose:
+ *     Prints passed or failed depending on the conditional
+ *
+ * Parameters:
+ *   - testCondition : An int representing a boolean for the
+ *                     conditional passed in from the test
+ *                     harness
+ *
+ * Returns:  int
+ * Assertions:
+ *     Assumptions:
+ *         *testCondition is either TRUE (1) or FALSE (0)
+ *     Result:
+ *         Prints passed or failed
+ **/
+
 int printResult(int testCondition)
 {
     char* green;
     char* red;
     char* reset;
 
+    /* Set color */
     green = "\033[32m";
     red = "\033[31m";
     reset = "\033[0m";
 
+    /* If testCondition returns TRUE */
     if (testCondition)
     {
         fprintf(stdout, "%s%s%s\n", green, "Passed", reset);
@@ -1383,16 +1489,36 @@ int printResult(int testCondition)
     return testCondition;
 }
 
+/**
+ * Name:     header
+ * Purpose:
+ *     Print a fancy header
+ *
+ * Parameters:
+ *   - msg : A string for the header to be printed
+ *
+ * Returns:  void
+ * Assertions:
+ *     Assumptions:
+ *         none
+ *     Result:
+ *         Header will be printed
+ **/
+
 void header(char* msg)
 {
     int msgLen;
     char* line;
 
+    /* Make line */
     msgLen = strlen(msg) + 1;
     line = (char*)malloc(msgLen * sizeof(char));
     memset(line, '\0', msgLen);
     memset(line, '=', msgLen - 1);
 
+    /* Print header */
     fprintf(stdout, "%s\n%s\n%s\n", line, msg, line);
+
+    /* Garbage collection */
     free(line);
 }
