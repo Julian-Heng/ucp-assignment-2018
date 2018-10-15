@@ -176,13 +176,41 @@ void upper(char* str)
         /* While within range, convert to uppercase */
         while (str[i] != '\0')
         {
-            if (INT_BOUND(str[i], 'a', 'z'))
+            if (intBound(str[i], 'a', 'z'))
             {
                 str[i] -= 32;
             }
             i++;
         }
     }
+}
+
+int intBound(int i, int low, int up)
+{
+    int inRange;
+
+    inRange = FALSE;
+
+    if ((i >= low) && (up >= i))
+    {
+        inRange = TRUE;
+    }
+
+    return inRange;
+}
+
+int doubleBound(double i, double low, double up)
+{
+    int inRange;
+
+    inRange = FALSE;
+
+    if (doubleCheck(i, low) && doubleCheck(up, i))
+    {
+        inRange = TRUE;
+    }
+
+    return inRange;
 }
 
 /**
@@ -218,6 +246,20 @@ int doubleCompare(double num1, double num2)
     return isEqual;
 }
 
+int doubleCheck(double a, double b)
+{
+    int largerThan;
+
+    largerThan = FALSE;
+
+    if (a > b || doubleCompare(a, b))
+    {
+        largerThan = TRUE;
+    }
+
+    return largerThan;
+}
+
 double doubleAbs(double num)
 {
     if (num < 0.0)
@@ -230,12 +272,37 @@ double doubleAbs(double num)
 
 double doubleMod(double num, double divide)
 {
-    while (DOUBLE_CHECK(num, divide))
+    while (doubleCheck(num, divide))
     {
         num -= divide;
     }
 
     return num;
+}
+
+int doubleRound(double i)
+{
+    int rounded;
+
+    if (i > 0.0)
+    {
+        rounded = (int)(i + 0.5);
+    }
+    else
+    {
+        rounded = (int)(i - 0.5);
+    }
+
+    return rounded;
+}
+
+double degToRad(double deg)
+{
+    double rad;
+
+    rad = deg * (PI / 180);
+
+    return rad;
 }
 
 /**

@@ -44,11 +44,11 @@ void testTools(int* status)
     /*  6 */ "Testing upper() with lowercase",
     /*  7 */ "Testing upper() with uppercase",
     /*  8 */ "Testing upper() with mix case",
-    /*  9 */ "Testing INT_BOUND() [in bounds]",
-    /* 10 */ "Testing INT_BOUND() [out of lower bounds]",
-    /* 11 */ "Testing INT_BOUND() [out of upper bounds]",
-    /* 12 */ "Testing INT_BOUND() [inclusive lower bounds]",
-    /* 13 */ "Testing INT_BOUND() [inclusive upper bounds]",
+    /*  9 */ "Testing intBound() [in bounds]",
+    /* 10 */ "Testing intBound() [out of lower bounds]",
+    /* 11 */ "Testing intBound() [out of upper bounds]",
+    /* 12 */ "Testing intBound() [inclusive lower bounds]",
+    /* 13 */ "Testing intBound() [inclusive upper bounds]",
     /* 14 */ "Testing doubleCompare() with 1.0 and 1.0",
     /* 15 */ "Testing doubleCompare() with 1.0 and 1.1",
     /* 16 */ "Testing doubleCompare() with 1.1 and 1.0",
@@ -58,13 +58,13 @@ void testTools(int* status)
     /* 20 */ "Testing doubleAbs() with a negative double",
     /* 21 */ "Testing doubleMod() with a divisible double",
     /* 22 */ "Testing doubleMod() with a non-divisible double",
-    /* 23 */ "Testing DOUBLE_BOUND() [in bounds]",
-    /* 24 */ "Testing DOUBLE_BOUND() [out of lower bounds]",
-    /* 25 */ "Testing DOUBLE_BOUND() [out of upper bounds]",
-    /* 26 */ "Testing DOUBLE_BOUND() [inclusive lower bounds]",
-    /* 27 */ "Testing DOUBLE_BOUND() [inclusive upper bounds]",
-    /* 28 */ "Testing DOUBLE_BOUND() [just out of lower bounds]",
-    /* 29 */ "Testing DOUBLE_BOUND() [just out of upper bounds]",
+    /* 23 */ "Testing doubleBound() [in bounds]",
+    /* 24 */ "Testing doubleBound() [out of lower bounds]",
+    /* 25 */ "Testing doubleBound() [out of upper bounds]",
+    /* 26 */ "Testing doubleBound() [inclusive lower bounds]",
+    /* 27 */ "Testing doubleBound() [inclusive upper bounds]",
+    /* 28 */ "Testing doubleBound() [just out of lower bounds]",
+    /* 29 */ "Testing doubleBound() [just out of upper bounds]",
     /* 30 */ "Testing removeTrailingNewline() with a newline string",
     /* 31 */ "Testing removeTrailingNewline() without a newline string",
     /* 32 */ "Testing countWords() with empty string",
@@ -74,7 +74,11 @@ void testTools(int* status)
     /* 36 */ "Testing trim() with trailing whitespace",
     /* 37 */ "Testing trim() with all whitespace",
     /* 38 */ "Testing trim() with a normal string",
-    /* 39 */ "Testing trim() with a large gap"
+    /* 39 */ "Testing trim() with a large gap",
+    /* 40 */ "Testing doubleRound() upwards",
+    /* 41 */ "Testing doubleRound() downwards",
+    /* 42 */ "Testing doubleRound() upwards with negative",
+    /* 43 */ "Testing doubleRound() downwards with negative"
     };
 
     str = NULL;
@@ -169,31 +173,31 @@ void testTools(int* status)
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[9]);
-        *status = printResult(INT_BOUND(1, 0, 2));
+        *status = printResult(intBound(1, 0, 2));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[10]);
-        *status = printResult(! INT_BOUND(-1, 0, 1));
+        *status = printResult(! intBound(-1, 0, 1));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[11]);
-        *status = printResult(! INT_BOUND(10, 0, 8));
+        *status = printResult(! intBound(10, 0, 8));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[12]);
-        *status = printResult(INT_BOUND(0, 0, 1));
+        *status = printResult(intBound(0, 0, 1));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[13]);
-        *status = printResult(INT_BOUND(1, 0, 1));
+        *status = printResult(intBound(1, 0, 1));
     }
 
     if (*status)
@@ -253,43 +257,43 @@ void testTools(int* status)
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[23]);
-        *status = printResult(DOUBLE_BOUND(10.01, 1.01, 12.01));
+        *status = printResult(doubleBound(10.01, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[24]);
-        *status = printResult(! DOUBLE_BOUND(0.01, 1.01, 12.01));
+        *status = printResult(! doubleBound(0.01, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[25]);
-        *status = printResult(! DOUBLE_BOUND(13.01, 1.01, 12.01));
+        *status = printResult(! doubleBound(13.01, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[26]);
-        *status = printResult(DOUBLE_BOUND(1.01, 1.01, 12.01));
+        *status = printResult(doubleBound(1.01, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[27]);
-        *status = printResult(DOUBLE_BOUND(12.01, 1.01, 12.01));
+        *status = printResult(doubleBound(12.01, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[28]);
-        *status = printResult(! DOUBLE_BOUND(1.00, 1.01, 12.01));
+        *status = printResult(! doubleBound(1.00, 1.01, 12.01));
     }
 
     if (*status)
     {
         fprintf(stdout, "%s: ", testMsg[29]);
-        *status = printResult(! DOUBLE_BOUND(12.02, 1.01, 12.01));
+        *status = printResult(! doubleBound(12.02, 1.01, 12.01));
     }
 
     if (*status)
@@ -390,6 +394,30 @@ void testTools(int* status)
         *status = printResult(strcmp(str, "a        b") == 0);
         free(str);
         str = NULL;
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[40]);
+        *status = printResult(doubleRound(21.6) == 22);
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[41]);
+        *status = printResult(doubleRound(21.213) == 21);
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[42]);
+        *status = printResult(doubleRound(-21.6) == -22);
+    }
+
+    if (*status)
+    {
+        fprintf(stdout, "%s: ", testMsg[43]);
+        *status = printResult(doubleRound(-21.213) == -21);
     }
 
     header("Finish testing tools.c");
