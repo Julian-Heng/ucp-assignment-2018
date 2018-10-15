@@ -15,7 +15,7 @@ else
     MOD_DATE = \"$(shell date --iso-8601=seconds -r ./turtle.c)\"
 endif
 
-# Getting user information
+# Getting user information for version message
 USER = \"$(shell whoami)\"
 HOST = \"$(shell hostname)\"
 
