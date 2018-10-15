@@ -58,13 +58,13 @@ EXEC = turtle
 
 all: turtleGraphics turtleGraphicsSimple turtleGraphicsDebug
 
-turtleGraphics: info turtle.o
+turtleGraphics: turtle.o
 	$(CC) $(OBJ) -lm -o ./build/$(EXEC)
 
-turtleGraphicsSimple: info simple/turtle.o
+turtleGraphicsSimple: simple/turtle.o
 	$(CC) $(SIMPLE_OBJ) -lm -o ./build/$(EXEC)-simple
 
-turtleGraphicsDebug: info debug/turtle.o
+turtleGraphicsDebug: debug/turtle.o
 	$(CC) $(DEBUG_OBJ) -lm -o ./build/$(EXEC)-debug
 
 test: turtleGraphicsDebug test.o
@@ -169,22 +169,6 @@ debug/tools.o: makedirs tools.c tools.h
 
 docs:
 	@bash -c '{ cd ../docs || exit; } && pdflatex AssignmentDoc.tex'
-
-info:
-	@echo =====[Makefile Variables]=====
-	@echo "CC            = $(CC)"
-	@echo "CFLAGS        = $(CFLAGS)"
-	@echo "DCFLAGS       = $(DCFLAGS)"
-	@echo "COMPILER_INFO = $(COMPILER_INFO)"
-	@echo "DATE          = $(DATE)"
-	@echo "MOD_DATE      = $(MOD_DATE)"
-	@echo "USER          = $(USER)"
-	@echo "HOST          = $(HOST)"
-	@echo "OBJ           = $(OBJ)"
-	@echo "SIMPLE_OBJ    = $(SIMPLE_OBJ)"
-	@echo "DEBUG_OBJ     = $(DEBUG_OBJ)"
-	@echo "EXEC          = $(EXEC)"
-	@echo
 
 makedirs:
 	@if [ ! -e ./build ]; then \
