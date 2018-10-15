@@ -214,14 +214,14 @@ int doubleBound(double i, double low, double up)
 }
 
 /**
- * Name:     doubleComare
+ * Name:     doubleCompare
  * Purpose:
  *     Compares two doubles. Needed due to how doubles are not precise
  *     due to floating points. Inherited from Java.
  *
  * Parameters:
  *   - num1 : First double
- *   - num2 : Second double to compare two
+ *   - num2 : Second double to compare with
  *
  * Returns:  int / boolean
  * Assertions:
@@ -246,22 +246,59 @@ int doubleCompare(double num1, double num2)
     return isEqual;
 }
 
-int doubleCheck(double a, double b)
+/**
+ * Name:     doubleCheck
+ * Purpose:
+ *     Check if one double is larger or equal to another double.
+ *     Needed for checking the range of a double. Inherited from
+ *     Java.
+ *
+ * Parameters:
+ *   - num1 : First double
+ *   - num2 : Second double to compare with
+ *
+ * Returns:  int / boolean
+ * Assertions:
+ *     Assumptions:
+ *         none
+ *     Results:
+ *         Returns TRUE (1) or FALSE (0)
+ **/
+
+int doubleCheck(double num1, double num2)
 {
-    int largerThan;
+    int isLargerThan;
 
-    largerThan = FALSE;
+    isLargerThan = FALSE;
 
-    if (a > b || doubleCompare(a, b))
+    /* Check if num1 is larger or equal to num2 */
+    if (num1 > num2 || doubleCompare(num1, num2))
     {
-        largerThan = TRUE;
+        isLargerThan = TRUE;
     }
 
-    return largerThan;
+    return isLargerThan;
 }
+
+/**
+ * Name:     doubleAbs
+ * Purpose:
+ *     Get the absolute value of a double.
+ *
+ * Parameters:
+ *   - num : A double to find the absolute value
+ *
+ * Returns:  double
+ * Assertions:
+ *     Assumptions:
+ *         none
+ *     Results:
+ *         Returns absolute value of num
+ **/
 
 double doubleAbs(double num)
 {
+    /* If num is negative, get negative */
     if (num < 0.0)
     {
         num = -num;
@@ -270,8 +307,27 @@ double doubleAbs(double num)
     return num;
 }
 
+/**
+ * Name:     doubleMod
+ * Purpose:
+ *     Compares two doubles. Needed due to how doubles are not precise
+ *     due to floating points. Inherited from Java.
+ *
+ * Parameters:
+ *   - num    : The double to be mod with
+ *   - divide : The double to be divided with
+ *
+ * Returns:  double
+ * Assertions:
+ *     Assumptions:
+ *         none
+ *     Results:
+ *         Returns the modulus of num by divide
+ **/
+
 double doubleMod(double num, double divide)
 {
+    /* While num is more than divide */
     while (doubleCheck(num, divide))
     {
         num -= divide;
@@ -280,21 +336,54 @@ double doubleMod(double num, double divide)
     return num;
 }
 
-int doubleRound(double i)
+/**
+ * Name:     doubleRound
+ * Purpose:
+ *     Round a double to the nearest integer
+ *
+ * Parameters:
+ *   - num : A double to be rounded
+ *
+ * Returns:  int
+ * Assertions:
+ *     Assumptions:
+ *         none
+ *     Results:
+ *         Returns TRUE (1) or FALSE (0)
+ **/
+
+int doubleRound(double num)
 {
     int rounded;
 
-    if (i > 0.0)
+    if (num > 0.0)
     {
-        rounded = (int)(i + 0.5);
+        rounded = (int)(num + 0.5);
     }
     else
     {
-        rounded = (int)(i - 0.5);
+        rounded = (int)(num - 0.5);
     }
 
     return rounded;
 }
+
+/**
+ * Name:     degToRad
+ * Purpose:
+ *     Converts degrees to radians. Needed for calling trigonmetric
+ *     functions.
+ *
+ * Parameters:
+ *   - deg : The angle in degrees
+ *
+ * Returns:  double
+ * Assertions:
+ *     Assumptions:
+ *         none
+ *     Results:
+ *         Returns the angle in radians
+ **/
 
 double degToRad(double deg)
 {
