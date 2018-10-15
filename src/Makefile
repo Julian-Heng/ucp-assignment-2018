@@ -30,55 +30,142 @@ DEFAULT_DEFINES = -DCOMPILER_INFO="$(COMPILER_INFO)" \
 # SOURCE doesn't include turtle.c because of linking
 # issues with test.c
 
-SOURCE     = effects.c fileIO.c linkedList.c tools.c
-OBJ        = $(SOURCE:%.c=objects/%.o)
-SIMPLE_OBJ = $(SOURCE:%.c=simple/%.o)
-DEBUG_OBJ  = $(SOURCE:%.c=debug/%.o)
+OBJ = 	./objects/effects.o \
+		./objects/fileIO.o \
+		./objects/linkedList.o \
+		./objects/tools.o \
+		./objects/turtle.o
+
+SIMPLE_OBJ = 	./simple/effects.o \
+				./simple/fileIO.o \
+				./simple/linkedList.o \
+				./simple/tools.o \
+				./simple/turtle.o
+
+DEBUG_OBJ = ./debug/effects.o \
+			./debug/fileIO.o \
+			./debug/linkedList.o \
+			./debug/tools.o \
+			./debug/turtle.o
+
+TEST_OBJ = 	./debug/effects.o \
+			./debug/fileIO.o \
+			./debug/linkedList.o \
+			./debug/tools.o \
+			./debug/test.o
+
 EXEC = turtle
 
-all: info makedirs $(OBJ) objects/turtle.o
-	$(CC) $(OBJ) ./objects/turtle.o -lm -o ./build/$(EXEC)
+all: turtleGraphics turtleGraphicsSimple turtleGraphicsDebug
 
-simple: info makedirs $(SIMPLE_OBJ) simple/turtle.o
-	$(CC) $(SIMPLE_OBJ) ./simple/turtle.o -lm -o ./build/$(EXEC)-simple
+turtleGraphics: info turtle.o
+	$(CC) $(OBJ) -lm -o ./build/$(EXEC)
 
-debug: info makedirs $(DEBUG_OBJ) debug/turtle.o
-	$(CC) $(DEBUG_OBJ) ./debug/turtle.o -lm -o ./build/$(EXEC)-debug
+turtleGraphicsSimple: info simple/turtle.o
+	$(CC) $(SIMPLE_OBJ) -lm -o ./build/$(EXEC)-simple
 
-test: makedirs debug
-	@echo =====[Test]=====
-	$(CC) $(DCFLAGS) -o ./debug/test.o -c ./test.c
-	$(CC) $(DEBUG_OBJ) ./debug/test.o -lm -o ./build/test
+turtleGraphicsDebug: info debug/turtle.o
+	$(CC) $(DEBUG_OBJ) -lm -o ./build/$(EXEC)-debug
+
+test: turtleGraphicsDebug test.o
+	$(CC) $(TEST_OBJ) -lm -o ./build/test
 	./build/test
 	if command -v valgrind; then \
 		valgrind ./build/test; \
 	fi
-	@echo
 
-everything: info all simple debug
-
-$(OBJ): makedirs
-	$(CC) $(CFLAGS) -o ./$@ -c ./$(@:objects/%.o=%.c)
-
-$(SIMPLE_OBJ): makedirs
-	$(CC) $(CFLAGS) -o ./$@ -c ./$(@:simple/%.o=%.c)
-
-$(DEBUG_OBJ): makedirs
-	$(CC) $(DCFLAGS) -o ./$@ -c ./$(@:debug/%.o=%.c)
-
-objects/turtle.o: makedirs $(OBJ)
-	$(CC) $(CFLAGS) -o ./$@ -c ./turtle.c \
+turtle.o:	makedirs \
+			tools.o \
+			linkedList.o \
+			fileIO.o \
+			effects.o \
+			turtle.c \
+			turtle.h
+	$(CC) $(CFLAGS) -o ./objects/turtle.o -c ./turtle.c \
 					$(DEFAULT_DEFINES)
 
-simple/turtle.o: makedirs $(SIMPLE_OBJ)
-	$(CC) $(CFLAGS) -o ./$@ -c ./turtle.c \
+simple/turtle.o:	makedirs \
+					simple/tools.o \
+					simple/linkedList.o \
+					simple/fileIO.o \
+					simple/effects.o \
+					turtle.c \
+					turtle.h
+	$(CC) $(CFLAGS) -o ./simple/turtle.o -c ./turtle.c \
 					$(DEFAULT_DEFINES) \
-					-DSIMPLE=1 \
+					-DSIMPLE=1
 
-debug/turtle.o: makedirs $(DEBUG_OBJ)
-	$(CC) $(DCFLAGS) -o ./$@ -c ./turtle.c \
-					 $(DEFAULT_DEFINES) \
-					 -DDEBUG=1 \
+debug/turtle.o:		makedirs \
+					debug/tools.o \
+					debug/linkedList.o \
+					debug/fileIO.o \
+					debug/effects.o \
+					turtle.c \
+					turtle.h
+	$(CC) $(DFLAGS) -o ./debug/turtle.o -c ./turtle.c \
+					$(DEFAULT_DEFINES) \
+					-DDEBUG=1
+
+effects.o: makedirs effects.c effects.h
+	$(CC) $(CFLAGS) -o ./objects/effects.o -c ./effects.c
+
+simple/effects.o: makedirs effects.c effects.h
+	$(CC) $(CFLAGS) -o ./simple/effects.o -c ./effects.c
+
+debug/effects.o: makedirs effects.c effects.h
+	$(CC) $(DCFLAGS) -o ./debug/effects.o -c ./effects.c
+
+fileIO.o:	makedirs \
+			tools.o \
+			linkedList.o \
+			fileIO.c \
+			fileIO.h
+	$(CC) $(CFLAGS) -o ./objects/fileIO.o -c ./fileIO.c
+
+simple/fileIO.o:	makedirs \
+					simple/tools.o \
+					simple/linkedList.o \
+					fileIO.c \
+					fileIO.h
+	$(CC) $(CFLAGS) -o ./simple/fileIO.o -c ./fileIO.c
+
+debug/fileIO.o:	makedirs \
+				tools.o \
+				fileIO.c \
+				fileIO.h
+	$(CC) $(DCFLAGS) -o ./debug/fileIO.o -c ./fileIO.c
+
+linkedList.o:	makedirs \
+				linkedList.c \
+				linkedList.h
+	$(CC) $(CFLAGS) -o ./objects/linkedList.o -c ./linkedList.c
+
+simple/linkedList.o:	makedirs \
+						linkedList.c \
+						linkedList.h
+	$(CC) $(CFLAGS) -o ./simple/linkedList.o -c ./linkedList.c
+
+debug/linkedList.o:	makedirs \
+					linkedList.c \
+					linkedList.h
+	$(CC) $(DCFLAGS) -o ./debug/linkedList.o -c ./linkedList.c
+
+test.o:	makedirs \
+		tools.o \
+		linkedList.o \
+		fileIO.o \
+		test.c \
+		test.h
+	$(CC) $(DFLAGS) -o ./debug/test.o -c ./test.c
+
+tools.o: makedirs tools.c tools.h
+	$(CC) $(CFLAGS) -o ./objects/tools.o -c ./tools.c
+
+simple/tools.o: makedirs tools.c tools.h
+	$(CC) $(CFLAGS) -o ./simple/tools.o -c ./tools.c
+
+debug/tools.o: makedirs tools.c tools.h
+	$(CC) $(DCFLAGS) -o ./debug/tools.o -c ./tools.c
 
 docs:
 	@bash -c '{ cd ../docs || exit; } && pdflatex AssignmentDoc.tex'
@@ -93,7 +180,6 @@ info:
 	@echo "MOD_DATE      = $(MOD_DATE)"
 	@echo "USER          = $(USER)"
 	@echo "HOST          = $(HOST)"
-	@echo "SOURCE        = $(SOURCE)"
 	@echo "OBJ           = $(OBJ)"
 	@echo "SIMPLE_OBJ    = $(SIMPLE_OBJ)"
 	@echo "DEBUG_OBJ     = $(DEBUG_OBJ)"
