@@ -70,7 +70,7 @@ turtleGraphicsDebug: debug/turtle.o
 	$(CC) $(DEBUG_OBJ) -lm -o ./build/$(EXEC)-debug
 
 # Test harness
-test: turtleGraphicsDebug test.o
+test: all test.o
 	$(CC) $(TEST_OBJ) -lm -o ./build/test
 	./build/test
 	if command -v valgrind; then \
