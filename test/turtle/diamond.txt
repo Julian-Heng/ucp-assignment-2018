@@ -1,7 +1,5 @@
-move 21
-rotate 90
-move 21
 rotate -45
+move 30
 FG 1
 Pattern #
 DRAW 10

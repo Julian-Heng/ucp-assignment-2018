@@ -3,135 +3,135 @@ pattern .
 draw 1
 rotate 180
 move 1
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 2
 rotate 180
 move 2
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 3
 rotate 180
 move 3
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 4
 rotate 180
 move 4
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 5
 rotate 180
 move 5
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 6
 rotate 180
 move 6
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 7
 rotate 180
 move 7
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 8
 rotate 180
 move 8
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 9
 rotate 180
 move 9
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 10
 rotate 180
 move 10
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 9
 rotate 180
 move 9
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 8
 rotate 180
 move 8
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 7
 rotate 180
 move 7
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 6
 rotate 180
 move 6
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 5
 rotate 180
 move 5
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 4
 rotate 180
 move 4
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 3
 rotate 180
 move 3
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 2
 rotate 180
 move 2
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 1
 rotate 180
 move 1
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 
 

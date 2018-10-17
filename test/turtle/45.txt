@@ -1,2 +1,2 @@
-rotate 45
+rotate -45
 draw 7.0710678119

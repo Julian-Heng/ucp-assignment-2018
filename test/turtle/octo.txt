@@ -1,8 +1,8 @@
 move 30
 
-rotate 90
-move 10
 rotate -90
+move 20
+rotate 90
 
 rotate 45
 bg 5

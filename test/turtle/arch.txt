@@ -22,13 +22,13 @@ rotate 180
 move 21
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 18
@@ -64,13 +64,13 @@ rotate 180
 move 22
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 17
@@ -100,13 +100,13 @@ rotate 180
 move 22
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 16
@@ -142,13 +142,13 @@ rotate 180
 move 23
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 15
@@ -184,13 +184,13 @@ rotate 180
 move 24
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 15
@@ -232,13 +232,13 @@ rotate 180
 move 25
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 13
@@ -304,13 +304,13 @@ rotate 180
 move 25
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 11
@@ -358,13 +358,13 @@ rotate 180
 move 26
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 10
@@ -400,13 +400,13 @@ rotate 180
 move 27
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 9
@@ -454,13 +454,13 @@ rotate 180
 move 29
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 8
@@ -538,13 +538,13 @@ rotate 180
 move 30
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 7
@@ -622,13 +622,13 @@ rotate 180
 move 30
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 5
@@ -697,13 +697,13 @@ rotate 180
 move 31
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 4
@@ -772,13 +772,13 @@ rotate 180
 move 32
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 3
@@ -847,13 +847,13 @@ rotate 180
 move 32
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 1
@@ -976,13 +976,13 @@ rotate 180
 move 35
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 1
@@ -1093,13 +1093,13 @@ rotate 180
 move 36
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 1
@@ -1168,13 +1168,13 @@ rotate 180
 move 37
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 1
@@ -1231,13 +1231,13 @@ rotate 180
 move 17
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 FG 15
@@ -1300,13 +1300,13 @@ rotate 180
 move 21
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 2
@@ -1408,13 +1408,13 @@ rotate 180
 move 21
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 pattern |
@@ -1507,13 +1507,13 @@ rotate 180
 move 22
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 1
@@ -1618,13 +1618,13 @@ rotate 180
 move 22
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 move 1
@@ -1648,13 +1648,13 @@ rotate 180
 move 4
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 pattern |
@@ -1720,13 +1720,13 @@ rotate 180
 move 22
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 pattern |
@@ -1822,13 +1822,13 @@ rotate 180
 move 22
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 pattern |
@@ -1912,13 +1912,13 @@ rotate 180
 move 21
 
 
-rotate -90
+rotate 90
 
 
 move 1
 
 
-rotate -90
+rotate 90
 
 
 pattern |

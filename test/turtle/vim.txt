@@ -4,9 +4,9 @@ PATTERN .
 DRAW 1
 ROTATE 180
 MOVE                                  21        
-ROTATE -90
+ROTATE 90
 MOVE 1
-ROTATE -90
+ROTATE 90
 move 4
 FG 15
 pattERN #
@@ -20,9 +20,9 @@ draw 14
          draw 14
       RotAte 180
       move 38
-    Rotate -90
+    Rotate 90
     move 1
-rotate -90
+rotate 90
 
 
 
@@ -39,9 +39,9 @@ draw 14
          draw 14
       RotAte 180
       move 38
-    Rotate -90
+    Rotate 90
     move 1
-rotate -90
+rotate 90
 
 
 
@@ -59,9 +59,9 @@ draw 10
 
 rotate 180
 move 36
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 
 
@@ -78,9 +78,9 @@ draw 10
 
 rotate 180
 move 34
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 
 
@@ -97,9 +97,9 @@ draw 10
 
 rotate 180
 move 33
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 
 
@@ -121,9 +121,9 @@ draw 2
 rotate 180
 move 33
 
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 
 
@@ -144,9 +144,9 @@ draw 5
 rotate 180
 move 35
 
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 move 4
 draw 2
@@ -165,9 +165,9 @@ draw 9
 
 rotate 180
 move 37
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 move 2
 draw 4
@@ -188,9 +188,9 @@ rotate 180
 move 39
 
 
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 
 move 4
@@ -206,9 +206,9 @@ draw 11
 rotate 180
 move 37
 
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 move 6
 pattern #
@@ -220,9 +220,9 @@ draw 12
 rotate 180
 move 35
 
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 move 6
 pattern #
@@ -243,9 +243,9 @@ draw 10
 
 rotate 180
 move 36
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 move 6
 pattern #
@@ -272,9 +272,9 @@ move 2
 draw 2
 rotate 180
 move 37
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 move 6
 pattern #
@@ -302,9 +302,9 @@ draw 2
 rotate 180
 move 37
 
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 move 6
 pattern #
@@ -331,9 +331,9 @@ move 1
 draw 3
 rotate 180
 move 36
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 
 
@@ -347,9 +347,9 @@ draw 9
 rotate 180
 move 20
 
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 
 
@@ -357,8 +357,8 @@ move 13
 draw 5
 rotate 180
 move 18
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 move 15
 draw 1
