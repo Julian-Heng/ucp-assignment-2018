@@ -558,19 +558,15 @@ void processList(LinkedList* list)
                 /**
                  * If action is rotating, get the angle and add
                  * to the current angle
+                 *
+                 * We minus the angle because adding a positive angle,
+                 * indicating that we want to turn clockwise makes the
+                 * angle turn counterclockwise, see the unit circle.
+                 *
+                 * Thus, we subtract the angle.
                  **/
                 sscanf(command, "%s %lf", tempStr, &tempDouble);
-                angle += tempDouble;
-
-                /* Loop back angle if it goes out of bounds */
-                if (doubleCheck(0.0, angle))
-                {
-                    angle += 360.0;
-                }
-                else if (doubleCheck(angle, 360.0))
-                {
-                    angle -= 360.0;
-                }
+                angle -= tempDouble;
             }
             else if (stringCompare(tempStr, "MOVE"))
             {
@@ -672,11 +668,11 @@ void processList(LinkedList* list)
                  * of bounds, absolute values would make it so
                  * that the coordinates would "bounce" back
                  **/
-                x3 = doubleRound(doubleAbs(x1));
-                y3 = doubleRound(doubleAbs(y1));
+                x3 = doubleRound(x1);
+                y3 = doubleRound(y1);
 
-                x4 = doubleRound(doubleAbs(x2));
-                y4 = doubleRound(doubleAbs(y2));
+                x4 = doubleRound(x2);
+                y4 = doubleRound(y2);
 
                 /**
                  * Set (x5, y5) to (x1, y1) for recording in log
