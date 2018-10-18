@@ -1,4 +1,4 @@
-rotate -5
+rotate -45
 move 30
 FG 1
 Pattern #
