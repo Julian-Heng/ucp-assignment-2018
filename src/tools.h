@@ -1,10 +1,6 @@
 #ifndef TOOLS_H
 #define TOOLS_H
 
-/* Constants */
-#define TOLERANCE 0.0000001
-#define PI 3.14159265358979323846
-
 /* Function prototypes */
 void initString(char** str, int len);
 void initStringWithContents(char** str, char* contents);

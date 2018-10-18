@@ -6,7 +6,7 @@
  *           mallocing functions, freeing functions,
  *           string manipulation and number comparisons
  *
- * Last Modified: 2018-10-16T02:33:27+08:00
+ * Last Modified: 2018-10-18T11:32:24+08:00
  **/
 
 #include <stdio.h>
@@ -17,6 +17,10 @@
 
 #define FALSE 0
 #define TRUE !FALSE
+
+/* Constants */
+#define TOLERANCE 0.0000001
+#define PI 3.14159265358979323846
 
 /**
  * Name:     initString
@@ -78,8 +82,8 @@ void initStringWithContents(char** str, char* contents)
     len = strlen(contents) + 1;
     initString(str, len);
 
-    /* If malloc failed */
-    if (*str)
+    /* If malloc did not fail and contents is a valid pointer */
+    if (*str && contents)
     {
         strncpy(*str, contents, len);
     }
@@ -136,7 +140,7 @@ int stringCompare(char* str1, char* str2)
     int returnCode;
 
     /* If string matches, return true */
-    returnCode = ! strcmp(str1, str2) ? TRUE : FALSE;
+    returnCode = strcmp(str1, str2) == 0 ? TRUE : FALSE;
 
     return returnCode;
 }
@@ -180,12 +184,48 @@ void upper(char* str)
     }
 }
 
+/**
+ * Name:     intBound
+ * Purpose:
+ *     Check if an integer is within the bounds of two other integers
+ *
+ * Parameters:
+ *   - i   : An integer to check
+ *   - low : An integer for the lower boundaries
+ *   - up  : An integer for the upper boundaries
+ *
+ * Returns: int / boolean
+ * Asertions:
+ *     Assumptions:
+ *         None
+ *     Result:
+ *         Returns TRUE (1) or FALSE (0)
+ **/
+
 int intBound(int i, int low, int up)
 {
     int inRange;
     inRange = ((i >= low) && (up >= i)) ? TRUE : FALSE;
     return inRange;
 }
+
+/**
+ * Name:     doubleBound
+ * Purpose:
+ *     Check if a double is within the bounds of two other doubles
+ *
+ * Parameters:
+ *   - i   : A double to check
+ *   - low : A double for the lower boundaries
+ *   - up  : A double for the upper boundaries
+ *
+ * Returns: int / boolean
+ * Asertions:
+ *     Assumptions:
+ *         None
+ *     Result:
+ *         Returns TRUE (1) or FALSE (0)
+ **/
 
 int doubleBound(double i, double low, double up)
 {
@@ -499,10 +539,7 @@ void trim(char** str)
         len = strlen(*str) + 1;
 
         /* Count the number of leading whitespace */
-        while ((*str)[i] == ' ' && ++i < len)
-        {
-            start++;
-        }
+        while ((*str)[i] == ' ' && ++i < len && ++start);
 
         /* If the string is all white space */
         if (start == (len - 1))
@@ -512,14 +549,14 @@ void trim(char** str)
         }
         else
         {
-            /* Minus 2 because of array index and null terminator */
+            /**
+             * Set i to the end of the string
+             * Minus 2 because of array index and null terminator
+             **/
             i = len - 2;
 
             /* Count number of trailing whitespaces */
-            while ((*str)[i] == ' ' && --i >= 0)
-            {
-                end++;
-            }
+            while ((*str)[i] == ' ' && --i >= 0 && ++end);
 
             /* Init a new string with new size */
             newLen = len - (start + end);
