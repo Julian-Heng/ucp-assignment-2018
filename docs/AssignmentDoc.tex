@@ -114,10 +114,10 @@ modified if a condition is satisfied.
 \begin{itemize}[label={--}]
 \begin{samepage}
     \item Do not return expressions, i.e \code{return (i \% 2) == 0;}
-    \item Do not use ternary operations, i.e \code{a = i == 1 ? 0 : 1;}
     \item Do not compare boolean values with the \code{==} operator
     \item Do not use any functions from standard library unless necessary
     \item Use constants for string literals if possible
+    \item Prevent the use of magic numbers
     \item Use brackets on if-else statements, even if the conditional 
           statement is one line
     \item Use wrapper functions to \code{malloc} and \code{free} in 
@@ -176,14 +176,17 @@ commands are read from the head. When calculating the new x and y coordinates,
 we have to take into consideration of the limitations with drawing on the 
 terminal.
 
-For example, drawing from the coordinates (0, 0) to (0, 0) will only draw 
-one character, even though the coordinates provided did not change. 
+For example, drawing from the coordinates (0, 0) to (1, 0) will only draw 
+twi character, even though the coordinates provided changed by one. 
 Thus whenever we do a \code{MOVE} or \code{DRAW} command, the resulting 
 line will always be one unit length too long. To solve this overhead, 
 when a \code{MOVE} or \code{DRAW} command is invoked, we calculate the 
 new coordinates but using the length provided minus one. Thus, this gives 
 us the coordindates of the new set of coordinates, but only one unit away 
-in the direction of the current angle.
+in the direction of the current angle. We will need additional temporary 
+coordinates variables in order to log the correct coordinates for the log 
+file and also keeping track of the correct coordinates used for the next
+\code{MOVE} or \code{DRAW} command.
 
 Using the excerpt above, when the program encounter \code{DRAW 2}, 
 with the current angle still at 0.0 degrees and coordinates at (0, 0), 
@@ -466,11 +469,28 @@ Convert characters in a string to uppercase. This function is primarily
 used when converting command names to uppercase so that the program and 
 accept mixed case inputs.
 
+\subsubsection{intBound}
+
+Check if an integer is within the bounds of two other integers. Used in 
+\code{turtle.c} for validating \code{FG} and \code{BG} commands, as they 
+have a lower and upper limit for terminal colors.
+
+\subsubsection{doubleBound}
+
+Check if a double is within th ebounds of two other doubles. Used in 
+\code{turtle.c} for validating \code{DRAW}, \code{MOVE} and \code{ROTATE} 
+commands, as they provide a real value.
+
 \subsubsection{doubleCompare}
 
 Compares two doubles. Needed due to how doubles are not precise because of 
 floating points. Used to check if a double is within range of two doubles 
 inclusive.
+
+\subsubsection{doubleCheck}
+
+Check if one double is larger or equal to another double. Needed for 
+checking the range of a double in \code{turtle.c}.
 
 \subsubsection{doubleAbs}
 
@@ -481,6 +501,17 @@ checks the tolerance of the two double it compares.
 
 Get the modulus of a double. Required in turtle to check if the angle is 
 a right angle. An alternative to \code{fmod} in \code{math.h}.
+
+\subsubsection{doubleRound}
+
+Round a double to the nearest integer. Needed for the \code{line} function 
+as that only takes in integer values and the coordinates are real values.
+
+\subsubsection{degToReg}
+
+Converts degrees to radians. Needed when calculating new coordinates as 
+the standard math library's \code{sin} and \code{cos} takes in radians 
+instead of degrees.
 
 \subsubsection{removeTrailingNewline}
 
@@ -820,7 +851,7 @@ rotate 45
 pattern .
  draw 6
 
-$ turtle ../test/turtle/pyramid.txt
+$ turtle ../test/turtle/octo.txt
 
 
 
