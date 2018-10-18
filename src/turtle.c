@@ -697,6 +697,16 @@ void processList(LinkedList* list)
                  **/
                 calcNewPosition(&x1, &y1, &x2, &y2, angle, 1.0);
 
+                /**
+                 * Round the new posititions because of terminal escape
+                 * codes taking integer values only
+                 **/
+                x1 = doubleRound(x1);
+                y1 = doubleRound(y1);
+
+                x2 = doubleRound(x2);
+                y2 = doubleRound(y2);
+
                 /* Convert to uppercase for log file */
                 upper(tempStr);
 
