@@ -1,10 +1,6 @@
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
 
-/* Typedef linked list node and linked list */
-typedef struct LinkedListNode LinkedListNode;
-typedef struct LinkedList LinkedList;
-
 /**
  * Struct Name: LinkedListNode
  * Purpose:     A node that is part of a linked list. Contains two
@@ -22,12 +18,12 @@ typedef struct LinkedList LinkedList;
  *
  **/
 
-struct LinkedListNode
+typedef struct LinkedListNode
 {
     struct LinkedListNode* next;
     struct LinkedListNode* prev;
     void* value;
-};
+} LinkedListNode;
 
 /**
  * Struct Name: LinkedList
@@ -46,11 +42,11 @@ struct LinkedListNode
  *
  **/
 
-struct LinkedList
+typedef struct LinkedList
 {
     LinkedListNode* head;
     LinkedListNode* tail;
-};
+} LinkedList;
 
 /* Function prototypes */
 LinkedListNode* initNode(void* newValue);
