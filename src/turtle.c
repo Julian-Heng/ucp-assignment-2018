@@ -438,9 +438,7 @@ void processList(LinkedList* list)
     double x1, y1, x2, y2, x5, y5;
     int x3, y3, x4, y4;
     double angle;
-#ifndef SIMPLE
     int fg, bg;
-#endif
     char pat;
 
     double tempDouble;
@@ -486,8 +484,8 @@ void processList(LinkedList* list)
     bg = 0;
 #else
     /* If simple is set, set background to white and foreground to black */
-    setFgColour(0);
-    setBgColour(7);
+    fg = 0;
+    bg = 7;
 #endif
     pat = '+';
 
@@ -496,6 +494,9 @@ void processList(LinkedList* list)
     tempInt = 0;
 #endif
     tempChar = '\0';
+
+    setFgColour(fg);
+    setBgColour(bg);
 
     /* Check if log file pointer is not valid */
     if (! logFile)
@@ -566,7 +567,19 @@ void processList(LinkedList* list)
                  * Thus, we subtract the angle.
                  **/
                 sscanf(command, "%s %lf", tempStr, &tempDouble);
-                angle -= tempDouble;
+                angle += tempDouble;
+                /*
+                fprintf(stderr, "%f, %f\n", tempDouble, angle);
+                */
+
+                if (doubleCheck(0.0, angle))
+                {
+                    angle += 360.0;
+                }
+                else if (doubleCheck(angle, 360.0))
+                {
+                    angle -= 360.0;
+                }
             }
             else if (stringCompare(tempStr, "MOVE"))
             {
@@ -662,11 +675,7 @@ void processList(LinkedList* list)
             {
                 /**
                  * Get drawing coordinates by rounding the
-                 * absolute value of the calculate coordinates
-                 *
-                 * Assuming that if the coordinates goes out
-                 * of bounds, absolute values would make it so
-                 * that the coordinates would "bounce" back
+                 * value of the calculate coordinates
                  **/
                 x3 = doubleRound(x1);
                 y3 = doubleRound(y1);
@@ -802,8 +811,9 @@ void calcNewPosition(
     *x1 = *x2;
     *x2 += xDelta;
 
+    /* Subtract for y delta because of angle shenanigans */
     *y1 = *y2;
-    *y2 += yDelta;
+    *y2 -= yDelta;
 }
 
 /**
