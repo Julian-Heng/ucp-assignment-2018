@@ -5,9 +5,9 @@ movE 2
 dRAW 12
 ROTATE 180
 move 19
-ROTATE -90
+ROTATE 90
 move 1
-rotATe -90
+rotATe 90
 move 2
 pattern /
 draw 1
@@ -30,9 +30,9 @@ pattern \
 draw 1
 ROTATE 180
 move 20
-rOtAtE -90
+rOtAtE 90
 moVE 1
-rotate -90
+rotate 90
 move 1
 pattern /
 draw 1
@@ -56,9 +56,9 @@ move 1
 draw 1
 ROTATE 180
 MOVE 20
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 draw 1
 move 1
 draw 1
@@ -81,9 +81,9 @@ pattern /
 draw 1
 rotate 180
 move 19
-rotate 270
+rotate 90
 move 1
-rotate -90
+rotate 90
 pattern \
 draw 1
 pattern _
