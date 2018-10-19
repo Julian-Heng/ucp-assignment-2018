@@ -66,63 +66,80 @@
 
 \subsection{Program Flow}
 
-In the main function of \code{turtle.c}, there are many conditionals 
-before \code{processCommands()}. This is to ensure that when calling 
-\code{processCommands()}, all the checks that preceed it have returned 
-TRUE, meaning that the program can continue with drawing without any 
-problems. As such, we can assume that the program has successfully checked 
-and validated variables before reaching the drawing command, ensuring 
+In the main function of \code{turtle.c}, there are many conditionals
+before \code{processCommands()}. This is to ensure that when calling
+\code{processCommands()}, all the checks that preceed it have returned
+\code{TRUE}, meaning that the program can continue with drawing without any
+problems. As such, we can assume that the program has successfully checked
+and validated variables before reaching the drawing command, ensuring
 that no problems can occur as the program could not reach that function.
 
 \subsection{Function Structure}
 
-In addition to following the Curtin provided ``C/C++ Coding Guidelines'', 
+In addition to following the Curtin provided ``C/C++ Coding Guidelines'',
 the functions in the turtle program share the same function structure.
 
-Each function is expected to have all variable declaration on the top, 
-followed by setting default values to the variables. After finishing the 
-actions in the functions, any local variables that is allocated memory 
+Each function is expected to have all variable declaration on the top,
+followed by setting default values to the variables. After finishing the
+actions in the functions, any local variables that is allocated memory
 in the heap will be freed in the same function they are declared in.
+
+E.g. a \code{char} pointer in function \code{foo} is declared and is passed
+by reference into function \code{bar} where heap memory is allocated to
+the \code{char} pointer. Thus in the function \code{foo}, the \code{char}
+pointer should be freed, if it is not null.
 
 \subsection{Printing}
 
-There are no \code{printf()} statements, instead opting for using 
-\code{fprintf()} statements instead. This way, it makes it easier to 
-see which messages are being print to stdout or to stderr. All output 
-to stdout will use \code{fprintf(stdout, ...)} while all debuging 
+There are no \code{printf()} statements, instead opting for using
+\code{fprintf()} statements instead. This way, it makes it easier to
+see which messages are being print to stdout or to stderr. All output
+to stdout will use \code{fprintf(stdout, ...)} while all debuging
 information or error messages will use \code{fprintf(stderr, ...)}.
 
 \subsection{Strings}
 
-Most strings in this program are stored in the heap. The only strings 
-that uses the stack are strings used to store temporary information, 
-such as the command type from the input file. The choice for using 
-malloced strings instead of stack strings is to increase reliability 
-instead of convenience. This also serves as covering the edge case 
+Most strings in this program are stored in the heap. The only strings
+that uses the stack are strings used to store temporary information,
+such as the command type from the input file. The choice for using
+malloced strings instead of stack strings is to increase reliability
+instead of convenience. This also serves as covering the edge case
 for strings that can exceed the maximum set string length.
 
+After allocating memory for a string, be it in the heap or the stack,
+a \code{memset} function is called to fill the string with the null
+terminator. This is simply to prevent memory errors from occurring and
+allows a `clean' state for strings.
+
+\pagebreak
 \subsection{Boolean values}
 
-Integers are used to represent boolean values. They are used to exit 
-out of the program if an error occurs. In loops, boolean variables are 
-used to exit out of the loop if an error occurs. Boolean variables in 
-functions are set to their default values on the top of the function, then 
+Integers are used to represent boolean values. They are used to exit
+out of the program if an error occurs. In loops, boolean variables are
+used to exit out of the loop if an error occurs. Boolean variables in
+functions are set to their default values on the top of the function, then
 modified if a condition is satisfied.
 
 \subsection{Miscellaneous design}
 
 \begin{itemize}[label={--}]
-\begin{samepage}
     \item Do not return expressions, i.e \code{return (i \% 2) == 0;}
     \item Do not compare boolean values with the \code{==} operator
     \item Do not use any functions from standard library unless necessary
-    \item Use constants for string literals if possible
+    \item Use \code{\#define} for string literals if possible
     \item Prevent the use of magic numbers
-    \item Use brackets on if-else statements, even if the conditional 
+    \item Use brackets on if-else statements, even if the conditional
           statement is one line
-    \item Use wrapper functions to \code{malloc} and \code{free} in 
+    \item Use wrapper functions to \code{malloc} and \code{free} in
           \code{tools.c}
-\end{samepage}
+    \item Use ternary operator \textbf{IF} it makes sense. i.e. Simple
+          replacement of an if-else statement setting values to one variable,
+          not a replacement for nested if-else.
+
+          \textbf{OK}:
+          \\\code{foo = (Condition) ? bar : baz;}\\
+          \textbf{NOT OK}:
+          \\\code{foo = ((Condition) ? TRUE : FALSE) ? FALSE : ((Condition) ? (TRUE) : FALSE;}
 \end{itemize}
 
 \newpage
@@ -141,80 +158,87 @@ PATTERN .
 DRAW 1
 ROTATE 180
 MOVE 1
-ROTATE -90
+ROTATE 90
 MOVE 1
-ROTATE -90
+ROTATE 90
 
 DRAW 2
 ROTATE 180
 MOVE 2
-ROTATE -90
+ROTATE 90
 MOVE 1
-ROTATE -90
+ROTATE 90
 
 DRAW 3
 ROTATE 180
 MOVE 3
-ROTATE -90
+ROTATE 90
 MOVE 1
-ROTATE -90
+ROTATE 90
 
 DRAW 4
 \end{lstlisting}
 
-Firstly, the program takes the entire file, line by line, and saves it to 
-a linked list within memory. Then it would validate each command in the list. 
-If the command is invalid, the program will print an error, which includes 
-the problematic line and the line number, and exits with an error code of 4. 
-If a command is valid, then the program will continue until it has reached 
+Firstly, the program takes the entire file, line by line, and saves it to
+a linked list within memory. Then it would validate each command in the list.
+If the command is invalid, the program will print an error, which includes
+the problematic line and the line number, and exits with an error code of 4.
+If a command is valid, then the program will continue until it has reached
 the end of the linked list.
 
-After all commands are verified and validated, the turtle program will start 
-drawing or interpreting the commands in the list. In this case, the linked 
-list is used like a queue, where the file contents are added in last, and 
-commands are read from the head. When calculating the new x and y coordinates, 
-we have to take into consideration of the limitations with drawing on the 
+After all commands are verified and validated, the turtle program will start
+drawing or interpreting the commands in the list. In this case, the linked
+list is used like a queue, where the file contents are added in last, and
+commands are read from the head. When calculating the new x and y coordinates,
+we have to take into consideration of the limitations with drawing on the
 terminal.
 
-For example, drawing from the coordinates (0, 0) to (1, 0) will only draw 
-twi character, even though the coordinates provided changed by one. 
-Thus whenever we do a \code{MOVE} or \code{DRAW} command, the resulting 
-line will always be one unit length too long. To solve this overhead, 
-when a \code{MOVE} or \code{DRAW} command is invoked, we calculate the 
-new coordinates but using the length provided minus one. Thus, this gives 
-us the coordindates of the new set of coordinates, but only one unit away 
-in the direction of the current angle. We will need additional temporary 
-coordinates variables in order to log the correct coordinates for the log 
+For example, drawing from the coordinates (0, 0) to (1, 0) will only draw
+two character, even though the coordinates provided changed by one.
+Thus whenever we do a \code{MOVE} or \code{DRAW} command, the resulting
+line will always be one unit length too long. To solve this overhead,
+when a \code{MOVE} or \code{DRAW} command is invoked, we calculate the
+new coordinates but using the length provided minus one. Thus, this gives
+us the coordindates of the new set of coordinates, but only one unit away
+in the direction of the current angle. We will need additional temporary
+coordinates variables in order to log the correct coordinates for the log
 file and also keeping track of the correct coordinates used for the next
 \code{MOVE} or \code{DRAW} command.
 
-Using the excerpt above, when the program encounter \code{DRAW 2}, 
-with the current angle still at 0.0 degrees and coordinates at (0, 0), 
-the coordinates for drawing will be (1, 0). After drawing, the coordinates 
-will then be updated to (2, 0) for the next \code{MOVE} or \code{DRAW} 
-command. The coordinates are needed to be updated so that they get recorded 
+In addition to moving the coordinates one unit after drawing, we would need to
+round to the closest whole number because of the ansi escape codes being able
+to only take integer values. If we did not round after moving, when
+calculating the next set of coordinates, the rounding for the drawing
+coordinates will be inacurate, causing the drawing coordinates to deviate by
+one unit.
+
+Using the excerpt above, when the program encounter \code{DRAW 2},
+with the current angle still at 0.0 degrees and coordinates at (0, 0),
+the coordinates for drawing will be (1, 0). After drawing, the coordinates
+will then be updated to (2, 0) for the next \code{MOVE} or \code{DRAW}
+command. The coordinates are needed to be updated so that they get recorded
 in the log file correctly.
 
 \subsection{Alternate ways}
 
-In my implementation, the program reads through the input file and converts 
-it to a linked list. The list is then first vaildated, then processed. An 
-alternative way to this approach is instead of reading, then validating, 
-then processing, we could do these 3 actions line by line in the file. 
-This version of the program could potentially be faster as it does not 
-utilise a linked list, thus taking less memory. The drawbacks to this 
-approach however is that the picture would be half drawn if an error occurs 
-and would theoretically be slower due to calling the validating and 
-processing functions on each line in file. In my opinion, I prefer my 
-approach as it is a much cleaner way of processing these input files, as 
-it the functions do return back to main function instead of the file reading 
+In my implementation, the program reads through the input file and converts
+it to a linked list. The list is then first vaildated, then processed. An
+alternative way to this approach is instead of reading, then validating,
+then processing, we could do these 3 actions line by line in the file.
+This version of the program could potentially be faster as it does not
+utilise a linked list, thus taking less memory. The drawbacks to this
+approach however is that the picture would be half drawn if an error occurs
+and would theoretically be slower due to calling the validating and
+processing functions on each line in file. In my opinion, I prefer my
+approach as it is a much cleaner way of processing these input files, as
+it the functions do return back to main function instead of the file reading
 function.
 
-In terms of calculating the new coordinates, instead of calculating the 
-drawing coordinates and updating after executing the command, we calculate 
-new coordinates using the full length, but then provide the drawing 
-coordinates to the drawing function. This isn't an improvement over my 
-implementation as it simply recalculates the drawing coordinates in a 
+In terms of calculating the new coordinates, instead of calculating the
+drawing coordinates and updating after executing the command, we calculate
+new coordinates using the full length, but then provide the drawing
+coordinates to the drawing function. This isn't an improvement over my
+implementation as it simply recalculates the drawing coordinates in a
 different order.
 
 \newpage
@@ -268,29 +292,34 @@ different order.
     \item \code{string.h}
 \end{itemize}
 
+\subsubsection{Purpose}
+
+Privide functions relating to file input and output. The main functions used
+for the turtle program is \code{readFileToList} and \code{appendToFile}.
+
 \subsubsection{readFileToList}
 
-Read a file into a linked list. Useful for getting the contents to a string 
-list for use in a program, instead of using the FILE pointer to process 
+Read a file into a linked list. Useful for getting the contents to a string
+list for use in a program, instead of using the FILE pointer to process
 the file. Used in \code{turtle.c} to get the input file into a linked list.
 
 \subsubsection{appendToFile}
 
-Append a line to a file. This is used in \code{turtle.c} for adding log 
-entries to the log file. It already assums that the FILE pointer to the 
+Append a line to a file. This is used in \code{turtle.c} for adding log
+entries to the log file. It already assums that the FILE pointer to the
 log file is already set.
 
 \subsubsection{getFileStats}
 
-Get a file's length and maximum line lenght. Useful for getting information 
-needed to create an array to fit the file or checking if the file is valid. 
-Used in \code{turtle.c} to get the right dimensions for allocating memory 
+Get a file's length and maximum line lenght. Useful for getting information
+needed to create an array to fit the file or checking if the file is valid.
+Used in \code{turtle.c} to get the right dimensions for allocating memory
 for the string array to hold the file contents.
 
 \subsubsection{printFileError}
 
-Print an error message if a file error occurs. Simply a wrapper function to 
-format and print a file error. Used in almost all file input and output 
+Print an error message if a file error occurs. Simply a wrapper function to
+format and print a file error. Used in almost all file input and output
 operations for if an error were to occur.
 
 \pagebreak
@@ -301,9 +330,15 @@ operations for if an error were to occur.
     \item \code{stdlib.h}
 \end{itemize}
 
+\subsubsection{Purpose}
+
+Privide the initialisation of a doubly linked double ended linked list as
+well as several utility functions. Mostly used in conjunction with
+\code{fileIO.c} as it reads a file's contents to a linked list.
+
 \subsubsection{initNode}
 
-Create a linked list node to be inserted into a linked list. Required to 
+Create a linked list node to be inserted into a linked list. Required to
 set values into a linked list node for a linked list.
 
 \subsubsection{initList}
@@ -312,84 +347,84 @@ Create a linked list. Required to create a linked list for inserting nodes.
 
 \subsubsection{insertFirst}
 
-Insert a linked list node to the head of the linked list. Useful for a 
+Insert a linked list node to the head of the linked list. Useful for a
 stack structure.
 
 \subsubsection{insertLast}
 
-Insert a linked list node to the tail of the linked list. Useful for a 
+Insert a linked list node to the tail of the linked list. Useful for a
 queue structure.
 
 \subsubsection{removeFirst}
 
-Remove a linked list node from the head of the linked list. Useful for a 
+Remove a linked list node from the head of the linked list. Useful for a
 stack structure.
 
 \subsubsection{removeLast}
 
-Remove a linked list node from the tail of the linked list. Useful for a 
+Remove a linked list node from the tail of the linked list. Useful for a
 queue structure.
 
 \subsubsection{peekFirst}
 
-Get the memory address of the first linked list node in the list. Not part of 
+Get the memory address of the first linked list node in the list. Not part of
 the program, used as a generic function in the linked list.
 
 \subsubsection{peekLast}
 
-Get the memory address of the last linked list node in the list. Not part of 
+Get the memory address of the last linked list node in the list. Not part of
 the program, used as a generic function in the linked list.
 
 \subsubsection{getListLength}
 
-Get the number of linked list node in the linked list. Not part of the 
+Get the number of linked list node in the linked list. Not part of the
 program, used as a generic function in the linked list.
 
 \subsubsection{getListLengthRecurse}
 
-A recursive function to get the number of nodes in the linked list. Used in 
+A recursive function to get the number of nodes in the linked list. Used in
 conjunction to \code{getListLength}.
 
 \subsubsection{clearListStack}
 
-Clear all nodes in the linked list. Required as all the linked list nodes are 
-allocated in the heap. This version of the clear list function assumes that 
-all the pointers in the linked list nodes are stored in the stack, thus it 
+Clear all nodes in the linked list. Required as all the linked list nodes are
+allocated in the heap. This version of the clear list function assumes that
+all the pointers in the linked list nodes are stored in the stack, thus it
 does not attempt to free the node values.
 
 \subsubsection{clearListStackRecurse}
 
-A recursive function to clear all the nodes in the linked list. Used in 
+A recursive function to clear all the nodes in the linked list. Used in
 conjunction to \code{clearListStack}.
 
 \subsubsection{clearListMalloc}
 
-Clear all nodes in the linked list. Required as all the linked list nodes are 
-allocated in the heap. This version of the clear list function assumes that 
-all the pointers in the linked list nodes are stored in the heap, thus it 
-frees the node values as well as the linked list node. In cases where a 
-linked list contains both values stored in the heap and stack, it is 
-recommended to manually free the list by removing the linked list node from 
+Clear all nodes in the linked list. Required as all the linked list nodes are
+allocated in the heap. This version of the clear list function assumes that
+all the pointers in the linked list nodes are stored in the heap, thus it
+frees the node values as well as the linked list node. In cases where a
+linked list contains both values stored in the heap and stack, it is
+recommended to manually free the list by removing the linked list node from
 the list.
 
 \subsubsection{clearListMallocRecurse}
 
-A recursive function to clear all the nodes in the linked list. Used in 
+A recursive function to clear all the nodes in the linked list. Used in
 conjunction to \code{clearListMalloc}.
 
 \subsubsection{setNextToNode}
 
-Set a linked list node to the next pointer of another linked list node. This 
+Set a linked list node to the next pointer of another linked list node. This
 function is used internally within \code{linkedList.c} as a static function.
 
 \subsubsection{setPrevToNode}
 
-Set a linked list node to the prev pointer of another linked list node. This 
+Set a linked list node to the prev pointer of another linked list node. This
 function is used internally within \code{linkedList.c} as a static function.
 
 \subsubsection{isEmpty}
 
-Checks if the linked list contains no linked list nodes. Useful for checking 
+Checks if the linked list contains no linked list nodes. Useful for checking
 iterating through a linked list.
 
 \pagebreak
@@ -402,27 +437,34 @@ iterating through a linked list.
     \item \code{string.h}
 \end{itemize}
 
+\subsubsection{Purpose}
+
+Test functions in \code{tools.c}, \code{linkedList.c} and \code{fileIO.c} to
+ensure that their functions work as intended. Testing runs in two stages.
+First is to see if it can run as is, then it is run with valgrind to detect
+memory errors and memory leaps.
+
 \subsubsection{testTools}
 
-Test all the non-printing functions in \code{tools.c}. This testing structure 
-goes through each edge case for all functions in \code{tools.c}, ensuring 
+Test all the non-printing functions in \code{tools.c}. This testing structure
+goes through each edge case for all functions in \code{tools.c}, ensuring
 that it passes with no logical errors and no memory errors.
 
 \subsubsection{testFileIO}
 
-Test mostly the file reading functions in \code{fileIO.c}. Check for all 
-file reading edge cases like empty file, non existant file, trailing 
+Test mostly the file reading functions in \code{fileIO.c}. Check for all
+file reading edge cases like empty file, non existant file, trailing
 whitespaces, etc.
 
 \subsubsection{testLinkedList}
 
-Test all the functions in \code{linkedList.c}. It is vital to get the linked 
-list correct, thus a rigourous test structure is required to ensure that no 
+Test all the functions in \code{linkedList.c}. It is vital to get the linked
+list correct, thus a rigourous test structure is required to ensure that no
 logical errors or memory errors can occur.
 
 \subsubsection{printResult}
 
-A wrapper function to print \code{passed} or \code{failed} depending on the 
+A wrapper function to print \code{passed} or \code{failed} depending on the
 evaulated conditional. Purely eye candy.
 
 \subsubsection{header}
@@ -439,102 +481,110 @@ A function that prints a message and a line of equal length. Purely eye candy.
     \item \code{string.h}
 \end{itemize}
 
+\subsubsection{Purpose}
+
+Provide utility functions to other files that includes \code{tools.h}. Such
+tools include mallocing functions, freeing functions, string manipulation
+and number comparisons. Vital part of the program as it contains wrappers to
+initialise heap memory in the `proper' way and also free heap memory the
+`proper' way.
+
 \subsubsection{initString}
 
-Allocate memory in the heap for a string and then fill the string with null 
-terminators. Required as to prevent manually setting null terminator at the 
-end of a string and gives a clean state to a string. Used mostly in 
-\code{tools.c} for initialising string arrays or in \code{turtle.c} for 
+Allocate memory in the heap for a string and then fill the string with null
+terminators. Required as to prevent manually setting null terminator at the
+end of a string and gives a clean state to a string. Used mostly in
+\code{tools.c} for initialising string arrays or in \code{turtle.c} for
 getting filenames to a string.
 
 \subsubsection{initStringWithContents}
 
-Allocate memory in the heap for a string and then copy the contents of the 
+Allocate memory in the heap for a string and then copy the contents of the
 imported string to the new string. Useful for initialising a string with a
 set string. Used as an alternative to \code{initString}.
 
 \subsubsection{freePtr}
 
-Wrapper function for \code{free}. Does two tasks; free the pointer and 
+Wrapper function for \code{free}. Does two tasks; free the pointer and
 set it to null. Simply a wrapper, nothing else.
 
 \subsubsection{stringCompare}
 
-Wrapper function for \code{strcmp} so that it returns a sensible boolean 
+Wrapper function for \code{strcmp} so that it returns a sensible boolean
 value. This is simply syntatic sugar.
 
 \subsubsection{upper}
 
 Convert characters in a string to uppercase. This function is primarily
-used when converting command names to uppercase so that the program and 
+used when converting command names to uppercase so that the program and
 accept mixed case inputs.
 
 \subsubsection{intBound}
 
-Check if an integer is within the bounds of two other integers. Used in 
-\code{turtle.c} for validating \code{FG} and \code{BG} commands, as they 
+Check if an integer is within the bounds of two other integers. Used in
+\code{turtle.c} for validating \code{FG} and \code{BG} commands, as they
 have a lower and upper limit for terminal colors.
 
 \subsubsection{doubleBound}
 
-Check if a double is within th ebounds of two other doubles. Used in 
-\code{turtle.c} for validating \code{DRAW}, \code{MOVE} and \code{ROTATE} 
+Check if a double is within th ebounds of two other doubles. Used in
+\code{turtle.c} for validating \code{DRAW}, \code{MOVE} and \code{ROTATE}
 commands, as they provide a real value.
 
 \subsubsection{doubleCompare}
 
-Compares two doubles. Needed due to how doubles are not precise because of 
-floating points. Used to check if a double is within range of two doubles 
+Compares two doubles. Needed due to how doubles are not precise because of
+floating points. Used to check if a double is within range of two doubles
 inclusive.
 
 \subsubsection{doubleCheck}
 
-Check if one double is larger or equal to another double. Needed for 
+Check if one double is larger or equal to another double. Needed for
 checking the range of a double in \code{turtle.c}.
 
 \subsubsection{doubleAbs}
 
-Get the absolute value of a double. Required in \code{doubleCompare} as it 
+Get the absolute value of a double. Required in \code{doubleCompare} as it
 checks the tolerance of the two double it compares.
 
 \subsubsection{doubleMod}
 
-Get the modulus of a double. Required in turtle to check if the angle is 
+Get the modulus of a double. Required in turtle to check if the angle is
 a right angle. An alternative to \code{fmod} in \code{math.h}.
 
 \subsubsection{doubleRound}
 
-Round a double to the nearest integer. Needed for the \code{line} function 
+Round a double to the nearest integer. Needed for the \code{line} function
 as that only takes in integer values and the coordinates are real values.
 
 \subsubsection{degToReg}
 
-Converts degrees to radians. Needed when calculating new coordinates as 
-the standard math library's \code{sin} and \code{cos} takes in radians 
+Converts degrees to radians. Needed when calculating new coordinates as
+the standard math library's \code{sin} and \code{cos} takes in radians
 instead of degrees.
 
 \subsubsection{removeTrailingNewline}
 
-Remove trailing newline in string. Used in \code{fileIO.c} when recording 
-each line in a file to an array. An alternative to \code{fabs} in 
+Remove trailing newline in string. Used in \code{fileIO.c} when recording
+each line in a file to an array. An alternative to \code{fabs} in
 \code{math.h}
 
 \subsubsection{countWords}
 
-Count the number of words in string. Useful for either scanning the contents 
-of a string to variables, or checking if string contains the right amount of 
+Count the number of words in string. Useful for either scanning the contents
+of a string to variables, or checking if string contains the right amount of
 inputs we're expecting. Used for command validation in \code{turtle.c}.
 
 \subsubsection{trim}
 
-Remove leading and trailing whitespaces from string. Used for input 
-validation in \code{turtle.c} for accepting commands with leading or trailing 
+Remove leading and trailing whitespaces from string. Used for input
+validation in \code{turtle.c} for accepting commands with leading or trailing
 whitespaces.
 
 \subsubsection{printStringArray}
 
-Print each element in a string array. Useful for printing out the contents 
-of a string array. Used in \code{turtle.c} for printing out help and version 
+Print each element in a string array. Useful for printing out the contents
+of a string array. Used in \code{turtle.c} for printing out help and version
 messages.
 
 \pagebreak
@@ -549,24 +599,24 @@ messages.
 
 \subsubsection{main}
 
-The main function which starts the entire program. Set's up the structure 
-and the flow of events to draw images in the terminal. First few statements 
+The main function which starts the entire program. Set's up the structure
+and the flow of events to draw images in the terminal. First few statements
 are validating input file before processing the inputs.
 
 \subsubsection{checkArgs}
 
-Part one of validating inputs. Checks if program has the right amount of 
-command line arguments. We're expecting a minimum of one command line 
+Part one of validating inputs. Checks if program has the right amount of
+command line arguments. We're expecting a minimum of one command line
 argument which is the input filename or displaying help messages.
 
 \subsubsection{processArgs}
 
-Part two of validating inputs. This checks if we're calling the help message 
+Part two of validating inputs. This checks if we're calling the help message
 or the version message or we're giving the program an input file.
 
 \subsubsection{processCommands}
 
-The function which does most of the drawing. After the file is successfully 
+The function which does most of the drawing. After the file is successfully
 stored into a string array, the commands are validated executed.
 
 \subsubsection{calcNewPosition}
@@ -576,19 +626,19 @@ Used when \code{MOVE} or \code{DRAW} is invoked.
 
 \subsubsection{doNothing}
 
-A function specifically given to \code{MOVE} since we're not printing any 
-characters to the screen when moving. We don't use putChar with a whitespace 
+A function specifically given to \code{MOVE} since we're not printing any
+characters to the screen when moving. We don't use putChar with a whitespace
 because it would erase the drawing on screen.
 
 \subsubsection{putChar}
 
-A function specifically given to \code{DRAW}. Simply places the given 
+A function specifically given to \code{DRAW}. Simply places the given
 character onto stdout.
 
 \subsubsection{validateCommands}
 
 Checks all the commands in the command array and determines if they're valid.
-Strips any leading or trailing whitespaces and make the command names case 
+Strips any leading or trailing whitespaces and make the command names case
 insensitive.
 
 \subsubsection{printUsage}
@@ -659,135 +709,135 @@ pattern .
 draw 1
 rotate 180
 move 1
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 2
 rotate 180
 move 2
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 3
 rotate 180
 move 3
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 4
 rotate 180
 move 4
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 5
 rotate 180
 move 5
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 6
 rotate 180
 move 6
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 7
 rotate 180
 move 7
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 8
 rotate 180
 move 8
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 9
 rotate 180
 move 9
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 10
 rotate 180
 move 10
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 9
 rotate 180
 move 9
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 8
 rotate 180
 move 8
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 7
 rotate 180
 move 7
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 6
 rotate 180
 move 6
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 5
 rotate 180
 move 5
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 4
 rotate 180
 move 4
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 3
 rotate 180
 move 3
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 2
 rotate 180
 move 2
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 draw 1
 rotate 180
 move 1
-rotate -90
+rotate 90
 move 1
-rotate -90
+rotate 90
 
 $ turtle ../test/turtle/pyramid.txt
 .
@@ -809,49 +859,23 @@ $ turtle ../test/turtle/pyramid.txt
 ...
 ..
 .
-
-$ cat ../test/turtle/octo.txt
+\end{lstlisting}
+\pagebreak
+\begin{lstlisting}
+$ cat ../test/turtle/diamond.txt
+rotate -45
 move 30
+FG 1
+Pattern #
+DRAW 10
+Rotate 90
+draw 10
+ROTATE 90
+dRAW 10
+ROTATE 90
+DRAW 10
 
-rotate 90
-move 10
-rotate -90
-
-rotate 45
-bg 5
-pattern #.
- draw 6
-bg 0
-
-rotate 45
-pattern .
- draw 6
-
-rotate 45
-pattern #
- draw 6
-
-rotate 45
-pattern .
- draw 6
-
-rotate 45
-pattern #
- draw 6
-
-rotate 45
-pattern .
- draw 6
-
-rotate 45
-pattern #
- draw 6
-
-rotate 45
-pattern .
- draw 6
-
-$ turtle ../test/turtle/octo.txt
+$ turtle ../test/turtle/diamond.txt
 
 
 
@@ -862,22 +886,25 @@ $ turtle ../test/turtle/octo.txt
 
 
 
-                        ......
-                       #      #
-                      #        #
-                     #          #
-                    #            #
-                   #              .
-                   .              .
-                   .              .
-                   .              .
-                   .              .
-                   .              .
-                   .#             #
-                     #           #
-                      #        ##
-                       #      #
-                        #......
+
+
+
+
+                            #
+                           # #
+                          #   #
+                         #     #
+                        #       #
+                       #         #
+                      #           #
+                     #             #
+                      #           #
+                       #         #
+                        #       #
+                         #     #
+                          #   #
+                           # #
+                            #
 \end{lstlisting}
 
 \subsection{Invalid File}
