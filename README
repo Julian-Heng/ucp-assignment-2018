@@ -8,12 +8,16 @@
 ######## Directory Structure ########
    ###############################
 
-.
-├── docs        | Documentation
-├── src         | Source files
-└── test        | Test folder
-    ├── test    | Other test files
-    └── turtle  | Turtle input test files
++-----------------+-------------------------+
+| Folders         | Description             |
++-----------------+-------------------------+
+| .               | Assignment root folder  |
+| ├── docs        | Documentation           |
+| ├── src         | Source files            |
+| └── test        | Test folder             |
+|     ├── test    | Other test files        |
+|     └── turtle  | Turtle input test files |
++-----------------+-------------------------+
 
    ########################
 ######## Instructions ########
@@ -21,28 +25,65 @@
 
 Report is located in the docs folder, under the filename `AssignmentDoc.pdf'
 
-To make normal:
+To make everything (TurtleGraphics, TurtleGraphicsDebug, TurtleGraphicsSimple):
   $ cd src
   $ make
+  $ ls -l ./build/
+
+  total 176
+  -rwxr-xr-x  1 julian  staff  24676 19 Oct 09:17 turtle
+  -rwxr-xr-x  1 julian  staff  29180 19 Oct 09:17 turtle-debug
+  -rwxr-xr-x  1 julian  staff  24676 19 Oct 09:17 turtle-simple
+
+
+To make normal:
+  $ cd src
+  $ make turtleGraphics
+  $ ls -l ./build/
+
+  total 56
+  -rwxr-xr-x  1 julian  staff  24676 19 Oct 09:18 turtle
+
 
 To make simple:
   $ cd src
-  $ make simple
+  $ make turtleGraphicsSimple
+
+  total 56
+  -rwxr-xr-x  1 julian  staff  24676 19 Oct 09:19 turtle-simple
+
 
 To make debug:
   $ cd src
-  $ make debug
+  $ make turtleGraphicsDebug
+
+  total 64
+  -rwxr-xr-x  1 julian  staff  29180 19 Oct 09:20 turtle-debug
+
 
 To make document:
   $ cd src
-  $ make docs # Might have compiler errors if missing latex packages
+  $ make docs
+  $ # If pdflatex prompts about missing package 'Inconsolata.sty',
+  $ # press enter and ignore
+  $ xdg-open ../docs/AssignmentDocs.pdf
+
 
 To run test:
   $ cd src
   $ make test
+  $ ls -l ./build
+
+  total 264
+  -rwxr-xr-x  1 julian  staff  45000 19 Oct 09:20 test
+  -rwxr-xr-x  1 julian  staff  24676 19 Oct 09:20 turtle
+  -rwxr-xr-x  1 julian  staff  29180 19 Oct 09:20 turtle-debug
+  -rwxr-xr-x  1 julian  staff  24676 19 Oct 09:20 turtle-simple
+
 
 To clean src directory:
   $ make clean
+
 
 Help message:
 
