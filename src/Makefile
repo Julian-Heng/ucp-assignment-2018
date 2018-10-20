@@ -1,3 +1,6 @@
+# Makefile to make turtle graphics. Include test suite as well
+# Last Modified: 2018-10-20T15:14:33+08:00
+
 # Standard compiler and flags declaration
 CC = gcc
 CFLAGS = -Wall -Werror -ansi -pedantic

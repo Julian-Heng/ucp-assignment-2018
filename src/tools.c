@@ -6,7 +6,7 @@
  *           mallocing functions, freeing functions,
  *           string manipulation and number comparisons
  *
- * Last Modified: 2018-10-18T11:32:24+08:00
+ * Last Modified: 2018-10-20T15:05:11+08:00
  **/
 
 #include <stdio.h>

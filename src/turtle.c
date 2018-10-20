@@ -4,7 +4,7 @@
  * Purpose:  The main program. Draws a graphic from a list of
  *           commands in file
  *
- * Last Modified: 2018-10-16T02:38:09+08:00
+ * Last Modified: 2018-10-20T15:18:59+08:00
  **/
 
 #include <stdio.h>
@@ -17,25 +17,29 @@
 #include "effects.h"
 #include "turtle.h"
 
-/* Setting fallback values to compiler defined string */
+/**
+ * Setting fallback values to compiler defined string
+ * Fallback values is an empty string so that we define
+ * them as "unknown" later
+ **/
 #ifndef COMPILER_INFO
-#define COMPILER_INFO "unknown"
+#define COMPILER_INFO ""
 #endif
 
 #ifndef USER
-#define USER "unknown"
+#define USER ""
 #endif
 
 #ifndef HOST
-#define HOST "unknown"
+#define HOST ""
 #endif
 
 #ifndef COMPILE_DATE
-#define COMPILE_DATE "unknown"
+#define COMPILE_DATE ""
 #endif
 
 #ifndef MOD_DATE
-#define MOD_DATE "unknown"
+#define MOD_DATE ""
 #endif
 
 #define FALSE 0

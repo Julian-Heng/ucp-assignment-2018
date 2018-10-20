@@ -4,7 +4,7 @@
  * Purpose:  Provide the initialisation of a doubly linked double ended
  *           linked list as well as several utility functions.
  *
- * Last Modified: 2018-10-16T02:06:13+08:00
+ * Last Modified: 2018-10-20T15:02:03+08:00
  **/
 
 #include <stdlib.h>
