@@ -432,7 +432,7 @@ void processList(LinkedList* list)
      * Variables relating to drawing the graphic
      * (x1, y1) and (x2, y2) are for calculating drawing coords
      * (x3, y3) and (x4, y4) are for passing to the line function
-     * (x5, y5) is for printing to log
+     * (x5, y5) and (x2, y2) are for printing to log
      **/
     int isZero;
     double x1, y1, x2, y2, x5, y5;
@@ -559,18 +559,9 @@ void processList(LinkedList* list)
                 /**
                  * If action is rotating, get the angle and add
                  * to the current angle
-                 *
-                 * We minus the angle because adding a positive angle,
-                 * indicating that we want to turn clockwise makes the
-                 * angle turn counterclockwise, see the unit circle.
-                 *
-                 * Thus, we subtract the angle.
                  **/
                 sscanf(command, "%s %lf", tempStr, &tempDouble);
                 angle += tempDouble;
-                /*
-                fprintf(stderr, "%f, %f\n", tempDouble, angle);
-                */
 
                 if (doubleCheck(0.0, angle))
                 {
@@ -821,7 +812,10 @@ void calcNewPosition(
     *x1 = *x2;
     *x2 += xDelta;
 
-    /* Subtract for y delta because of angle shenanigans */
+    /**
+     * Subtract for y delta because of black magic involving angles
+     * and terminal coordinates
+     **/
     *y1 = *y2;
     *y2 -= yDelta;
 }
