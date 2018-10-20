@@ -47,7 +47,7 @@
 
 \title{\huge \textbf{UCP Assignment\\Turtle program}}
 \author{Julian Heng (19473701)}
-\date{October, 2018}
+\date{October 22, 2018}
 
 \begin{document}
 
@@ -68,7 +68,7 @@
 
 In the main function of \code{turtle.c}, there are many conditionals
 before \code{processCommands()}. This is to ensure that when calling
-\code{processCommands()}, all the checks that preceed it have returned
+\code{processCommands()}, all the checks that precede it have returned
 \code{TRUE}, meaning that the program can continue with drawing without any
 problems. As such, we can assume that the program has successfully checked
 and validated variables before reaching the drawing command, ensuring
@@ -93,9 +93,9 @@ pointer should be freed, if it is not null.
 
 There are no \code{printf()} statements, instead opting for using
 \code{fprintf()} statements instead. This way, it makes it easier to
-see which messages are being print to stdout or to stderr. All output
-to stdout will use \code{fprintf(stdout, ...)} while all debuging
-information or error messages will use \code{fprintf(stderr, ...)}.
+see which messages are being print to \code{stdout} or to \code{stderr}. All
+output to \code{stdout} will use \code{fprintf(stdout, ...)} while all
+debugging information or error messages will use \code{fprintf(stderr, ...)}.
 
 \subsection{Strings}
 
@@ -139,7 +139,10 @@ modified if a condition is satisfied.
           \textbf{OK}:
           \\\code{foo = (Condition) ? bar : baz;}\\
           \textbf{NOT OK}:
-          \\\code{foo = ((Condition) ? TRUE : FALSE) ? FALSE : ((Condition) ? (TRUE) : FALSE;}
+          \\\code{
+              foo = ((Condition) ? TRUE : FALSE) ? FALSE :
+              ((Condition) ? (TRUE) : FALSE;
+          }
 \end{itemize}
 
 \newpage
@@ -199,17 +202,17 @@ Thus whenever we do a \code{MOVE} or \code{DRAW} command, the resulting
 line will always be one unit length too long. To solve this overhead,
 when a \code{MOVE} or \code{DRAW} command is invoked, we calculate the
 new coordinates but using the length provided minus one. Thus, this gives
-us the coordindates of the new set of coordinates, but only one unit away
+us the coordinates of the new set of coordinates, but only one unit away
 in the direction of the current angle. We will need additional temporary
 coordinates variables in order to log the correct coordinates for the log
 file and also keeping track of the correct coordinates used for the next
 \code{MOVE} or \code{DRAW} command.
 
 In addition to moving the coordinates one unit after drawing, we would need to
-round to the closest whole number because of the ansi escape codes being able
+round to the closest whole number because of the ANSI escape codes being able
 to only take integer values. If we did not round after moving, when
 calculating the next set of coordinates, the rounding for the drawing
-coordinates will be inacurate, causing the drawing coordinates to deviate by
+coordinates will be inaccurate, causing the drawing coordinates to deviate by
 one unit.
 
 Using the excerpt above, when the program encounter \code{DRAW 2},
@@ -222,7 +225,7 @@ in the log file correctly.
 \subsection{Alternate ways}
 
 In my implementation, the program reads through the input file and converts
-it to a linked list. The list is then first vaildated, then processed. An
+it to a linked list. The list is then first validated, then processed. An
 alternative way to this approach is instead of reading, then validating,
 then processing, we could do these 3 actions line by line in the file.
 This version of the program could potentially be faster as it does not
@@ -294,7 +297,7 @@ different order.
 
 \subsubsection{Purpose}
 
-Privide functions relating to file input and output. The main functions used
+Provide functions relating to file input and output. The main functions used
 for the turtle program is \code{readFileToList} and \code{appendToFile}.
 
 \subsubsection{readFileToList}
@@ -306,12 +309,12 @@ the file. Used in \code{turtle.c} to get the input file into a linked list.
 \subsubsection{appendToFile}
 
 Append a line to a file. This is used in \code{turtle.c} for adding log
-entries to the log file. It already assums that the FILE pointer to the
+entries to the log file. It already assumes that the FILE pointer to the
 log file is already set.
 
 \subsubsection{getFileStats}
 
-Get a file's length and maximum line lenght. Useful for getting information
+Get a file's length and maximum line length. Useful for getting information
 needed to create an array to fit the file or checking if the file is valid.
 Used in \code{turtle.c} to get the right dimensions for allocating memory
 for the string array to hold the file contents.
@@ -332,7 +335,7 @@ operations for if an error were to occur.
 
 \subsubsection{Purpose}
 
-Privide the initialisation of a doubly linked double ended linked list as
+Provide the initialisation of a doubly linked double ended linked list as
 well as several utility functions. Mostly used in conjunction with
 \code{fileIO.c} as it reads a file's contents to a linked list.
 
@@ -419,8 +422,9 @@ function is used internally within \code{linkedList.c} as a static function.
 
 \subsubsection{setPrevToNode}
 
-Set a linked list node to the prev pointer of another linked list node. This
-function is used internally within \code{linkedList.c} as a static function.
+Set a linked list node to the previous pointer of another linked list node.
+This function is used internally within \code{linkedList.c} as a static
+function.
 
 \subsubsection{isEmpty}
 
@@ -441,7 +445,7 @@ iterating through a linked list.
 
 Test functions in \code{tools.c}, \code{linkedList.c} and \code{fileIO.c} to
 ensure that their functions work as intended. Testing runs in two stages.
-First is to see if it can run as is, then it is run with valgrind to detect
+First is to see if it can run as is, then it is run with Valgrind to detect
 memory errors and memory leaps.
 
 \subsubsection{testTools}
@@ -453,19 +457,19 @@ that it passes with no logical errors and no memory errors.
 \subsubsection{testFileIO}
 
 Test mostly the file reading functions in \code{fileIO.c}. Check for all
-file reading edge cases like empty file, non existant file, trailing
+file reading edge cases like empty file, non existent file, trailing
 whitespaces, etc.
 
 \subsubsection{testLinkedList}
 
 Test all the functions in \code{linkedList.c}. It is vital to get the linked
-list correct, thus a rigourous test structure is required to ensure that no
+list correct, thus a rigorous test structure is required to ensure that no
 logical errors or memory errors can occur.
 
 \subsubsection{printResult}
 
 A wrapper function to print \code{passed} or \code{failed} depending on the
-evaulated conditional. Purely eye candy.
+evaluated conditional. Purely eye candy.
 
 \subsubsection{header}
 
@@ -523,11 +527,11 @@ accept mixed case inputs.
 
 Check if an integer is within the bounds of two other integers. Used in
 \code{turtle.c} for validating \code{FG} and \code{BG} commands, as they
-have a lower and upper limit for terminal colors.
+have a lower and upper limit for terminal colours.
 
 \subsubsection{doubleBound}
 
-Check if a double is within th ebounds of two other doubles. Used in
+Check if a double is within the bounds of two other doubles. Used in
 \code{turtle.c} for validating \code{DRAW}, \code{MOVE} and \code{ROTATE}
 commands, as they provide a real value.
 
@@ -627,8 +631,8 @@ Used when \code{MOVE} or \code{DRAW} is invoked.
 \subsubsection{doNothing}
 
 A function specifically given to \code{MOVE} since we're not printing any
-characters to the screen when moving. We don't use putChar with a whitespace
-because it would erase the drawing on screen.
+characters to the screen when moving. We don't use \code{putChar} with a
+whitespace because it would erase the drawing on screen.
 
 \subsubsection{putChar}
 
@@ -916,8 +920,8 @@ $ turtle ../test/turtle/small_fail.txt
 Invalid command on line 1: fgg 5
 $ echo $?
 4
-$ turtle `a non existant file'
-Error opening `a non existant file': No such file or directory
+$ turtle `a non existent file'
+Error opening `a non existent file': No such file or directory
 $ echo $?
 2
 \end{lstlisting}
