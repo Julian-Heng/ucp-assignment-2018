@@ -4,7 +4,7 @@
  * Purpose:  The main program. Draws a graphic from a list of
  *           commands in file
  *
- * Last Modified: 2018-10-20T15:18:59+08:00
+ * Last Modified: 2018-10-20T18:36:07+08:00
  **/
 
 #include <stdio.h>
@@ -949,11 +949,11 @@ void printVersion(void)
     char* compileDate;
     char* modDate;
 
-    compiler = ! stringCompare(COMPILER_INFO, "") ? COMPILER_INFO : "unknown";
-    user = ! stringCompare(USER, "") ? USER : "unknown";
-    host = ! stringCompare(HOST, "") ? HOST : "unknown";
-    compileDate = ! stringCompare(COMPILE_DATE, "") ? COMPILE_DATE : "unknown";
-    modDate = ! stringCompare(MOD_DATE, "") ? MOD_DATE : "unknown";
+    compiler = stringCompare(COMPILER_INFO, "") ? "unknown" : COMPILER_INFO;
+    user = stringCompare(USER, "") ? "unknown" : USER;
+    host = stringCompare(HOST, "") ? "unknown" : HOST;
+    compileDate = stringCompare(COMPILE_DATE, "") ? "unknown" : COMPILE_DATE;
+    modDate = stringCompare(MOD_DATE, "") ? "unknown" : MOD_DATE;
 
     /* Print version information */
     printStringArray("%s\n", versionMsg, 3);
